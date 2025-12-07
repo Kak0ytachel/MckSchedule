@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Schedule - {{ category_title }}</title>
+
+    <script type="text/javascript" src="{{ url_for('static', path='index.js') }}" > </script>
+    <link rel="stylesheet" href="{{ url_for('static', path='/styles.css') }}">
+</head>
+<body>
+
+{% import "navbar.html" as navbar %}
+{{ navbar.navbar() }}
+
+<main style="background-color: white;">
+    <header style="margin: 10px">
+        <div class="header-container">
+            <h1>Schedule - {{ category_title }}</h1>
+
+            <div class="header-group-container">
+                {% for subgroup in subgroups_data %}
+                <a href="/group/{{ subgroup.parent_group_name }}/{{ subgroup.subgroup_name }}" class="schedule-group" data-subgroup={{ subgroup.subgroup_name }} data-is-chosen={{ "true" if subgroup.subgroup_display_name in chosen_groups else "false" }}>
+                 {{  subgroup.subgroup_display_name }}
+                </a>
+                {% endfor %}
+                <a href="/group/{{ group }}" class="schedule-group" data-subgroup="group" data-is-chosen= {{"true" if group in chosen_groups else "false"}}>
+                 {{ group }}
+                </a>
+            </div>
+        </div>
+<!--        <p> Here you can find project development logs. For more info, check out <a href="index.html"> about page </a></p>-->
+    </header>
+    <section>
+        {% import "card_widget.html" as cards %}
+        {% for i in range(1, 6) %}
+        <div class="schedule-weekday-block">
+            <h2> {{ weekday_names[i] }} </h2>
+            <div class="time-table">
+                {% for lesson in schedule if lesson.weekday == i %}
+                {{ cards.schedule_card(lesson, chosen_groups)}}
+                {% endfor %}
+            </div>
+        </div>
+        {% endfor %}
+
+{#        <div class="schedule-weekday-block">#}
+{#            <h2> Monday </h2>#}
+{#            <div class="time-table">#}
+{#                <div class="schedule-card" data-subject="mat">#}
+{#                    <strong>Matematyka inz. </strong>#}
+{#                    <span style="color: dimgray; float: right"><time>8:00</time> - <time>9:30</time></span>#}
+{#                    <p class="schedule-text">Warszawa (14) </p>#}
+{#                    <span class="schedule-teacher">Witold Obloza (WO)</span>#}
+{#                    <span class="schedule-group" data-subgroup="inz" data-is-chosen="true">6N / inz</span>#}
+{#                    <span class="schedule-group" data-subgroup="inz" data-is-chosen="false">6N / inz</span>#}
+{#                    <span class="schedule-group">6N / inz</span>#}
+{#                </div>#}
+{#                <div class="schedule-card">#}
+{#                    <strong>Historia architektury </strong>#}
+{#                    <span style="color: dimgray; float: right"><time>9:50</time> - <time>11:20</time></span>#}
+{#                    <p class="schedule-text">Lodz (13) </p>#}
+{#                    <span class="schedule-teacher">Edyta Galat (EG)</span>#}
+{#                    <span class="schedule-group">1N / arch</span>#}
+{#                    <span class="schedule-group">3N / arch</span>#}
+{#                    <span class="schedule-group" data-subgroup="arch" data-is-chosen="true">6N / arch</span>#}
+{#                    <span class="schedule-group">4S / arch</span>#}
+{#                </div>#}
+{#                <div class="schedule-card">#}
+{#                    <strong>Slownictwo architektoniczne </strong>#}
+{#                    <span style="color: dimgray; float: right"><time>11:40</time> - <time>13:10</time></span>#}
+{#                    <p class="schedule-text">Lodz (13) </p>#}
+{#                    <span class="schedule-teacher">Edyta Galat (EG)</span>#}
+{#                    <span class="schedule-group">1N / arch</span>#}
+{#                    <span class="schedule-group">3N / arch</span>#}
+{#                    <span class="schedule-group">6N / arch</span>#}
+{#                    <span class="schedule-group">4S / arch</span>#}
+{#                </div>#}
+{#                <div class="schedule-card" data-subject="dkf">#}
+{#                    <strong>DKF </strong>#}
+{#                    <span style="color: dimgray; float: right"><time>18:00</time> - <time>20:15</time></span>#}
+{#                    <p class="schedule-text">Warszawa (14) </p>#}
+{#                    <span class="schedule-teacher">Witold Obloza (WO)</span>#}
+{#                    <span class="schedule-group schedule-group-all">wszystkie grupy</span>#}
+{#                </div>#}
+{#            </div>#}
+{#        </div>#}
+{#        <div class="schedule-weekday-block">#}
+{##}
+{#            <h2> Tuesday </h2>#}
+{#            <div class="time-table">#}
+{#                <div class="schedule-card" data-subject="wop">#}
+{#                    <strong>WOP </strong>#}
+{#                    <span style="color: dimgray; float: right"><time>8:00</time> - <time>9:30</time></span>#}
+{#                    <p class="schedule-text">Gdansk (16) </p>#}
+{#                    <span class="schedule-teacher">Edyta Galat (EG)</span>#}
+{#                    <a href="/group/5N/inz" class="schedule-group">5N / inz</a>#}
+{#                    <a href="/group/5N/arch" class="schedule-group">5N / arch</a>#}
+{#                    <a href="/group/6N/arch" class="schedule-group" data-subgroup="arch" data-is-chosen="true">6N / arch</a>#}
+{#                    <a href="/group/6N/inz" class="schedule-group" data-subgroup="inz" data-is-chosen="true">6N / inz</a>#}
+{#                </div>#}
+{#                <div class="schedule-card" data-subject="kscz">#}
+{#                    <strong>KSCz </strong>#}
+{#                    <span style="color: dimgray; float: right"><time>9:50</time> - <time>11:20</time></span>#}
+{#                    <p class="schedule-text">Lodz (13) </p>#}
+{#                    <span class="schedule-teacher">Izabela Kugiel-Abuhasna (IKA)</span>#}
+{#                    <span class="schedule-group" data-subgroup="arch" data-is-chosen="true">6N / arch</span>#}
+{#                    <span class="schedule-group" data-subgroup="inz" data-is-chosen="true">6N / inz</span>#}
+{#                </div>#}
+{#                <div class="schedule-card" data-subject="jn">#}
+{#                    <strong>Jezyk naukowy </strong>#}
+{#                    <span style="color: dimgray; float: right"><time>11:40</time> - <time>13:10</time></span>#}
+{#                    <p class="schedule-text">Lodz (13) </p>#}
+{#                    <span class="schedule-teacher">Izabela Kugiel-Abuhasna (IKA)</span>#}
+{#                    <span class="schedule-group">2N / arch</span>#}
+{#                    <span class="schedule-group">2N / inz</span>#}
+{#                    <span class="schedule-group" data-subgroup="arch" data-is-chosen="true">6N / arch</span>#}
+{#                    <span class="schedule-group" data-subgroup="inz" data-is-chosen="true">6N / inz</span>#}
+{#                </div>#}
+{#                <div class="schedule-card" data-subject="fiz">#}
+{#                    <strong>Fizyka inz. </strong>#}
+{#                    <span style="color: dimgray; float: right"><time>17:00</time> - <time>18:30</time></span>#}
+{#                    <p class="schedule-text">Krakow (15) </p>#}
+{#                    <span class="schedule-teacher">Witold Obloza (WO)</span>#}
+{#                    <span class="schedule-group" data-subgroup="inz" data-is-chosen="true">6N / inz</span>#}
+{#                    <span class="schedule-group" data-subgroup="inz" data-is-chosen="false">6N / inz</span>#}
+{#                    <span class="schedule-group">6N / inz</span>#}
+{#                </div>#}
+{#                <div class="schedule-card" data-subject="mat">#}
+{#                    <strong>Matematyka inz. </strong>#}
+{#                    <span style="color: dimgray; float: right"><time>17:00</time> - <time>18:30</time></span>#}
+{#                    <p class="schedule-text">Krakow (15) </p>#}
+{#                    <span class="schedule-teacher">Witold Obloza (WO)</span>#}
+{#                    <span class="schedule-group" data-subgroup="inz" data-is-chosen="true">6N / inz</span>#}
+{#                    <span class="schedule-group" data-subgroup="inz" data-is-chosen="false">6N / inz</span>#}
+{#                    <span class="schedule-group">6N / inz</span>#}
+{#                </div>#}
+{#            </div>#}
+{##}
+{#        </div>#}
+
+        <div style="height:100px"></div>
+    </section>
+</main>
+{% import "footer.html" as footer %}
+{{ footer.footer() }}
+</body>
+</html>

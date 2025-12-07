@@ -1,0 +1,21 @@
+{% macro navbar() %}
+<div class="nav-margin">
+    <nav>
+        <h2> <a class="nav-logo" href="/">MCK Schedule</a></h2>
+        <button onclick="toggleDropdownMenu()">
+<!--            <span>&#8801;</span>-->
+            <svg xmlns="http://www.w3.org/2000/svg" height="40px" viewBox="0 -960 960 960" width="40px" fill="#696969"><path d="M120-240v-80h720v80H120Zm0-200v-80h720v80H120Zm0-200v-80h720v80H120Z"/></svg>
+            <i class="fa-solid fa-bars"></i>
+        </button>
+        <form class="search-box" action="/search" method="get">
+            <input class="search-field" type="text" placeholder="Search" name="q">
+            <input class="search-button" type="submit" value="🔍︎">
+        </form>
+        <div class="nav-link-box">
+            <a class="nav-link" href="/">Schedule</a>
+            <a class="nav-link" href="/about">About</a>
+            <a class="nav-link" href="/changelog">Changelog</a>
+        </div>
+    </nav>
+</div>
+{% endmacro %}

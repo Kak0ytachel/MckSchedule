@@ -1,0 +1,24 @@
+{% macro schedule_card(lesson, current_groups) -%}
+<div class="schedule-card" data-subject={{ lesson.short_subject_name }}>
+    <strong>{{ lesson.subject_name }}</strong>
+    <span style="color: dimgray; float: right"><time>{{ lesson.start_hour }}:{{ '{:02d}'.format(lesson.start_minute) }}</time> - <time>{{ lesson.end_hour }}:{{ '{:02d}'.format(lesson.end_minute) }}</time></span>
+    <p class="schedule-text">{{ lesson.classroom_name }} </p>
+    <span class="schedule-teacher">{{ lesson.teacher_name }}</span>
+    {% if lesson.short_subject_name == "dkf" %}
+    <a href="/groups" class="schedule-group" data-subgroup="all" data-is-chosen="true">
+     wszystkie grupy
+    </a>
+    {% else %}
+    {% for subgroup in lesson.subgroups %}
+    <a href="/group/{{ subgroup.parent_group_name }}/{{ subgroup.subgroup_name }}" class="schedule-group" data-subgroup={{ subgroup.subgroup_name }} data-is-chosen={{ "true" if subgroup.subgroup_display_name in current_groups else "false" }}>
+     {{  subgroup.subgroup_display_name }}
+    </a>
+    {% endfor %}
+    {% for group in lesson.groups %}
+    <a href="/group/{{ group }}" class="schedule-group" data-subgroup="group" data-is-chosen= {{"true" if group in current_groups else "false"}}>
+     {{ group }}
+    </a>
+    {% endfor %}
+    {% endif %}
+</div>
+{%- endmacro %}

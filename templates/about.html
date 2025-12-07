@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About</title>
+    <script type="text/javascript" src="{{ url_for('static', path='index.js') }}" > </script>
+    <link rel="stylesheet" href="{{ url_for('static', path='/styles.css') }}">
+</head>
+<body>
+{% import "navbar.html" as navbar %}
+{{ navbar.navbar() }}
+
+<main style="background-color: white;">
+    <header style="margin: 10px">
+        <h1>About</h1>
+        <p> Hi! I'm a MCK student from the 6N group. I've been looking for a simple web app pet project when I got our
+            classes schedule. In my opinion it kinda sucks, so I've spent a few weekends making this thing.
+            Hopefully you find it useful!</p>
+    </header>
+    <section>
+        <img src="https://mck.pk.edu.pl/wp-content/uploads/2025/10/plan-zajec-I-sem-2025_2026-4-scaled.jpg" alt="mck schedule" height="400">
+        <img src="{{ url_for('static', path='/kitten-explode.gif') }}" alt="kitten explode gif" height="300">
+
+    </section>
+</main>
+{% import "footer.html" as footer %}
+{{ footer.footer() }}
+</body>
+</html>

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Not found</title>
+    <script type="text/javascript" src="{{ url_for('static', path='index.js') }}" > </script>
+    <link rel="stylesheet" href="{{ url_for('static', path='/styles.css') }}">
+</head>
+<body>
+{% import "navbar.html" as navbar %}
+{{ navbar.navbar() }}
+
+<main style="background-color: white;">
+    <header style="margin: 10px">
+        <h1>Not found</h1>
+        <p>There's no page with that address, at least yet. If you think there should be, please contact us.</p>
+    </header>
+    <section>
+        <img src="{{ url_for('static', path='/cat_turntable_compilation.gif') }}" alt="cut turntable gif">
+
+    </section>
+</main>
+{% import "footer.html" as footer %}
+{{ footer.footer() }}
+</body>
+</html>

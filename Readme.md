@@ -1,0 +1,1 @@
+FastAPI + MySQL Web App for convenient uni lecture schedule

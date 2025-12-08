@@ -2,6 +2,11 @@ services:
   backend:
     build: .
     command: sh -c "sleep 10s ; python main.py"
+    environment:
+      - DB_HOST=db
+      - DB_PORT=3306
+      - DB_USER=root
+      - DB_PASSWORD=123456q
     depends_on:
       - db
     ports:
@@ -24,3 +29,5 @@ services:
 
 volumes:
   mysql_data:
+
+name:  schedule-app

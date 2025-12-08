@@ -1,4 +1,6 @@
 import mysql.connector
+import dotenv
+import os
 
 from database.classrooms_table import ClassroomsTable
 from database.group_lessons_table import GroupLessonsTable
@@ -9,21 +11,24 @@ from database.subgroups_table import SubgroupsTable
 from database.subjects_table import SubjectsTable
 from database.teachers_table import TeachersTable
 
+dotenv.load_dotenv()
+
 
 class Database:
     def __init__(self):
         print("INITING DATABASE")
         self.mydb = mysql.connector.connect(
-            host="db",
-            user="root",
-            password="123456q",
+            host=os.getenv("DB_HOST"),
+            user=os.getenv("DB_USER"),
+            password=os.getenv("DB_PASSWORD"),
             autocommit=True,
-            port="3306"
+            port=os.getenv("DB_PORT"),
             # database="schedule"
         )
         self.cursor = self.mydb.cursor(buffered=True)
         # self._drop_database()
         self._init_database()
+        self._load_sample_data()
 
     def _init_database(self):
         self.cursor.execute("CREATE DATABASE IF NOT EXISTS schedule;")
@@ -319,7 +324,7 @@ if __name__ == "__main__":
     # db.subgroups_table.add_subgroup(1, "arch", "6N / ARCH")
     # db.subgroup_lessons_table.add_subgroup_lesson(2, 1)
     # db.lessons_tabl
-    db._load_sample_data()
+    # db._load_sample_data()
     lessons = db.get_group_schedule("6N")
     print(lessons)
     # print(db.get_subgroup_schedule("inz", "6N"))

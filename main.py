@@ -139,5 +139,5 @@ class Lesson:
 if __name__ == "__main__":
     print(db.subgroups_table.find_child_subgroups("6N"))
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000, proxy_headers=True)
+    uvicorn.run(app, host="0.0.0.0", port=8000, proxy_headers=True, forwarded_allow_ips="*")
 

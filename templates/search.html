@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search</title>
+    <script type="text/javascript" src="{{ url_for('static', path='index.js') }}" > </script>
+    <link rel="stylesheet" href="{{ url_for('static', path='/styles.css') }}">
+</head>
+<body>
+{% import "navbar.html" as navbar %}
+{{ navbar.navbar() }}
+
+<main style="background-color: white;">
+    <header style="margin: 10px">
+        <h1>Search - "{{ query }}"</h1>
+        <p> No exact matches were found. Please check out suggestions below or choose from the <a href="/groups">groups</a> page</p>
+        <div class="">
+            {% for group in search_groups %}
+                <a href="{{ group.link }}" class="schedule-group" data-subgroup={{ group.data_subgroup }} data-is-chosen="true">
+                 {{  group.name }}
+                </a>
+            {% endfor %}
+        </div>
+        <p class="header-text">Most commonly used groups</p>
+        <div>
+            {% for group in common_items %}
+                <a href="{{ group.link }}" class="schedule-group" data-subgroup={{ group.data_subgroup }} data-is-chosen="true">
+                 {{  group.name }}
+                </a>
+            {% endfor %}
+        </div>
+    </header>
+    <section>
+{#        <article class="changelog-article">#}
+{#            <h2> v0.1.0 beta - released 09/12/2025 </h2>#}
+{#            <p> first release into production, yay!</p>#}
+{#            <ul>#}
+{#                <li> Initial release</li>#}
+{#                <li> Added pages: lesson, group/subgroup schedule, about, changelog, not found</li>#}
+{#            </ul>#}
+{#        </article>#}
+
+{#        <article class="changelog-article">#}
+{#            <h2> v0.0.1 beta - released 20/11/2025 </h2>#}
+{#            <p> first release into production, yay!</p>#}
+{#            <ul>#}
+{#                <li> Initial release</li>#}
+{#                <li> Added pages: home, schedule, about, changelog</li>#}
+{#            </ul>#}
+{##}
+{#        </article>#}
+{#        <article class="changelog-article">#}
+{#            <h2> v0.0.1 beta - released 20/11/2025 </h2>#}
+{#            <p> first release into production, yay!</p>#}
+{#            <ul>#}
+{#                <li> Initial release</li>#}
+{#                <li> Added pages: home, schedule, about, changelog</li>#}
+{#            </ul>#}
+{##}
+{#        </article>#}
+    </section>
+</main>
+{% import "footer.html" as footer %}
+{{ footer.footer() }}
+</body>
+</html>

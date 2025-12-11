@@ -12,10 +12,17 @@ jobs:
       - name: checkout
         uses: actions/checkout@v4
 
+      - name: get release tag
+        run: if [ "${{ github.event_name }}" == "release" ]; then
+            TAG_NAME="${{ github.event.release.tag_name }}"
+            else TAG_NAME="latest" ; fi
+
       - name: build image
         run: docker build . -t ${{vars.DOCKER_HUB_NAME}}/${{vars.DOCKER_HUB_REPO}}:latest
 
       - name: push image
         run: |
           docker login -u ${{ vars.DOCKER_HUB_NAME }} -p ${{ secrets.DOCKER_HUB_TOKEN }}
-          docker push chel0/mck-schedule:latest
+          docker push ${{vars.DOCKER_HUB_NAME}}/${{vars.DOCKER_HUB_REPO}}:latest
+          if [ "${{ github.event_name }}" == "release" ]; then 
+          docker push ${{vars.DOCKER_HUB_NAME}}/${{vars.DOCKER_HUB_REPO}}:$TAG_NAME; fi

@@ -1,0 +1,19 @@
+name: Docker Image CI on Release
+
+on:
+  workflow_dispatch:
+  release:
+    types: [published]
+
+jobs:
+  build-and-publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+
+      - name: build image
+        run: docker build . -t chel0/mck-schedule:latest
+
+      - name: push image
+        run: docker push chel0/mck-schedule:latest

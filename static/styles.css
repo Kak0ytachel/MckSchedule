@@ -278,7 +278,7 @@ body {
     flex-direction: column;
 }
 
-header h1 {
+h1 {
     font-family: Verdana, Geneva, Tahoma, sans-serif;
     font-weight: bold;
     font-size: 2em;
@@ -287,8 +287,20 @@ header h1 {
 header p {
     font-family: Arial, Helvetica, sans-serif;
 }
+
+p.header-text {
+    font-family: Arial, Helvetica, sans-serif;
+}
+
 header a{
     color: #000000;
+}
+
+.todo-container li{
+    font-family: OCR A Std, monospace;
+    list-style: armenian;
+    font-size: 1.2em;
+    margin-bottom: 10px;
 }
 
 main {

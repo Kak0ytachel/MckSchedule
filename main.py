@@ -100,8 +100,38 @@ async def search(request: Request):
         group_name = db.groups_table.find_group_names([group_id])[group_id]
         print(group_name)
         return RedirectResponse(url=f"/group/{group_name}/{subgroup_data['subgroup_name']}")
+
     #TODO: add search page
-    return RedirectResponse(url="/")
+    search_items = []
+    for i in matches:
+        name = i[0]
+        if name in group_names:
+            link = f"/group/{name}"
+            data_subgroup = "group"
+        else:
+            subgroup_data = list(filter(lambda x: (x["subgroup_display_name"] == name), subgroups_data))[0]
+            group_id = subgroup_data["group_id"]
+            group_name = db.groups_table.find_group_names([group_id])[group_id]
+            link = f"/group/{group_name}/{subgroup_data['subgroup_name']}"
+            name = subgroup_data["subgroup_display_name"]
+            data_subgroup = subgroup_data["subgroup_name"]
+        search_items.append({"link": link, "data_subgroup": data_subgroup, "name": name})
+    #TODO: add freq check
+    common_items = []
+    common_names = ['6N', '6N / inz', '6N / arch'] #TODO fix
+    for name in common_names:
+        if name in group_names:
+            link = f"/group/{name}"
+            data_subgroup = "group"
+        else:
+            subgroup_data = list(filter(lambda x: (x["subgroup_display_name"] == name), subgroups_data))[0]
+            group_id = subgroup_data["group_id"]
+            group_name = db.groups_table.find_group_names([group_id])[group_id]
+            link = f"/group/{group_name}/{subgroup_data['subgroup_name']}"
+            name = subgroup_data["subgroup_display_name"]
+            data_subgroup = subgroup_data["subgroup_name"]
+        common_items.append({"link": link, "data_subgroup": data_subgroup, "name": name})
+    return templates.TemplateResponse(name="search.html", context={"request": request, "matches": matches, "query": search_request, "search_groups": search_items, "common_items": common_items})
 
 @app.get("/changelog", response_class=HTMLResponse)
 async def changelog(request: Request):

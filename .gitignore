@@ -3,3 +3,5 @@
 test_main.http
 scratches/
 /.env
+__pycache__/
+*/__pycache__/

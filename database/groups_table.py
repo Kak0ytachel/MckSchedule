@@ -37,3 +37,11 @@ class GroupsTable(BaseTable):
         # print(groups)
         return groups
 
+    def get_all_groups(self) -> dict[int, str]:
+        self.cursor.execute("SELECT * FROM student_groups;")
+        groups = {}
+        for item in self.cursor.fetchall():
+            group_id: int = item[0]
+            group_name: str = item[1]
+            groups[group_id] = group_name
+        return groups

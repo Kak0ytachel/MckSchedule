@@ -282,7 +282,8 @@ h1 {
     font-family: Verdana, Geneva, Tahoma, sans-serif;
     font-weight: bold;
     font-size: 2em;
-    display: inline-block;
+    /*display: inline-block;*/
+/*    uncomment if broken */
 }
 header p {
     font-family: Arial, Helvetica, sans-serif;

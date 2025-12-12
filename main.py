@@ -7,6 +7,7 @@ from database.db import Database
 from fuzzywuzzy import fuzz
 from fuzzywuzzy import process
 import unidecode
+import random
 
 def fuzzy_search_items(query: str, item_list: list[str], threshold: int = 0) -> list[tuple[str, int]]:
     matches = process.extract(query, item_list, scorer=fuzz.token_sort_ratio)
@@ -141,6 +142,39 @@ async def changelog(request: Request):
 @app.get("/about", response_class=HTMLResponse)
 async def about(request: Request):
     return templates.TemplateResponse(name="about.html", context={"request": request})
+
+@app.get("/", response_class=HTMLResponse)
+async def main_test(request: Request):
+    lessons = db.lessons_table.get_all_lessons()
+    lessons = db.extend_lessons_data(lessons)
+    radius = 300
+    elements = []
+    lessons_numer = random.randint(min(10, len(lessons)), len(lessons))
+    for lesson in (random.sample(lessons, lessons_numer)):
+        groups = lesson['groups'] + [i['subgroup_display_name'] for i in lesson['subgroups']]
+        lesson['chosen_group'] = random.choice(groups)
+        item = {'lesson': lesson,
+                'x': str(random.randint(-1 * radius, radius)),
+                'y': str(random.randint(-1 * radius, radius)),
+                'rotate': str(random.randint(-180, 180))
+                }
+        elements.append(item)
+        print(item)
+
+    groups: dict = db.groups_table.get_all_groups()
+    subgroups = db.subgroups_table.get_all_subgroups()
+    group_items = []
+    for group in groups.values():
+        item = {'link': f"/group/{group}", 'name': group, 'data_subgroup': 'group'}
+        group_items.append(item)
+    for subgroup in subgroups:
+        group_id = subgroup['group_id']
+        group_name = groups[group_id]
+        item = {'link': f"/group/{group_name}/{subgroup['subgroup_name']}", 'name': subgroup['subgroup_display_name'], 'data_subgroup': subgroup['subgroup_name']}
+        group_items.append(item)
+    random.shuffle(group_items)
+    return templates.TemplateResponse(name="home.html", context={"request": request, "elements": elements, "groups": group_items})
+
 
     # return templates.TemplateResponse(name="search.html", context={"request": request})
 

@@ -71,3 +71,20 @@ class LessonsTable(BaseTable):
             lessons.append(lesson)
         return lessons
 
+    def get_all_lessons(self):
+        self.cursor.execute("SELECT * FROM lessons;")
+        lessons = []
+        for item in self.cursor.fetchall():
+            lesson = {'lesson_id': item[0],
+                      'short_subject_name': item[1],
+                      'classroom_id': item[2],
+                      'teacher_init': item[3],
+                      'weekday': item[4],
+                      'start_hour': item[5],
+                      'start_minute': item[6],
+                      'end_hour': item[7],
+                      'end_minute': item[8]
+                      }
+            lessons.append(lesson)
+        return lessons
+

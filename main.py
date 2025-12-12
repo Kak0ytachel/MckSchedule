@@ -3,7 +3,7 @@ from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 # from db import Database
-from db2 import Database
+from database.db import Database
 from fuzzywuzzy import fuzz
 from fuzzywuzzy import process
 import unidecode

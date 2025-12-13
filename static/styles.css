@@ -364,6 +364,94 @@ article.changelog-article li{
     font-family: Arial, Helvetica, sans-serif;
 }
 
+
+.glass{
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 16px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+}
+
+.home-title{
+    font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
+    /*font-family: Monospace, monospace;*/
+    font-weight: 400;
+    font-size: 4em;
+    /*margin-top: 8px;*/
+    /*margin-bottom: 8px;*/
+    white-space: pre-line;
+    text-align: center;
+    margin: 0;
+}
+
+/*.oleo-script-regular {*/
+/*    font-family: "Oleo Script", system-ui;*/
+/*    font-weight: 400;*/
+/*    font-style: normal;            */
+/*}*/
+
+/*.oleo-script-bold {*/
+/*    font-family: "Oleo Script", system-ui;*/
+/*    font-weight: 700;*/
+/*    font-style: normal;*/
+/*}*/
+
+
+.home-title-second{
+    font-size: 6em;
+    margin: -0.3em 0 -0.1em 0;
+    font-family: "Oleo Script", system-ui;
+    font-weight: 400;
+    font-style: normal;
+    text-align: center;
+    color: dodgerblue;
+    /*height: 100px;*/
+    /*overflow: hidden;*/
+    /*position: relative;*/
+/*"Oleo Script", system-ui*/
+}
+
+.home-title-container{
+    display: inline-block;
+    /*background: tomato;*/
+    padding: 20px 40px;
+    /*color: white;*/
+    border-radius: 10px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    /*height: 100%;*/
+    transform: translate(-50%, -50%)
+    /*top: 100px;*/
+}
+
+
+
+h2.home-header{
+    font-family: Monospace, monospace;
+    margin-top: 24px;
+    margin-bottom: 24px
+}
+
+.home-header-container{
+    display: inline-block;
+    padding: 20px 40px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.invisible-link{
+    color: inherit;
+    text-decoration: none;
+}
+
+html{
+    scroll-behavior: smooth;
+}
+
 @media screen and (max-width: 800px) {
     .time-table {
         display: block;

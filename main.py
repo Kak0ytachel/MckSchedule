@@ -76,9 +76,10 @@ async def say_hello(request: Request, name: str):
 
 @app.get("/search")
 async def search(request: Request):
-    print(request)
+    # print(request)
+    # TODO: add logger
     search_request = unidecode.unidecode(request.query_params.get("q"))
-    print(search_request)
+    # print(search_request)
     group_names = db.groups_table.get_all_group_names()
     subgroups_data = db.subgroups_table.get_all_subgroups()
     #TODO: unidecode subgroup display names with making backwards transition dict
@@ -90,16 +91,17 @@ async def search(request: Request):
     matches = fuzzy_search_items(search_request, names)
     if len(matches) == 0:
         return RedirectResponse(url="/")
+        # never happens
         #TODO: show nothing found
     elif matches[0][1] > 85:
         name = matches[0][0]
         if name in group_names:
             return RedirectResponse(url=f"/group/{name}")
         subgroup_data = list(filter(lambda x: (x["subgroup_display_name"] == name), subgroups_data))[0]
-        print(subgroup_data)
+        # print(subgroup_data)
         group_id = subgroup_data["group_id"]
         group_name = db.groups_table.find_group_names([group_id])[group_id]
-        print(group_name)
+        # print(group_name)
         return RedirectResponse(url=f"/group/{group_name}/{subgroup_data['subgroup_name']}")
 
     #TODO: add search page
@@ -159,7 +161,7 @@ async def main_test(request: Request):
                 'rotate': str(random.randint(-180, 180))
                 }
         elements.append(item)
-        print(item)
+        # print(item)
 
     groups: dict = db.groups_table.get_all_groups()
     subgroups = db.subgroups_table.get_all_subgroups()

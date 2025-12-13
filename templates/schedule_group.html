@@ -29,6 +29,16 @@
                 </a>
             </div>
         </div>
+        {% if message_not_uploaded == True %}
+        <div class="notification-message" id="notification-message">
+            <div class="notification-message-line"></div>
+                <p class="notification-message-text"> This group's schedule is <u>not fully uploaded yet</u>. Please by now refer to the classic timetable. If you are interested in it being uploaded, please <a class="underline-link" href="https://t.me/dokpdl">contact us</a>.</p>
+                <button class="notification-message-close" onclick="hideMessage()">
+                    ✖
+                </button>
+            </div>
+        {% endif %}
+
 <!--        <p> Here you can find project development logs. For more info, check out <a href="index.html"> about page </a></p>-->
     </header>
     <section>

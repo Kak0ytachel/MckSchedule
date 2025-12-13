@@ -49,9 +49,10 @@ async def get_group_schedule(request: Request, group_name: str):
     chosen_groups = [i["subgroup_display_name"] for i in subgroups_data]
     chosen_groups.append(group_name) # mixed
     weekday_names = ["None", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
+    message_not_uploaded = (group_name not in ["6N", "2N"])
     return templates.TemplateResponse(name="schedule_group.html", request=request, context={
         "schedule": schedule, "group": group_name, "category_title": group_name, "subgroups_data": subgroups_data,
-        "chosen_groups": chosen_groups, "weekday_names": weekday_names})
+        "chosen_groups": chosen_groups, "weekday_names": weekday_names, "message_not_uploaded": message_not_uploaded})
 
 
 @app.get("/group/{group_name}/{subgroup_name}")
@@ -64,9 +65,11 @@ async def get_subgroup_schedule(request: Request, group_name: str, subgroup_name
     schedule.sort(key=lambda x: x["weekday"] * 7 * 24 + x["start_hour"] * 60 + x["start_minute"])
     chosen_groups = [subgroup_data["subgroup_display_name"], group_name] # mixed
     weekday_names = ["None", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
+    message_not_uploaded = (group_name not in ["6N", "2N"])
     return templates.TemplateResponse(name="schedule_group.html", request=request, context={
         "schedule": schedule, "group": group_name, "category_title": subgroup_data["subgroup_display_name"],
-        "subgroups_data": subgroups_data, "chosen_groups": chosen_groups, "weekday_names": weekday_names})
+        "subgroups_data": subgroups_data, "chosen_groups": chosen_groups, "weekday_names": weekday_names,
+        "message_not_uploaded": message_not_uploaded})
 
 
 @app.get("/hello/{name}", response_class=HTMLResponse)

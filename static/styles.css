@@ -139,6 +139,10 @@ footer a {
     border-color: dodgerblue;
 }
 
+.schedule-card[data-subject="mat-ea"]{
+    border-color: dodgerblue;
+}
+
 .schedule-card[data-subject="fiz"]{
     border-color: mediumpurple;
 }
@@ -147,7 +151,19 @@ footer a {
     border-color: lightblue;
 }
 
+.schedule-card[data-subject="inf-e"]{
+    border-color: lightblue;
+}
+
+.schedule-card[data-subject="se"]{
+    border-color: mediumseagreen;
+}
+
 .schedule-card[data-subject="dkf"], .schedule-group[data-subgroup="film"]{
+    border-color: darkslategray;
+}
+
+.schedule-card[data-subject="fp"], .schedule-group[data-subgroup="film"]{
     border-color: darkslategray;
 }
 
@@ -169,6 +185,22 @@ footer a {
 
 .schedule-card[data-subject="konw"] {
     border-color: goldenrod;
+}
+
+.schedule-card[data-subject="rart"] {
+    border-color: orchid;
+}
+
+.schedule-card[data-subject="wok"] {
+    border-color: aquamarine;
+}
+
+.schedule-card[data-subject="hs"] {
+    border-color: royalblue;
+}
+
+.schedule-card[data-subject="hk"] {
+    border-color: slateblue;
 }
 
 .schedule-group{
@@ -443,6 +475,10 @@ h2.home-header{
     transform: translate(-50%, -50%);
 }
 
+.underline-link{
+    color: inherit;
+}
+
 .invisible-link{
     color: inherit;
     text-decoration: none;
@@ -450,6 +486,36 @@ h2.home-header{
 
 html{
     scroll-behavior: smooth;
+}
+
+.notification-message{
+    background: gold;
+    font-family: Monospace, monospace;
+    margin: 10px;
+    border-radius: 10px;
+    display: flex
+}
+
+.notification-message-line{
+    width:8px;
+    display: inline-block;
+    background: dimgray;
+    margin: 8px 10px;
+    border-radius: 10px;
+}
+
+.notification-message-text{
+    margin: 16px 0 16px 0;
+}
+
+.notification-message-close{
+    background: transparent;
+    border: none;
+    margin: 4px;
+    vertical-align: top;
+    height: 24px;
+    font-size: 16px;
+    cursor: pointer;
 }
 
 @media screen and (max-width: 800px) {

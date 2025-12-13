@@ -12,3 +12,7 @@ function toggleDropdownMenu() {
         }
     }
 }
+
+function hideMessage() {
+    document.getElementById('notification-message').style.display = 'none';
+}

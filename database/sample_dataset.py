@@ -23,9 +23,11 @@ def load_sample_data(db: Database):
 
     subgroup_2n_inz = db.subgroups_table.add_subgroup(group_2n, "inz", "2N / inz")
     subgroup_2n_art = db.subgroups_table.add_subgroup(group_2n, "art", "2N / art")
+    subgroup_2n_ekon = db.subgroups_table.add_subgroup(group_2n, "ekon", "2N / ekon")
 
     subgroup_3n_arch = db.subgroups_table.add_subgroup(group_3n, "arch", "3N / arch")
     subgroup_3n_ekon = db.subgroups_table.add_subgroup(group_3n, "ekon", "3N / ekon")
+    subgroup_3n_art = db.subgroups_table.add_subgroup(group_3n, "art", "3N / art")
 
     subgroup_4n_inz = db.subgroups_table.add_subgroup(group_4n, "inz", "4N / inz")
     subgroup_4n_ekon = db.subgroups_table.add_subgroup(group_4n, "ekon", "4N / ekon")
@@ -65,6 +67,10 @@ def load_sample_data(db: Database):
     db.teachers_table.add_teacher("MD", "Małgorzata Duraj")
     db.teachers_table.add_teacher("AN", "Artur Niewiarowski")
     db.teachers_table.add_teacher("WG", "WG (?)")
+    db.teachers_table.add_teacher("SR", "SR (?)")
+    db.teachers_table.add_teacher("MR", "MR (?)")
+    db.teachers_table.add_teacher("AP", "AP (?)")
+    db.teachers_table.add_teacher("MB", "MB (?)")
 
     db.subjects_table.add_subject("mat-i", "Matematyka inz.")
     db.subjects_table.add_subject("fiz", "Fizyka inz.")
@@ -82,6 +88,14 @@ def load_sample_data(db: Database):
     db.subjects_table.add_subject("sa", "Słownictwo architektoniczne")
     db.subjects_table.add_subject("ha", "Historia architektury")
     db.subjects_table.add_subject("rarch", "Rysunek architektoniczny")
+
+    db.subjects_table.add_subject("se", "Słownictwo ekonomiczne")
+    db.subjects_table.add_subject("hs", "Historia sztuki")
+    db.subjects_table.add_subject("hk", "Historia kultury")
+    db.subjects_table.add_subject("inf-e", "Informatyka ekonomiczna")
+    db.subjects_table.add_subject("rart", "Rysunek artystyczny")
+    db.subjects_table.add_subject("wok", "WOK")
+
     # db.subjects_table.add_subject("")
 
     i = db.lessons_table.add_lesson("mat-i", classroom_warszawa, "WO", 1,
@@ -154,6 +168,7 @@ def load_sample_data(db: Database):
 
     i = db.lessons_table.add_lesson("fp", classroom_gdansk, "TJ", 3, 15, 15, 17, 30)
     db.subgroup_lessons_table.add_subgroup_lesson(subgroup_1n_art, i)
+    db.subgroup_lessons_table.add_subgroup_lesson(subgroup_2n_ekon, i)
     db.subgroup_lessons_table.add_subgroup_lesson(subgroup_2n_art, i)  # TODO: fix conflicts
     # db.subgroup_lessons_table.add_subgroup_lesson(subgroup_3n_ekon, i) # wtf it duplicates
     db.subgroup_lessons_table.add_subgroup_lesson(subgroup_5n_art, i)  # wtf duplicats
@@ -199,3 +214,78 @@ def load_sample_data(db: Database):
     db.subgroup_lessons_table.add_subgroup_lesson(subgroup_4n_ekon, i)
     db.subgroup_lessons_table.add_subgroup_lesson(subgroup_5n_ekon, i)
     db.subgroup_lessons_table.add_subgroup_lesson(subgroup_6n_arch, i)
+
+    i = db.lessons_table.add_lesson("kscz", classroom_warszawa, "SR", 1, 8, 0, 9, 30)
+    db.group_lessons_table.add_group_lesson(group_2n, i)
+
+    i = db.lessons_table.add_lesson("gp", classroom_wroclaw, "JPM", 1, 11, 40, 13, 10)
+    db.group_lessons_table.add_group_lesson(group_2n, i)
+
+    i = db.lessons_table.add_lesson("wop", classroom_krakow, "EG", 1, 13, 30, 15, 0)
+    db.group_lessons_table.add_group_lesson(group_2n, i)
+    db.group_lessons_table.add_group_lesson(group_3n, i)
+
+    i = db.lessons_table.add_lesson("se", classroom_lodz, "IKA", 2, 8, 0, 9, 30)
+    db.subgroup_lessons_table.add_subgroup_lesson(subgroup_2n_ekon, i)
+    db.subgroup_lessons_table.add_subgroup_lesson(subgroup_3n_ekon, i)
+    db.subgroup_lessons_table.add_subgroup_lesson(subgroup_4n_ekon, i)
+
+    i = db.lessons_table.add_lesson("gp", classroom_konfer, "JPM", 2, 9, 50, 11, 20)
+    db.group_lessons_table.add_group_lesson(group_2n, i)
+
+    i = db.lessons_table.add_lesson("mat-ea", classroom_krakow, "WO", 2, 13, 30, 15, 0)
+    db.subgroup_lessons_table.add_subgroup_lesson(subgroup_1n_arch, i)
+    db.subgroup_lessons_table.add_subgroup_lesson(subgroup_2n_ekon, i)
+    db.group_lessons_table.add_group_lesson(group_3n, i)
+
+    i = db.lessons_table.add_lesson("hs", classroom_krakow, "MR", 3, 8, 0, 9, 30)
+    db.subgroup_lessons_table.add_subgroup_lesson(subgroup_2n_art, i)
+    db.subgroup_lessons_table.add_subgroup_lesson(subgroup_3n_art, i)
+
+    i = db.lessons_table.add_lesson("konw", classroom_warszawa, "KGR", 3, 9, 50, 11, 20)
+    db.group_lessons_table.add_group_lesson(group_2n, i)
+
+    i = db.lessons_table.add_lesson("hk", classroom_gdansk, "MR", 3, 11, 40, 13, 10)
+    db.subgroup_lessons_table.add_subgroup_lesson(subgroup_2n_art, i)
+    db.subgroup_lessons_table.add_subgroup_lesson(subgroup_3n_art, i)
+
+    i = db.lessons_table.add_lesson("inf-e", classroom_komp, "AP", 3, 17, 0, 18, 30)
+    db.subgroup_lessons_table.add_subgroup_lesson(subgroup_2n_ekon, i)
+    db.subgroup_lessons_table.add_subgroup_lesson(subgroup_3n_ekon, i)
+    db.subgroup_lessons_table.add_subgroup_lesson(subgroup_4n_ekon, i)
+
+    i = db.lessons_table.add_lesson("wok", classroom_lodz, "KGR", 4, 8, 0, 9, 30)
+    db.subgroup_lessons_table.add_subgroup_lesson(subgroup_2n_art, i)
+    db.subgroup_lessons_table.add_subgroup_lesson(subgroup_3n_art, i)
+
+    i = db.lessons_table.add_lesson("se", classroom_gdansk, "IKA", 4, 8, 0, 9, 30)
+    db.subgroup_lessons_table.add_subgroup_lesson(subgroup_2n_ekon, i)
+    db.subgroup_lessons_table.add_subgroup_lesson(subgroup_3n_ekon, i)
+    db.subgroup_lessons_table.add_subgroup_lesson(subgroup_4n_ekon, i)
+
+    i = db.lessons_table.add_lesson("kscz", classroom_poznan, "SR", 4, 11, 40, 13, 10)
+    db.group_lessons_table.add_group_lesson(group_2n, i)
+
+    i = db.lessons_table.add_lesson("mat-ea", classroom_krakow, "WO", 4, 13, 30, 15, 0)
+    db.subgroup_lessons_table.add_subgroup_lesson(subgroup_1n_arch, i)
+    db.subgroup_lessons_table.add_subgroup_lesson(subgroup_2n_ekon, i)
+    db.subgroup_lessons_table.add_subgroup_lesson(subgroup_3n_arch, i)
+    db.subgroup_lessons_table.add_subgroup_lesson(subgroup_3n_ekon, i)
+
+    i = db.lessons_table.add_lesson("rart", classroom_konfer, "MB", 4, 13, 30, 16, 30)
+    db.subgroup_lessons_table.add_subgroup_lesson(subgroup_2n_art, i)
+    db.subgroup_lessons_table.add_subgroup_lesson(subgroup_5n_art, i)
+
+    i = db.lessons_table.add_lesson("kscz", classroom_proj, "SR", 5, 8, 0, 9, 30)
+    db.group_lessons_table.add_group_lesson(group_2n, i)
+
+    i = db.lessons_table.add_lesson("gp", classroom_warszawa, "JPM", 5, 11, 40, 13, 10)
+    db.group_lessons_table.add_group_lesson(group_2n, i)
+
+    # i = db.lessons_table.add_lesson()
+    # db.subgroup_lessons_table.add_subgroup_lesson()
+    # db.group_lessons_table.add_group_lesson()
+    #
+    # i = db.lessons_table.add_lesson()
+    # db.subgroup_lessons_table.add_subgroup_lesson()
+    # db.group_lessons_table.add_group_lesson()

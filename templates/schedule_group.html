@@ -19,14 +19,14 @@
             <h1>Schedule - {{ category_title }}</h1>
 
             <div class="header-group-container">
-                {% for subgroup in subgroups_data %}
-                <a href="/group/{{ subgroup.parent_group_name }}/{{ subgroup.subgroup_name }}" class="schedule-group" data-subgroup={{ subgroup.subgroup_name }} data-is-chosen={{ "true" if subgroup.subgroup_display_name in chosen_groups else "false" }}>
-                 {{  subgroup.subgroup_display_name }}
+                {% for link_data in header_links %}
+                <a href={{ link_data.link }} class="schedule-group" data-subgroup={{ link_data.data_subgroup }} data-is-chosen="true">
+                 {{ link_data.name }}
                 </a>
                 {% endfor %}
-                <a href="/group/{{ group }}" class="schedule-group" data-subgroup="group" data-is-chosen= {{"true" if group in chosen_groups else "false"}}>
-                 {{ group }}
-                </a>
+{#                <a href="/group/{{ group }}" class="schedule-group" data-subgroup="group" data-is-chosen= {{"true" if group in chosen_groups else "false"}}>#}
+{#                 {{ group }}#}
+{#                </a>#}
             </div>
         </div>
         {% if message_not_uploaded == True %}

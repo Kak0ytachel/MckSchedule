@@ -95,7 +95,7 @@ class Database:
             subgroup_names_by_ids[subgroup_id]["parent_group_name"] = group_names_by_ids[int(subgroup_names_by_ids[subgroup_id]["parent_group_id"])]
 
         teachers_names = self.teachers_table.find_teacher_names(list(teachers_initials))
-        classrooms_names = self.classrooms_table.find_classroom_names(list(classrooms_ids))
+        classrooms_names = self.classrooms_table.find_classroom_display_names(list(classrooms_ids))
         subjects_names = self.subjects_table.find_subject_names(list(subjects_short_names))
 
         for lesson in lessons:

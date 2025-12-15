@@ -50,9 +50,16 @@ async def get_group_schedule(request: Request, group_name: str):
     chosen_groups.append(group_name) # mixed
     weekday_names = ["None", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
     message_not_uploaded = (group_name not in ["6N", "2N"])
+
+    header_links = []
+    header_links.extend([{"link": f"/group/{i["parent_group_name"]}/{i["subgroup_name"]}",
+                          "name": i["subgroup_display_name"],
+                          "data_subgroup": i["subgroup_name"]} for i in subgroups_data])
+    header_links.append({"link": f"/group/{group_name}", "name": group_name, "data_subgroup": "group"})
     return templates.TemplateResponse(name="schedule_group.html", request=request, context={
         "schedule": schedule, "group": group_name, "category_title": group_name, "subgroups_data": subgroups_data,
-        "chosen_groups": chosen_groups, "weekday_names": weekday_names, "message_not_uploaded": message_not_uploaded})
+        "chosen_groups": chosen_groups, "weekday_names": weekday_names, "message_not_uploaded": message_not_uploaded,
+        "header_links": header_links})
 
 
 @app.get("/group/{group_name}/{subgroup_name}")
@@ -65,12 +72,31 @@ async def get_subgroup_schedule(request: Request, group_name: str, subgroup_name
     schedule.sort(key=lambda x: x["weekday"] * 7 * 24 + x["start_hour"] * 60 + x["start_minute"])
     chosen_groups = [subgroup_data["subgroup_display_name"], group_name] # mixed
     weekday_names = ["None", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
-    message_not_uploaded = (group_name not in ["6N", "2N"])
+    message_not_uploaded = (group_name not in ["6N", "5N", "4N", "3N", "2N"])
+    header_links = []
+    header_links.extend(
+        [{"link": f"/group/{i["parent_group_name"]}/{i["subgroup_name"]}", "name": i["subgroup_display_name"], "data_subgroup": i["subgroup_name"]} for i in
+         subgroups_data])
+    header_links.append({"link": f"/group/{group_name}", "name": group_name, "data_subgroup": "group"})
+
     return templates.TemplateResponse(name="schedule_group.html", request=request, context={
         "schedule": schedule, "group": group_name, "category_title": subgroup_data["subgroup_display_name"],
         "subgroups_data": subgroups_data, "chosen_groups": chosen_groups, "weekday_names": weekday_names,
-        "message_not_uploaded": message_not_uploaded})
+        "message_not_uploaded": message_not_uploaded, "header_links": header_links})
 
+@app.get("/classroom/{classroom_short_name}")
+async def get_classroom_schedule(request: Request, classroom_short_name: str):
+    classroom_id = db.classrooms_table.find_classroom_id_by_short_name(classroom_short_name)
+    classroom_display_name = db.classrooms_table.find_classroom_display_name(classroom_id)
+    schedule = db.extend_lessons_data(db.lessons_table.find_lessons_by_classroom_id(classroom_id))
+    schedule.sort(key=lambda x: x["weekday"] * 7 * 24 + x["start_hour"] * 60 + x["start_minute"])
+    chosen_groups = 'all'
+
+    weekday_names = ["None", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
+    return templates.TemplateResponse(name="schedule_group.html", request=request, context={
+        "schedule": schedule, "group": [], "category_title": classroom_display_name,
+        "subgroups_data": [], "chosen_groups": chosen_groups, "weekday_names": weekday_names,
+        "message_not_uploaded": False, "header_links": []})
 
 @app.get("/hello/{name}", response_class=HTMLResponse)
 async def say_hello(request: Request, name: str):

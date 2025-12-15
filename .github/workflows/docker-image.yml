@@ -27,4 +27,6 @@ jobs:
         run: |
           docker login -u ${{ vars.DOCKER_HUB_NAME }} -p ${{ secrets.DOCKER_HUB_TOKEN }}
           docker push ${{vars.DOCKER_HUB_NAME}}/${{vars.DOCKER_HUB_REPO}}:latest
-          if [ "${{ github.event_name }}" == "release" ]; then docker push ${{vars.DOCKER_HUB_NAME}}/${{vars.DOCKER_HUB_REPO}}:$TAG_NAME; fi
+          if [ "${{ github.event_name }}" == "release" ]; then 
+            docker push ${{vars.DOCKER_HUB_NAME}}/${{vars.DOCKER_HUB_REPO}}:${{TAG_NAME}} 
+          fi

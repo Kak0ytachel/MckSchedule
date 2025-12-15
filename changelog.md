@@ -1,3 +1,7 @@
+### v0.1.4-beta - released 15/12/2025
+- Added (manually) schedule for 3N - 5N groups
+- Added classroom view (no search support yet)
+
 ### v0.1.3-beta - released 13/12/2025 
 - Added notification to group pages being not fully uploaded
 - Added (manually) schedule for 2N groups

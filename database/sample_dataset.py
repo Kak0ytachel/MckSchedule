@@ -441,7 +441,7 @@ def load_sample_data(db: Database):
     i = db.lessons_table.add_lesson("ksczwop", classroom_wroclaw, "AK", 3, 11, 40, 13, 10)
     db.group_lessons_table.add_group_lesson(group_1n, i)
 
-    i = db.lessons_table.add_lesson("gp", classroom_lodz, "jpm", 3, 13, 30, 15, 0)
+    i = db.lessons_table.add_lesson("gp", classroom_lodz, "JPM", 3, 13, 30, 15, 0)
     db.group_lessons_table.add_group_lesson(group_1n, i)
 
     # i = db.lessons_table.add_lesson()

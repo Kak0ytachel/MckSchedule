@@ -206,7 +206,21 @@ async def main_test(request: Request):
     random.shuffle(group_items)
     return templates.TemplateResponse(name="home.html", context={"request": request, "elements": elements, "groups": group_items})
 
+@app.get("/teacher/{teacher_init}", response_class=HTMLResponse)
+def get_teacher_schedule(request: Request, teacher_init: str):
+    name = db.teachers_table.find_teacher_name(teacher_init)
+    print(
+        f"Teacher {teacher_init} is {name}"
+    )
+    lessons = db.lessons_table.find_lessons_by_teacher_initials(teacher_init)
+    print(lessons)
+    lessons = db.extend_lessons_data(lessons)
 
+    lessons.sort(key=lambda x: x["weekday"] * 7 * 24 + x["start_hour"] * 60 + x["start_minute"])
+    chosen_groups = 'all'
+    weekday_names = ["None", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
+    return templates.TemplateResponse(name="schedule_group.html", context={
+        "request": request, "schedule": lessons, "chosen_groups": chosen_groups, "weekday_names": weekday_names, "category_title": name})
     # return templates.TemplateResponse(name="search.html", context={"request": request})
 
 # @app.get("/group/{group_id}")

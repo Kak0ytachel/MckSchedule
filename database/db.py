@@ -1,6 +1,7 @@
 import os
 import dotenv
 import mysql.connector
+from mysql.connector.aio.abstracts import MySQLCursorAbstract
 
 from database.classrooms_table import ClassroomsTable
 from database.group_lessons_table import GroupLessonsTable
@@ -15,6 +16,8 @@ from database.teachers_table import TeachersTable
 dotenv.load_dotenv()
 
 
+
+
 class Database:
     def __init__(self):
         print("INITING DATABASE")
@@ -23,10 +26,18 @@ class Database:
             user=os.getenv("DB_USER"),
             password=os.getenv("DB_PASSWORD"),
             autocommit=True,
-            port=os.getenv("DB_PORT"),
+            port=os.getenv("DB_PORT")
             # database="schedule"
         )
+
+        def ping_then_execute(operation: str, *args, **kwargs):
+            self.mydb.ping(reconnect=True)
+            return self._execute(operation, *args, **kwargs)
+
+
         self.cursor = self.mydb.cursor(buffered=True)
+        self._execute = self.cursor.execute
+        self.cursor.execute = ping_then_execute
         # self._drop_database()
         self._init_database()
         self._load_sample_data()

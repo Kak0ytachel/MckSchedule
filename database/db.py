@@ -31,9 +31,17 @@ class Database:
         )
 
         def ping_then_execute(operation: str, *args, **kwargs):
-            self.mydb.ping(reconnect=True)
-            return self._execute(operation, *args, **kwargs)
-
+            # self.mydb.ping(reconnect=True)
+            try:
+                return self._execute(operation, *args, **kwargs)
+            except mysql.connector.errors.OperationalError as e:
+                if e.errno == 2013:
+                    self.mydb.reconnect()
+                    self.mydb.ping(reconnect=True)
+                    self._execute("USE schedule;")
+                    self._execute(operation, *args, **kwargs)
+                else:
+                    raise e
 
         self.cursor = self.mydb.cursor(buffered=True)
         self._execute = self.cursor.execute

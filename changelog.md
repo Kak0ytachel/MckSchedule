@@ -1,3 +1,8 @@
+### v0.1.5-beta - released 28/12/2025 
+- Added search bar suggestions
+- Added teachers view
+- Fixed the idle timeout issue
+
 ### v0.1.4-beta - released 15/12/2025
 - Added (manually) schedule for 3N - 5N groups
 - Added classroom view (no search support yet)

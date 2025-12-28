@@ -53,7 +53,7 @@ async def get_group_schedule(request: Request, group_name: str):
     chosen_groups = [i["subgroup_display_name"] for i in subgroups_data]
     chosen_groups.append(group_name) # mixed
     weekday_names = ["None", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
-    message_not_uploaded = (group_name not in ["6N", "2N"])
+    message_not_uploaded = (group_name not in ["6N", "5N", "4N", "3N", "2N"]) #TODO: add "finished" field to db
 
     header_links = []
     header_links.extend([{"link": f"/group/{i["parent_group_name"]}/{i["subgroup_name"]}",
@@ -184,7 +184,9 @@ async def main_test(request: Request):
     lessons = db.extend_lessons_data(lessons)
     radius = 300
     elements = []
-    lessons_numer = random.randint(min(10, len(lessons)), len(lessons))
+    min_cards = 20
+    max_cards = 40
+    lessons_numer = random.randint(min(min_cards, len(lessons)), min(len(lessons), max_cards))
     for lesson in (random.sample(lessons, lessons_numer)):
         groups = lesson['groups'] + [i['subgroup_display_name'] for i in lesson['subgroups']]
         lesson['chosen_group'] = random.choice(groups)
@@ -271,13 +273,7 @@ def get_search_options():
 #     return db.get_subgroup_schedule(subgroup_name, group_id)
 #     return {"message": f"Hello {group_name}/{subgroup_name}/{subgroup_name}"}
 
-class Lesson:
-    subgroup_names: list[str]
-    weekday: int
-    start_hour: int
-    start_minute: int
-    end_hour: int
-    end_minute: int
+
 
 if __name__ == "__main__":
     print(db.subgroups_table.find_child_subgroups("6N"))

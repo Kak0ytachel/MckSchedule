@@ -2,6 +2,8 @@ from fastapi import FastAPI, Request
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
+from starlette.responses import JSONResponse
+
 # from db import Database
 from database.db import Database
 from fuzzywuzzy import fuzz
@@ -26,6 +28,8 @@ app = FastAPI(exception_handlers={404: not_found})
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
 templates = Jinja2Templates(directory="templates")
+
+search_options = []
 
 # @app.get("/")
 # async def root():
@@ -222,6 +226,36 @@ def get_teacher_schedule(request: Request, teacher_init: str):
     return templates.TemplateResponse(name="schedule_group.html", context={
         "request": request, "schedule": lessons, "chosen_groups": chosen_groups, "weekday_names": weekday_names, "category_title": name})
     # return templates.TemplateResponse(name="search.html", context={"request": request})
+
+def make_search_options() -> list[dict]:
+    options = []
+    groups_dict = db.groups_table.get_all_groups()
+    group_names = list(groups_dict.values())
+    for i in group_names:
+        options.append({"link": f"/group/{i}", "name": i})
+
+    subgroups_data = db.subgroups_table.get_all_subgroups()
+    for i in subgroups_data:
+        group_id = i["group_id"]
+        group_name = groups_dict[group_id]
+        options.append({"link": f"/group/{group_name}/{i['subgroup_name']}", "name": i["subgroup_display_name"]})
+
+    teachers = db.teachers_table.get_all_teachers()
+    for teacher in teachers.items():
+        options.append({"link": f"/teacher/{teacher[0]}", "name": teacher[1]})
+
+    classrooms = db.classrooms_table.get_classroom_names()
+    for classroom in classrooms.items():
+        options.append({"link": f"/classroom/{classroom[0]}", "name": classroom[1]})
+
+    return options
+
+@app.get("/api/search_index", response_class=JSONResponse)
+def get_search_options():
+    global search_options
+    if len(search_options) == 0:
+        search_options = make_search_options()
+    return JSONResponse(content=search_options)
 
 # @app.get("/group/{group_id}")
 # async def get_group(group_id: str):

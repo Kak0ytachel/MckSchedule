@@ -41,10 +41,20 @@
 
     <div class="glass home-header-container">
         <h2 class="home-header"> just type in your group</h2>
-        <form class="search-box" action="/search" method="get">
-            <input class="search-field" type="text" placeholder="Search" name="q">
-            <input class="search-button" type="submit" value="🔍︎">
-        </form>
+        <div style="display: flex;margin: 10px auto;">
+            <div class="search-suggestions-wrap">
+                <ul class="search-suggestions-box" style="display: none;"></ul>
+{#                    <li class="search-suggestions-element"><a href="1234">6N / inz</a></li>#}
+{#                    <li class="search-suggestions-element"><a href="1234">Witold Obloza</a></li>#}
+{#                    <li class="search-suggestions-element"><a href="1234">Joanna Pierra-Mitka</a></li>#}
+{#                    <li class="search-suggestions-element"><a href="1234">1234</a></li>#}
+
+                <form class="search-box" action="/search" method="get">
+                    <input class="search-field" type="text" placeholder="Search" name="q" autocomplete="off">
+                    <input class="search-button" type="submit" value="🔍︎">
+                </form>
+            </div>
+        </div>
         <h2 class="home-header"> or check out our suggestions below</h2>
         <div>
             {% for group in groups %}

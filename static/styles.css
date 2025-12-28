@@ -66,10 +66,11 @@ nav a.nav-link:hover {
     /*border: 1px solid black;*/
     border-radius: 100px;
     border: none;
+    position: relative;
     box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.3);
     padding: 3px;
     background-color: white;
-    margin: 10px auto;
+    margin: 0 auto;
 }
 .search-field:focus{
     /*border: none;*/
@@ -518,6 +519,50 @@ html{
     cursor: pointer;
 }
 
+.search-suggestions-wrap{
+    /*background: white;*/
+    margin: 10px auto;
+    position: relative;
+    /*background: dodgerblue;*/
+    display: inline-block;
+}
+
+.search-suggestions-box{
+    position: absolute;
+    list-style-type: none;
+    margin: 0;
+    padding: 52px 0 8px 0;
+    background-color: white;
+    width: 100%;
+    border-radius: 25px;
+    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.3);
+    overflow: hidden;
+}
+
+.search-suggestions-box:empty{
+    margin: 0;
+    padding: 0;
+    display: none;
+    /*background-color: tomato;*/
+}
+
+.search-suggestions-element{
+    font-size: 1em;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.search-suggestions-element:hover{
+    background-color: rgba(211, 211, 211, 0.29);
+}
+
+.search-suggestions-element a{
+    padding: 4px 16px 4px 16px;
+    color: inherit;
+    text-decoration: none;
+    width: 100%;
+    display: inline-block;
+}
+
 @media screen and (max-width: 800px) {
     .time-table {
         display: block;
@@ -537,7 +582,7 @@ html{
 
     .search-box{
         display: flex;
-        margin: 10px auto;
+        margin: 0 auto;
         justify-self: center;
     }
 
@@ -562,10 +607,14 @@ html{
         /* The width is 100%, when the viewport is 800px or smaller */
     }
 
-    nav .search-box{
-        margin: 10px auto;
-
+    .search-suggestions-wrap{
+        display: block;
     }
+
+    /*nav .search-box{*/
+    /*    margin: 10px auto;*/
+
+    /*}*/
 
 
     nav a.nav-link {

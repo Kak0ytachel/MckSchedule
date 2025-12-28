@@ -1,4 +1,4 @@
-{% macro navbar() %}
+{% macro navbar(search_options) %}
 <div class="nav-margin">
     <nav>
         <h2> <a class="nav-logo" href="/">MCK Schedule</a></h2>
@@ -7,15 +7,26 @@
             <svg xmlns="http://www.w3.org/2000/svg" height="40px" viewBox="0 -960 960 960" width="40px" fill="#696969"><path d="M120-240v-80h720v80H120Zm0-200v-80h720v80H120Zm0-200v-80h720v80H120Z"/></svg>
             <i class="fa-solid fa-bars"></i>
         </button>
-        <form class="search-box" action="/search" method="get">
-            <input class="search-field" type="text" placeholder="Search" name="q">
-            <input class="search-button" type="submit" value="🔍︎">
-        </form>
+        <div style="display: flex;margin: 10px auto;">
+            <div class="search-suggestions-wrap">
+                <ul class="search-suggestions-box" style="display: none;"></ul>
+{#                    <li class="search-suggestions-element"><a href="1234">6N / inz</a></li>#}
+{#                    <li class="search-suggestions-element"><a href="1234">Witold Obloza</a></li>#}
+{#                    <li class="search-suggestions-element"><a href="1234">Joanna Pierra-Mitka</a></li>#}
+{#                    <li class="search-suggestions-element"><a href="1234">1234</a></li>#}
+
+                <form class="search-box" action="/search" method="get">
+                    <input class="search-field" type="text" placeholder="Search" name="q" autocomplete="off">
+                    <input class="search-button" type="submit" value="🔍︎">
+                </form>
+            </div>
+        </div>
         <div class="nav-link-box">
             <a class="nav-link" href="/">Schedule</a>
             <a class="nav-link" href="/about">About</a>
             <a class="nav-link" href="/changelog">Changelog</a>
         </div>
     </nav>
+    <script src="/static/search-suggest.js" type="module"></script>
 </div>
 {% endmacro %}

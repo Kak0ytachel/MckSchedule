@@ -30,3 +30,11 @@ class TeachersTable(BaseTable):
             teachers[teacher_initials] = teacher_name
         return teachers
 
+    def get_all_teachers(self) -> dict[str, str]:
+        self.cursor.execute("SELECT teacher_initials, teacher_name FROM teachers;")
+        result = {}
+        for item in self.cursor.fetchall():
+            teacher_initials: str = item[0]
+            teacher_name: str = item[1]
+            result[teacher_initials] = teacher_name
+        return result

@@ -41,3 +41,15 @@ class ClassroomsTable(BaseTable):
             classrooms[classroom_id] = classroom_display_name
         return classrooms
 
+    def get_classroom_names(self) -> dict[str, str]:
+        """
+        :return: Dictionary (classroom_short_name: classroom_display_name)
+        """
+        self.cursor.execute("SELECT classroom_short_name, classroom_display_name FROM classrooms;")
+        result = {}
+        for item in self.cursor.fetchall():
+            classroom_short_name: str = item[0]
+            classroom_display_name: str = item[1]
+            result[classroom_short_name] = classroom_display_name
+        return result
+

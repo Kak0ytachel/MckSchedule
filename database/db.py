@@ -66,7 +66,8 @@ class Database:
 
 
     def _drop_database(self):
-        self.cursor.execute("DROP DATABASE IF EXISTS schedule;")
+        # self.cursor.execute("DROP DATABASE IF EXISTS schedule;")
+        self.cursor.execute("DROP TABLE IF EXISTS lessons, student_groups, subgroups, subjects, teachers, classrooms, group_lessons, subgroup_lessons;")
 
     def get_group_schedule(self, group_name):
         group_id = self.groups_table.find_group_id(group_name)

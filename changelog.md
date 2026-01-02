@@ -1,3 +1,6 @@
+### v0.1.6-beta - released 02/01/2026
+- Added statistics page
+
 ### v0.1.5-beta - released 28/12/2025 
 - Added search bar suggestions
 - Added teachers view

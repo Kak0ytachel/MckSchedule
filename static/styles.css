@@ -563,6 +563,22 @@ html{
     display: inline-block;
 }
 
+.statistics-table{
+    border-spacing: 10px 2px;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.statistics-progressbar-td{
+    text-align: end;
+}
+
+.statistics-progressbar{
+    display: inline-block;
+    background: greenyellow;
+    height: 20px;
+    vertical-align: middle
+}
+
 @media screen and (max-width: 800px) {
     .time-table {
         display: block;

@@ -2,7 +2,7 @@ from mysql.connector.cursor import MySQLCursor
 
 
 class BaseTable:
-    def __init__(self, cursor):
+    def __init__(self, cursor: MySQLCursor):
         self.name = self.__class__.__name__
         self.cursor: MySQLCursor = cursor
 

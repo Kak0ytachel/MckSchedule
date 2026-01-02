@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Statistics</title>
+
+    <script type="text/javascript" src="{{ url_for('static', path='index.js') }}" > </script>
+    <link rel="stylesheet" href="{{ url_for('static', path='/styles.css') }}">
+</head>
+<body>
+{% import "navbar.html" as navbar %}
+{{ navbar.navbar() }}
+
+<main style="background-color: white;">
+    <header style="margin: 10px">
+        <div class="header-container">
+            <h1>Statistics</h1>
+
+            <div class="header-group-container">
+                <a href="/group/6N/arch" class="schedule-group" >1d</a>
+                <a href="/group/6N/inz" class="schedule-group" >7d</a>
+            </div>
+        </div>
+<!--        <h1>Statistics</h1>-->
+        <p> Here you can see pages views statistics.</p>
+    </header>
+    <section>
+        <article>
+
+            <table class="statistics-table">
+                {% for i in stats %}
+                <tr>
+                    <td class="statistics-progressbar-td">
+                        <div class="statistics-progressbar" style="width: {{ i.width }}px;"></div>
+                    </td>
+                    <td>
+                        {{ i.count }}
+                    </td>
+                    <td>
+                        <a href="{{ i.link }}" class="schedule-group" data-subgroup="{{ i.data_subgroup }}" data-is-chosen="true">
+                            {{ i.display_name }}
+                        </a>
+
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+
+        </article>
+
+    </section>
+</main>
+{% import "footer.html" as footer %}
+{{ footer.footer() }}
+
+</body>
+</html>

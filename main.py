@@ -1,3 +1,5 @@
+from urllib import request
+
 from fastapi import FastAPI, Request
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
@@ -10,6 +12,10 @@ from fuzzywuzzy import fuzz
 from fuzzywuzzy import process
 import unidecode
 import random
+from datetime import datetime
+
+from database.subgroups_table import SubgroupData
+
 
 def fuzzy_search_items(query: str, item_list: list[str], threshold: int = 0) -> list[tuple[str, int]]:
     matches = process.extract(query, item_list, scorer=fuzz.token_sort_ratio)
@@ -55,11 +61,17 @@ async def get_group_schedule(request: Request, group_name: str):
     weekday_names = ["None", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
     message_not_uploaded = (group_name not in ["6N", "5N", "4N", "3N", "2N"]) #TODO: add "finished" field to db
 
+    group_id = db.groups_table.find_group_id(group_name)
+    db.statistics_table.insert("group", item_id=group_id)
+
     header_links = []
     header_links.extend([{"link": f"/group/{i["parent_group_name"]}/{i["subgroup_name"]}",
                           "name": i["subgroup_display_name"],
                           "data_subgroup": i["subgroup_name"]} for i in subgroups_data])
     header_links.append({"link": f"/group/{group_name}", "name": group_name, "data_subgroup": "group"})
+
+    print(db.statistics_table.count_all_time("group", group_id))
+
     return templates.TemplateResponse(name="schedule_group.html", request=request, context={
         "schedule": schedule, "group": group_name, "category_title": group_name, "subgroups_data": subgroups_data,
         "chosen_groups": chosen_groups, "weekday_names": weekday_names, "message_not_uploaded": message_not_uploaded,
@@ -83,6 +95,9 @@ async def get_subgroup_schedule(request: Request, group_name: str, subgroup_name
          subgroups_data])
     header_links.append({"link": f"/group/{group_name}", "name": group_name, "data_subgroup": "group"})
 
+    subgroup_id = subgroup_data["subgroup_id"]
+    db.statistics_table.insert("subgroup", item_id=subgroup_id)
+
     return templates.TemplateResponse(name="schedule_group.html", request=request, context={
         "schedule": schedule, "group": group_name, "category_title": subgroup_data["subgroup_display_name"],
         "subgroups_data": subgroups_data, "chosen_groups": chosen_groups, "weekday_names": weekday_names,
@@ -90,11 +105,14 @@ async def get_subgroup_schedule(request: Request, group_name: str, subgroup_name
 
 @app.get("/classroom/{classroom_short_name}")
 async def get_classroom_schedule(request: Request, classroom_short_name: str):
+    classroom_short_name = classroom_short_name.lower()
     classroom_id = db.classrooms_table.find_classroom_id_by_short_name(classroom_short_name)
     classroom_display_name = db.classrooms_table.find_classroom_display_name(classroom_id)
     schedule = db.extend_lessons_data(db.lessons_table.find_lessons_by_classroom_id(classroom_id))
     schedule.sort(key=lambda x: x["weekday"] * 7 * 24 + x["start_hour"] * 60 + x["start_minute"])
     chosen_groups = 'all'
+
+    db.statistics_table.insert("classroom", item_id=classroom_id)
 
     weekday_names = ["None", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
     return templates.TemplateResponse(name="schedule_group.html", request=request, context={
@@ -222,6 +240,7 @@ def get_teacher_schedule(request: Request, teacher_init: str):
     print(lessons)
     lessons = db.extend_lessons_data(lessons)
 
+    db.statistics_table.insert("teacher", item_name=teacher_init)
     lessons.sort(key=lambda x: x["weekday"] * 7 * 24 + x["start_hour"] * 60 + x["start_minute"])
     chosen_groups = 'all'
     weekday_names = ["None", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
@@ -253,11 +272,47 @@ def make_search_options() -> list[dict]:
     return options
 
 @app.get("/api/search_index", response_class=JSONResponse)
-def get_search_options():
+def api_get_search_options():
     global search_options
     if len(search_options) == 0:
         search_options = make_search_options()
     return JSONResponse(content=search_options)
+
+@app.get("/api/statistics", response_class=JSONResponse)
+def api_get_statistics():
+    content = db.statistics_table.count_all_elements(datetime(1970, 1, 1), datetime.now())
+    return JSONResponse(content=content)
+
+
+@app.get("/statistics")
+def get_statistics(request: Request):
+    stats = db.statistics_table.count_all_elements(datetime(1970, 1, 1), datetime.now())
+    groups = db.groups_table.get_all_groups()
+    subgroups = db.subgroups_table.get_all_subgroups_dict()
+    teachers = db.teachers_table.get_all_teachers()
+    classrooms = db.classrooms_table.get_classroom_data()
+    max_value = max([i['count'] for i in stats]) if len(stats) > 0 else 0
+    print(max_value)
+    max_width = 50
+    for i in stats:
+        i['width'] = max_width / max_value * i['count']
+        i['data_subgroup'] = i['item_type']
+        if i['item_type'] == "group":
+            i['display_name'] = groups[i['item_id']]
+            i["link"] = '/group/' + groups[i['item_id']]
+        if i['item_type'] == "subgroup":
+            i['display_name'] = subgroups[i['item_id']]['subgroup_display_name']
+            subgroup_data: SubgroupData = subgroups[i['item_id']]
+            i['link'] = '/group/' + groups[subgroup_data['group_id']] + "/" + subgroup_data['subgroup_name']
+            i['data_subgroup'] = subgroup_data['subgroup_name']
+        if i['item_type'] == "teacher":
+            i['display_name'] = teachers[i['item_name']]
+            i['link'] = '/teacher/' + i['item_name']
+        if i['item_type'] == "classroom":
+            i['display_name'] = classrooms[i['item_id']]['display_name']
+            i['link'] = '/classroom/' + classrooms[i['item_id']]['short_name']
+    # return JSONResponse(content=stats)
+    return templates.TemplateResponse(name="statistics.html", context={"request": request, "stats": stats})
 
 # @app.get("/group/{group_id}")
 # async def get_group(group_id: str):

@@ -1,5 +1,11 @@
+from typing import TypedDict
+
 from database.base_table import BaseTable
 
+class ClassroomData(TypedDict):
+    id: int
+    short_name: str
+    display_name: str
 
 class ClassroomsTable(BaseTable):
     def __init__(self, cursor):
@@ -53,3 +59,13 @@ class ClassroomsTable(BaseTable):
             result[classroom_short_name] = classroom_display_name
         return result
 
+    def get_classroom_data(self) -> dict[int, ClassroomData]:
+        self.cursor.execute("SELECT classroom_id, classroom_short_name, classroom_display_name FROM classrooms;")
+        result = {}
+        for item in self.cursor.fetchall():
+            classroom_id: int = item[0]
+            classroom_short_name: str = item[1]
+            classroom_display_name: str = item[2]
+            result[classroom_id] = {'id': classroom_id, 'short_name': classroom_short_name,
+                                    'display_name': classroom_display_name}
+        return result

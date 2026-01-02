@@ -1,5 +1,12 @@
+from typing import TypedDict
+
 from database.base_table import BaseTable
 
+class SubgroupData(TypedDict):
+    subgroup_id: int
+    group_id: int
+    subgroup_name: str
+    subgroup_display_name: str
 
 class SubgroupsTable(BaseTable):
     def __init__(self, cursor):
@@ -83,5 +90,19 @@ class SubgroupsTable(BaseTable):
             subgroup_display_name: str = i[3]
             subgroup_info.append({'subgroup_id': subgroup_id, 'group_id': group_id, 'subgroup_name': subgroup_name,
                                    'subgroup_display_name': subgroup_display_name})
+        return subgroup_info
+
+    def get_all_subgroups_dict(self) -> dict[int, SubgroupData]:
+        self.cursor.execute("SELECT subgroup_id, group_id, subgroup_name, subgroup_display_name FROM subgroups;")
+        subgroup_info = {}
+        for i in self.cursor:
+            subgroup_id: int = i[0]
+            group_id: int = i[1]
+            subgroup_name: str = i[2]
+            subgroup_display_name: str = i[3]
+            subgroup_info[subgroup_id] =({'subgroup_id': subgroup_id,
+                                          'group_id': group_id,
+                                          'subgroup_name': subgroup_name,
+                                          'subgroup_display_name': subgroup_display_name})
         return subgroup_info
 

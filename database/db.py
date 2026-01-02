@@ -7,6 +7,7 @@ from database.classrooms_table import ClassroomsTable
 from database.group_lessons_table import GroupLessonsTable
 from database.groups_table import GroupsTable
 from database.lessons_table import LessonsTable
+from database.statistics_table import StatisticsTable
 from database.subgroup_lessons_table import SubgroupLessonsTable
 from database.subgroups_table import SubgroupsTable
 from database.subjects_table import SubjectsTable
@@ -61,6 +62,7 @@ class Database:
         self.group_lessons_table = GroupLessonsTable(self.cursor)
         self.subgroups_table = SubgroupsTable(self.cursor)
         self.subgroup_lessons_table = SubgroupLessonsTable(self.cursor)
+        self.statistics_table = StatisticsTable(self.cursor)
 
 
     def _drop_database(self):

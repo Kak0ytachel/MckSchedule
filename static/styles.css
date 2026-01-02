@@ -278,6 +278,8 @@ p.schedule-text {
 
 .header-group-container{
     margin-left: 16px;
+    margin-top: auto;
+    margin-bottom: auto;
 }
 
 .header-group-container a{
@@ -578,6 +580,8 @@ html{
     height: 20px;
     vertical-align: middle
 }
+
+
 
 @media screen and (max-width: 800px) {
     .time-table {

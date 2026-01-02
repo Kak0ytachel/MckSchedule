@@ -12,7 +12,7 @@ from fuzzywuzzy import fuzz
 from fuzzywuzzy import process
 import unidecode
 import random
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from database.subgroups_table import SubgroupData
 
@@ -283,16 +283,22 @@ def api_get_statistics():
     content = db.statistics_table.count_all_elements(datetime(1970, 1, 1), datetime.now())
     return JSONResponse(content=content)
 
-
+@app.get("/statistics/{period}")
 @app.get("/statistics")
-def get_statistics(request: Request):
-    stats = db.statistics_table.count_all_elements(datetime(1970, 1, 1), datetime.now())
+def get_statistics(request: Request, period: str = "all"):
+    if period not in ['all', '1d', '3d', '7d', '30d']:
+        return RedirectResponse(url="/statistics")
+    if period == "all":
+        before = datetime(1970, 1, 1)
+    else:
+        before = datetime.now() - timedelta(days=int(period[:-1]))
+    stats = db.statistics_table.count_all_elements(before, datetime.now())
     groups = db.groups_table.get_all_groups()
     subgroups = db.subgroups_table.get_all_subgroups_dict()
     teachers = db.teachers_table.get_all_teachers()
     classrooms = db.classrooms_table.get_classroom_data()
     max_value = max([i['count'] for i in stats]) if len(stats) > 0 else 0
-    print(max_value)
+    # print(max_value)
     max_width = 50
     for i in stats:
         i['width'] = max_width / max_value * i['count']
@@ -312,7 +318,8 @@ def get_statistics(request: Request):
             i['display_name'] = classrooms[i['item_id']]['display_name']
             i['link'] = '/classroom/' + classrooms[i['item_id']]['short_name']
     # return JSONResponse(content=stats)
-    return templates.TemplateResponse(name="statistics.html", context={"request": request, "stats": stats})
+    return templates.TemplateResponse(name="statistics.html", context={"request": request, "stats": stats, "period": period,
+                                                                       "options": ["1d", "3d", "7d", "30d", "all"]})
 
 # @app.get("/group/{group_id}")
 # async def get_group(group_id: str):

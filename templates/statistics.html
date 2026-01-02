@@ -18,8 +18,9 @@
             <h1>Statistics</h1>
 
             <div class="header-group-container">
-                <a href="/group/6N/arch" class="schedule-group" >1d</a>
-                <a href="/group/6N/inz" class="schedule-group" >7d</a>
+                {% for i in options %}
+                <a href="/statistics/{{ i }}" class="schedule-group" data-subgroup="group" data-is-chosen="{{ "true" if i == period else "false" }}">{{ i }}</a>
+                {% endfor %}
             </div>
         </div>
 <!--        <h1>Statistics</h1>-->

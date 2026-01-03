@@ -1,10 +1,11 @@
 from mysql.connector.cursor import MySQLCursor
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from database.base_table import BaseTable
 
 
 class StatisticsTable(BaseTable):
+    bufer = []
 
     def __init__(self, cursor: MySQLCursor):
         super().__init__(cursor)
@@ -45,6 +46,23 @@ class StatisticsTable(BaseTable):
             raise ValueError("item_name must be specified for item_type='teacher'.")
         if item_type in ['group', 'subgroup', 'classroom'] and item_id is None:
             raise ValueError("item_id must be specified for item_type='group', 'subgroup' or 'classroom'.")
+
+        def check_bufer() -> bool:
+            # true if okay and should be recorded
+            # false if already recorded
+            now = datetime.now()
+            self.bufer = [x for x in self.bufer if x["datetime"] > now - timedelta(seconds=60)]
+            for x in self.bufer:
+                if x["item_type"] == item_type and x["item_id"] == item_id and x["item_name"] == item_name:
+                    print("skipped duplicate request")
+                    return False
+            self.bufer.append({"item_type": item_type, "item_id": item_id, "item_name": item_name, "datetime": datetime.now()})
+            return True
+
+
+        if not check_bufer():
+            return
+
         if item_type in ['teacher']:
             self.cursor.execute("INSERT INTO statistics (item_type, item_name, datetime) VALUES (%s, %s, NOW());", (item_type, item_name))
 

@@ -15,9 +15,9 @@ jobs:
       - name: get release tag
         run: |
           if [ "${{ github.event_name }}" == "release" ]; then 
-            TAG_NAME="${{ github.event.release.tag_name }}" 
+            echo "TAG_NAME=${{ github.event.release.tag_name }}" >> $GITHUB_ENV 
           else 
-            TAG_NAME="latest"
+            echo "TAG_NAME=latest" >> $GITHUB_ENV
           fi
 
       - name: build image
@@ -28,6 +28,6 @@ jobs:
           docker login -u ${{ vars.DOCKER_HUB_NAME }} -p ${{ secrets.DOCKER_HUB_TOKEN }}
           docker push ${{vars.DOCKER_HUB_NAME}}/${{vars.DOCKER_HUB_REPO}}:latest
           if [ "${{ github.event_name }}" == "release" ]; then 
-            docker tag ${{vars.DOCKER_HUB_NAME}}/${{vars.DOCKER_HUB_REPO}}:latest ${{vars.DOCKER_HUB_NAME}}/${{vars.DOCKER_HUB_REPO}}:$TAG_NAME 
-            docker push ${{vars.DOCKER_HUB_NAME}}/${{vars.DOCKER_HUB_REPO}}:$TAG_NAME 
+            docker tag ${{vars.DOCKER_HUB_NAME}}/${{vars.DOCKER_HUB_REPO}}:latest ${{vars.DOCKER_HUB_NAME}}/${{vars.DOCKER_HUB_REPO}}:${{ env.TAG_NAME }}
+            docker push ${{vars.DOCKER_HUB_NAME}}/${{vars.DOCKER_HUB_REPO}}:${{ env.TAG_NAME }}
           fi

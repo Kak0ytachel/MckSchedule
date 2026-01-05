@@ -70,7 +70,7 @@ class StatisticsTable(BaseTable):
             self.cursor.execute("INSERT INTO statistics (item_type, item_id, datetime) VALUES (%s, %s, NOW());", (item_type, item_id))
 
     def count_all_elements(self, before: datetime, after: datetime) -> list[dict]:
-        self.cursor.execute("SELECT item_type, item_name, item_id, COUNT(*) as count FROM statistics GROUP BY item_type, item_name, item_id ORDER BY count DESC;")
+        self.cursor.execute("SELECT item_type, item_name, item_id, COUNT(*) as count FROM statistics WHERE datetime BETWEEN %s AND %s GROUP BY item_type, item_name, item_id ORDER BY count DESC;", (before, after))
         items = []
         for i in self.cursor.fetchall():
             item = {"item_type": i[0], "item_name": i[1], "item_id": i[2], "count": i[3]}

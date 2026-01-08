@@ -1,3 +1,8 @@
+### v0.1.7-beta - released 08/01/2026
+- Added language change
+- Added russian and polsih translations
+- Fixed statistics page buttons and mobile device counting
+
 ### v0.1.6-beta - released 02/01/2026
 - Added statistics page
 

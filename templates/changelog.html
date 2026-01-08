@@ -8,13 +8,13 @@
     <link rel="stylesheet" href="{{ url_for('static', path='/styles.css') }}">
 </head>
 <body>
-{% import "navbar.html" as navbar %}
+{% import "navbar.html" as navbar with context %}
 {{ navbar.navbar() }}
 
 <main style="background-color: white;">
     <header style="margin: 10px">
-        <h1>Changelog</h1>
-        <p> Here you can find project development logs. For more info, check out <a href="/about"> about page </a></p>
+        <h1>{{ translate(request, "changelog-title")}}</h1>
+        <p> {{ translate(request, "changelog-text")}} <a href="/about"> {{ translate(request, "changelog-link")}}</a></p>
     </header>
     <section>
         <article class="changelog-article">
@@ -103,7 +103,7 @@
 {#        </article>#}
 
 </main>
-{% import "footer.html" as footer %}
+{% import "footer.html" as footer with context %}
 {{ footer.footer() }}
 </body>
 </html>

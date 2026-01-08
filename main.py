@@ -1,6 +1,4 @@
-from urllib import request
-
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, Response, Form
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
@@ -13,8 +11,10 @@ from fuzzywuzzy import process
 import unidecode
 import random
 from datetime import datetime, timedelta
+from markupsafe import Markup
 
 from database.subgroups_table import SubgroupData
+from language_manager import LanguageManager
 
 
 def fuzzy_search_items(query: str, item_list: list[str], threshold: int = 0) -> list[tuple[str, int]]:
@@ -35,7 +35,20 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 
 templates = Jinja2Templates(directory="templates")
 
+
+lm = LanguageManager()
+
+def translate(request: Request, key: str, *args) -> str:
+    lang = get_lang(request)
+    text = lm.get(lang, key)
+    # print("*args: ", args)
+    text = text.format(*args) # {}, {0}
+    return Markup(text)
+
+templates.env.globals.update(translate=translate)
+
 search_options = []
+
 
 # @app.get("/")
 # async def root():
@@ -320,6 +333,29 @@ def get_statistics(request: Request, period: str = "all"):
     # return JSONResponse(content=stats)
     return templates.TemplateResponse(name="statistics.html", context={"request": request, "stats": stats, "period": period,
                                                                        "options": ["1d", "3d", "7d", "30d", "all"]})
+
+
+@app.post("/api/lang")
+def set_lang(request: Request, lang: str = Form(...)):
+    print(lang)
+    referer_url = request.headers.get("referer", '/')
+    response = RedirectResponse(url=referer_url, status_code=303)
+    response.set_cookie(key="lang", value=lang)
+    return response
+
+@app.get("/test/lang")
+def get_lang(request: Request):
+    lang = request.cookies.get("lang")
+    if lang is None:
+        lang = request.headers.get("accept-language").split(",")[0]
+        # lang = "abd"
+    return lang
+
+
+# @app.get("/test/setlang")
+# def set_lang_test(request: Request):
+#     lang = get_lang(request)
+#     return templates.TemplateResponse(name="scratch-request.html", context={"request": request, "lang": lang})
 
 # @app.get("/group/{group_id}")
 # async def get_group(group_id: str):

@@ -16,3 +16,7 @@ function toggleDropdownMenu() {
 function hideMessage() {
     document.getElementById('notification-message').style.display = 'none';
 }
+
+
+console.log(navigator.language)
+console.log(navigator.languages)

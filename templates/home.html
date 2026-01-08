@@ -8,19 +8,20 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Oleo+Script:wght@400;700&display=swap" rel="stylesheet">
-
+    <link href="https://fonts.googleapis.com/css2?family=Marck+Script&family=Noto+Color+Emoji&family=Oleo+Script:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400..700&family=Kaushan+Script&family=Lobster&family=Marck+Script&family=Noto+Color+Emoji&family=Oleo+Script:wght@400;700&family=Pacifico&display=swap" rel="stylesheet">
     <script type="text/javascript" src="{{ url_for('static', path='index.js') }}" > </script>
     <link rel="stylesheet" href="{{ url_for('static', path='/styles.css') }}">
 </head>
 <body>
-{% import "navbar.html" as navbar %}
+{% import "navbar.html" as navbar with context %}
 {{ navbar.navbar() }}
 <main style="background-color: white;">
 
 
     <div style="height: 100vh; position:relative; overflow: hidden;">
 
-        {% import "card_widget.html" as card_widget %}
+        {% import "card_widget.html" as card_widget with context %}
         {% for i in elements %}
             {{ card_widget.schedule_card(i.lesson, [i.lesson.chosen_group], style="background: white; position: absolute; top:50%; left: 50%; transform: translate(-50%, -50%) translate(" + i.x + "px, " + i.y + "px) rotate(" + i.rotate + "deg); max-width: 300px;") }}
 
@@ -28,8 +29,8 @@
 
     </div>
     <div class="home-title-container glass">
-        <h1 class="home-title">Get your &NewLine; schedule</h1>
-        <h1 class="home-title-second"><a class="invisible-link" href="#search">easily</a></h1>
+        <h1 class="home-title">{{ translate(request, "home-page-title-main")}}</h1>
+        <h1 class="home-title-second"><a class="invisible-link" href="#search">{{ translate(request, "home-page-title-accent")}}</a></h1>
     </div>
 
 <div style="height: 100vh; position: relative; overflow: hidden"  id="search">
@@ -40,7 +41,7 @@
     </div>
 
     <div class="glass home-header-container">
-        <h2 class="home-header"> just type in your group</h2>
+        <h2 class="home-header"> {{ translate(request, "home-page-search-subtitle")}}</h2>
         <div style="display: flex;margin: 10px auto;">
             <div class="search-suggestions-wrap">
                 <ul class="search-suggestions-box" style="display: none;"></ul>
@@ -50,12 +51,12 @@
 {#                    <li class="search-suggestions-element"><a href="1234">1234</a></li>#}
 
                 <form class="search-box" action="/search" method="get">
-                    <input class="search-field" type="text" placeholder="Search" name="q" autocomplete="off">
+                    <input class="search-field" type="text" placeholder={{ translate(request, "navbar-search-placeholder")}} name="q" autocomplete="off">
                     <input class="search-button" type="submit" value="🔍︎">
                 </form>
             </div>
         </div>
-        <h2 class="home-header"> or check out our suggestions below</h2>
+        <h2 class="home-header"> {{ translate(request, "home-page-choose-subtitle")}}</h2>
         <div>
             {% for group in groups %}
                 <a href="{{ group.link }}" class="schedule-group" data-subgroup={{ group.data_subgroup }} data-is-chosen="true">
@@ -66,7 +67,7 @@
     </div>
 </div>
 </main>
-    {% import "footer.html" as footer %}
+    {% import "footer.html" as footer with context %}
     {{ footer.footer() }}
 </body>
 </html>

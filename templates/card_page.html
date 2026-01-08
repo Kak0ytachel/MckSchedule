@@ -9,7 +9,7 @@
     </style>
 </head>
 <body>
-     {% import "card_widget.html" as cards %}
+     {% import "card_widget.html" as cards with context %}
      {{ cards.schedule_card(lesson, chosen_groups) }}
 </body>
 </html>

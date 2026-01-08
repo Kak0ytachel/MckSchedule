@@ -10,13 +10,13 @@
 </head>
 <body>
 
-{% import "navbar.html" as navbar %}
+{% import "navbar.html" as navbar with context %}
 {{ navbar.navbar() }}
 
 <main style="background-color: white;">
     <header style="margin: 10px">
         <div class="header-container">
-            <h1>Schedule - {{ category_title }}</h1>
+            <h1>{{ translate(request, "schedule-title")}} - {{ category_title }}</h1>
 
             <div class="header-group-container">
                 {% for link_data in header_links %}
@@ -32,7 +32,7 @@
         {% if message_not_uploaded == True %}
         <div class="notification-message" id="notification-message">
             <div class="notification-message-line"></div>
-                <p class="notification-message-text"> This group's schedule is <u>not fully uploaded yet</u>. Please by now refer to the classic timetable. If you are interested in it being uploaded, please <a class="underline-link" href="https://t.me/dokpdl">contact us</a>.</p>
+                <p class="notification-message-text"> {{ translate(request, "schedule-not-uploaded-message", '<u>', '</u>', '<a class="underline-link" href="https://t.me/dokpdl">', '</a>')}}</p>
                 <button class="notification-message-close" onclick="hideMessage()">
                     ✖
                 </button>
@@ -42,7 +42,8 @@
 <!--        <p> Here you can find project development logs. For more info, check out <a href="index.html"> about page </a></p>-->
     </header>
     <section>
-        {% import "card_widget.html" as cards %}
+        {% set weekday_names = [0, translate(request, "schedule-monday"), translate(request, "schedule-tuesday"), translate(request, "schedule-wednesday"), translate(request, "schedule-thursday"), translate(request, "schedule-friday")] %}
+        {% import "card_widget.html" as cards with context %}
         {% for i in range(1, 6) %}
         <div class="schedule-weekday-block">
             <h2> {{ weekday_names[i] }} </h2>
@@ -152,7 +153,7 @@
         <div style="height:100px"></div>
     </section>
 </main>
-{% import "footer.html" as footer %}
+{% import "footer.html" as footer with context %}
 {{ footer.footer() }}
 </body>
 </html>

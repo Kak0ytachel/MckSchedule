@@ -1,0 +1,15 @@
+[
+    "sample-key", "swaga",
+    "navbar-button-language", "navbar-button-schedule", "navbar-button-about", "navbar-button-changelog",
+    "navbar-search-placeholder",
+    "home-page-title-main", "home-page-title-accent", "home-page-search-subtitle", "home-page-choose-subtitle",
+    "about-title", "about-text",
+    "changelog-title", "changelog-text", "changelog-link",
+    "schedule-title",
+    "schedule-not-uploaded-message",
+    "footer-line-1", "footer-line-2", "footer-line-3", "footer-line-4",
+    "statistics-title", "statistics-text",
+    "search-title", "search-text", "search-text-2",
+    "not-found-title", "not-found-text",
+    "schedule-monday", "schedule-tuesday", "schedule-wednesday", "schedule-thursday", "schedule-friday"
+]

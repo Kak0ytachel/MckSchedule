@@ -8,20 +8,20 @@
     <link rel="stylesheet" href="{{ url_for('static', path='/styles.css') }}">
 </head>
 <body>
-{% import "navbar.html" as navbar %}
+{% import "navbar.html" as navbar with context %}
 {{ navbar.navbar() }}
 
 <main style="background-color: white;">
     <header style="margin: 10px">
-        <h1>Not found</h1>
-        <p>There's no page with that address, at least yet. If you think there should be, please contact us.</p>
+        <h1>{{ translate(request, "not-found-title")}}</h1>
+        <p>{{ translate(request, "not-found-text")}}</p>
     </header>
     <section>
         <img src="{{ url_for('static', path='/cat_turntable_compilation.gif') }}" alt="cut turntable gif">
 
     </section>
 </main>
-{% import "footer.html" as footer %}
+{% import "footer.html" as footer with context %}
 {{ footer.footer() }}
 </body>
 </html>

@@ -2,7 +2,7 @@
 <div class="nav-margin">
     <nav>
         <h2> <a class="nav-logo" href="/">MCK Schedule</a></h2>
-        <button onclick="toggleDropdownMenu()">
+        <button onclick="toggleDropdownMenu()" class="nav-menu-button">
 <!--            <span>&#8801;</span>-->
             <svg xmlns="http://www.w3.org/2000/svg" height="40px" viewBox="0 -960 960 960" width="40px" fill="#696969"><path d="M120-240v-80h720v80H120Zm0-200v-80h720v80H120Zm0-200v-80h720v80H120Z"/></svg>
             <i class="fa-solid fa-bars"></i>
@@ -16,15 +16,49 @@
 {#                    <li class="search-suggestions-element"><a href="1234">1234</a></li>#}
 
                 <form class="search-box" action="/search" method="get">
-                    <input class="search-field" type="text" placeholder="Search" name="q" autocomplete="off">
+                    <input class="search-field" type="text" placeholder={{ translate(request, "navbar-search-placeholder")}} name="q" autocomplete="off">
                     <input class="search-button" type="submit" value="🔍︎">
                 </form>
             </div>
         </div>
         <div class="nav-link-box">
-            <a class="nav-link" href="/">Schedule</a>
-            <a class="nav-link" href="/about">About</a>
-            <a class="nav-link" href="/changelog">Changelog</a>
+            <div class="language-menu-container">
+                <button class="nav-link language-menu-open-button" onclick="    ">{{ translate(request, "navbar-button-language")}}</button>
+
+                <div class="language-menu" style="display: none;" >
+                        <form action="/api/lang" method="post">
+                            <button class="language-menu-button" name="lang" value="pl-PL">Polski</button>
+                            <button class="language-menu-button" name="lang" value="en-US">English</button>
+                            <button class="language-menu-button" name="lang" value="ru-RU">Русский</button>
+                        </form>
+                </div>
+            </div>
+            <script>
+                const languageChangeDialog = document.querySelector('.language-menu');
+                const languageDialogButton = document.querySelector('.language-menu-open-button');
+
+                window.addEventListener('click', (event) => {
+
+                    // console.log(dialog.style.display, event.target);
+                    if (!languageChangeDialog.contains(event.target) && languageChangeDialog.style.display !== 'none') {
+                        languageChangeDialog.style.display = 'none';
+                    } else if (languageChangeDialog.style.display === 'none' && languageDialogButton === event.target)
+                    {
+                        // console.log('show');
+                        languageChangeDialog.style.display = 'block';
+                    }
+                    else if (languageChangeDialog.style.display === 'block' && event.target === languageDialogButton)
+                    {
+                        // console.log('hide');
+                        languageChangeDialog.style.display = 'none';
+                    }
+
+
+                });
+            </script>
+            <a class="nav-link" href="/">{{ translate(request, "navbar-button-schedule")}}</a>
+            <a class="nav-link" href="/about">{{ translate(request, "navbar-button-about")}}</a>
+            <a class="nav-link" href="/changelog">{{ translate(request, "navbar-button-changelog")}}</a>
         </div>
     </nav>
     <script src="/static/search-suggest.js" type="module"></script>

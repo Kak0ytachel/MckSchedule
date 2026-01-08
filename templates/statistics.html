@@ -9,13 +9,13 @@
     <link rel="stylesheet" href="{{ url_for('static', path='/styles.css') }}">
 </head>
 <body>
-{% import "navbar.html" as navbar %}
+{% import "navbar.html" as navbar with context %}
 {{ navbar.navbar() }}
 
 <main style="background-color: white;">
     <header style="margin: 10px">
         <div class="header-container">
-            <h1>Statistics</h1>
+            <h1>{{ translate(request, "statistics-title")}}</h1>
 
             <div class="header-group-container">
                 {% for i in options %}
@@ -24,7 +24,7 @@
             </div>
         </div>
 <!--        <h1>Statistics</h1>-->
-        <p> Here you can see pages views statistics.</p>
+        <p> {{ translate(request, "statistics-text")}}</p>
     </header>
     <section>
         <article>
@@ -52,7 +52,7 @@
 
     </section>
 </main>
-{% import "footer.html" as footer %}
+{% import "footer.html" as footer with context %}
 {{ footer.footer() }}
 
 </body>

@@ -1,10 +1,10 @@
 {% macro footer() %}
 <div class="footer-margin">
     <footer>
-        <p> Made by chel0 with ❤</p>
-        <p> Open-source on GitHub (<a href="https://github.com/Kak0ytachel/MckSchedule">link</a>) </p>
-        <p> Support / feature request (<a href="https://t.me/dokpdl">telegram</a>)</p>
-        <p> Copyright chel0 (c) 2025. All rights reserved.</p>
+        <p> {{ translate(request, "footer-line-1")}}</p>
+        <p> {{ translate(request, "footer-line-2", '<a href="https://github.com/Kak0ytachel/MckSchedule">', "</a>")}}</p>
+        <p> {{ translate(request, "footer-line-3", '<a href="https://t.me/dokpdl">', '</a>')}}</p>
+        <p> {{ translate(request, "footer-line-4")}}</p>
     </footer>
 </div>
 {% endmacro %}

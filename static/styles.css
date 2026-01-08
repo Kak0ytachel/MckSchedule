@@ -1,5 +1,5 @@
 /* Nav section */
-nav a.nav-link{
+.nav-link{
     margin: 8px;
     color: #afafaf;
     text-decoration: none;
@@ -35,7 +35,7 @@ nav h2 {
     font-family: "Courier New", Courier, monospace;
     color: cornflowerblue;
 }
-nav a.nav-link:hover {
+.nav-link:hover {
     color: white;
 }
 .nav-margin {
@@ -71,6 +71,7 @@ nav a.nav-link:hover {
     padding: 3px;
     background-color: white;
     margin: 0 auto;
+    z-index: 11;
 }
 .search-field:focus{
     /*border: none;*/
@@ -291,7 +292,7 @@ p.schedule-text {
     grid-template-columns: 1fr 1fr;
 }
 
-nav button{
+.nav-menu-button{
     float: right;
     height: 40px;
     width: 40px;
@@ -435,9 +436,11 @@ article.changelog-article li{
 
 .home-title-second{
     font-size: 6em;
-    margin: -0.3em 0 -0.1em 0;
-    font-family: "Oleo Script", system-ui;
-    font-weight: 400;
+    margin: -0.15em 0 -0.1em 0;
+    font-family: 'Marck Script', "Oleo Script", system-ui;
+    /*font-family: ; */
+    font-weight: 700;
+    /*font-weight: 400;*/
     font-style: normal;
     text-align: center;
     color: dodgerblue;
@@ -539,6 +542,7 @@ html{
     border-radius: 25px;
     box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.3);
     overflow: hidden;
+    z-index: 10;
 }
 
 .search-suggestions-box:empty{
@@ -581,6 +585,49 @@ html{
     vertical-align: middle
 }
 
+
+.language-menu{
+    /*background: tomato;*/
+    /*background-color: white;*/
+    position: absolute;
+    /*padding: 10px;*/
+    border-radius: 8px;
+    margin-top: 10px;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.2);
+    /*border-radius: 16px;*/
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    display: none;
+    z-index: 12;
+}
+
+.language-menu-button {
+    background: unset;
+    border: 0;
+    cursor: pointer;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 1em;
+    padding: 8px;
+    width: 100%;
+    text-align: left;
+    /*margin: 5px;*/
+
+}
+.language-menu-button:hover {
+    background-color: rgba(66, 66, 66, 0.16);
+}
+
+.language-menu-open-button{
+    background: unset;
+    border: 0;
+}
+
+.language-menu-container{
+    position: relative;
+    display: inline-block;
+}
 
 
 @media screen and (max-width: 800px) {
@@ -646,7 +693,7 @@ html{
         /*align-content: center;*/
     }
 
-    nav button{
+    .nav-menu-button{
         display: flex;
     }
 

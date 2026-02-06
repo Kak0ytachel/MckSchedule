@@ -1,9 +1,12 @@
 from database.db import Database
+from datetime import datetime
 
 
 def load_sample_data(db: Database):
     db._drop_database()
     db._init_database()
+
+    sem1 = db.semesters_table.add_semester("Winter", datetime(2025, 10, 1), datetime(2026, 2, 10))
 
     group_1n = db.groups_table.add_group("1N")
     group_2n = db.groups_table.add_group("2N")

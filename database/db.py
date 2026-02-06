@@ -12,7 +12,9 @@ from database.subgroup_lessons_table import SubgroupLessonsTable
 from database.subgroups_table import SubgroupsTable
 from database.subjects_table import SubjectsTable
 from database.teachers_table import TeachersTable
+from database.semesters_table import SemestersTable
 
+import json
 
 dotenv.load_dotenv()
 
@@ -33,6 +35,7 @@ class Database:
 
         def ping_then_execute(operation: str, *args, **kwargs):
             # self.mydb.ping(reconnect=True)
+            #TODO: add some better error handling
             try:
                 return self._execute(operation, *args, **kwargs)
             except mysql.connector.errors.OperationalError as e:
@@ -45,6 +48,7 @@ class Database:
                     raise e
 
         self.cursor = self.mydb.cursor(buffered=True)
+        self.dict_cursor = self.mydb.cursor(dictionary=True, buffered=True)
         self._execute = self.cursor.execute
         self.cursor.execute = ping_then_execute
         # self._drop_database()
@@ -54,6 +58,7 @@ class Database:
     def _init_database(self):
         self.cursor.execute("CREATE DATABASE IF NOT EXISTS schedule;")
         self.cursor.execute("USE schedule;")
+        self.semesters_table = SemestersTable(self.cursor)
         self.groups_table = GroupsTable(self.cursor)
         self.classrooms_table = ClassroomsTable(self.cursor)
         self.teachers_table = TeachersTable(self.cursor)
@@ -138,6 +143,25 @@ class Database:
             child_subgroup_info[i]['parent_group_name'] = group_name
         return child_subgroup_info
 
+    def get_schedule_from_group(self, group_name) -> dict:
+        with open("database/get_all_from_group.sql", "r") as file:
+            query = file.read()
+            self.dict_cursor.execute(query, (group_name, group_name))
+            # print([i[0] for i in self.cursor.description])
+            # result_data = []
+            data = []
+            for i in self.dict_cursor.fetchall():
+                for key in i.keys():
+                    if isinstance(i[key], str) and (i[key].startswith("[") or i[key].startswith("{")):
+                        try:
+                            i[key] = json.loads(i[key])
+                        except Exception as e:
+                            pass
+                data.append(i)
+            # for i in  result_data:
+
+            print(data)
+            return data
 
 from database.sample_dataset import load_sample_data
 Database._load_sample_data = load_sample_data

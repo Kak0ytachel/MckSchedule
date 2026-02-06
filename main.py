@@ -30,6 +30,7 @@ async def not_found(request: Request, *args):
     return templates.TemplateResponse(name="not_found.html", context={"request": request})
 
 db = Database()
+print(db.get_schedule_from_group("6N"))
 app = FastAPI(exception_handlers={404: not_found})
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
@@ -66,12 +67,21 @@ async def get_lesson(request: Request, id: str):
 
 @app.get("/group/{group_name}")
 async def get_group_schedule(request: Request, group_name: str):
+    if group_name not in db.groups_table.get_all_group_names():
+        return RedirectResponse(url="/not-found")
+
+    schedule = db.get_schedule_from_group(group_name)
+
+
     subgroups_data = db.get_child_subgroups(group_name)
-    schedule = db.extend_lessons_data(db.get_group_schedule(group_name))
-    schedule.sort(key=lambda x: x["weekday"] * 7 * 24 + x["start_hour"] * 60 + x["start_minute"])
+
+    # schedule2 = db.extend_lessons_data(db.get_group_schedule(group_name))
+    # schedule2.sort(key=lambda x: x["weekday"] * 7 * 24 + x["start_hour"] * 60 + x["start_minute"])
+    # print(schedule2)
+
     chosen_groups = [i["subgroup_display_name"] for i in subgroups_data]
     chosen_groups.append(group_name) # mixed
-    weekday_names = ["None", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
+
     message_not_uploaded = (group_name not in ["6N", "5N", "4N", "3N", "2N"]) #TODO: add "finished" field to db
 
     group_id = db.groups_table.find_group_id(group_name)
@@ -87,7 +97,7 @@ async def get_group_schedule(request: Request, group_name: str):
 
     return templates.TemplateResponse(name="schedule_group.html", request=request, context={
         "schedule": schedule, "group": group_name, "category_title": group_name, "subgroups_data": subgroups_data,
-        "chosen_groups": chosen_groups, "weekday_names": weekday_names, "message_not_uploaded": message_not_uploaded,
+        "chosen_groups": chosen_groups, "message_not_uploaded": message_not_uploaded,
         "header_links": header_links})
 
 
@@ -121,7 +131,7 @@ async def get_classroom_schedule(request: Request, classroom_short_name: str):
     classroom_short_name = classroom_short_name.lower()
     classroom_id = db.classrooms_table.find_classroom_id_by_short_name(classroom_short_name)
     classroom_display_name = db.classrooms_table.find_classroom_display_name(classroom_id)
-    schedule = db.extend_lessons_data(db.lessons_table.find_lessons_by_classroom_id(classroom_id))
+    schedule = db.extend_lessons_data(db.lessons_table.find_lessons_by_classroom_id(classroom_id, 1)) #TODO fix
     schedule.sort(key=lambda x: x["weekday"] * 7 * 24 + x["start_hour"] * 60 + x["start_minute"])
     chosen_groups = 'all'
 
@@ -249,7 +259,7 @@ def get_teacher_schedule(request: Request, teacher_init: str):
     print(
         f"Teacher {teacher_init} is {name}"
     )
-    lessons = db.lessons_table.find_lessons_by_teacher_initials(teacher_init)
+    lessons = db.lessons_table.find_lessons_by_teacher_initials(teacher_init, 1) #TODO Fix
     print(lessons)
     lessons = db.extend_lessons_data(lessons)
 

@@ -17,11 +17,12 @@ class LessonsTable(BaseTable):
                             "start_minute INT NOT NULL DEFAULT 59,"
                             "end_hour INT NOT NULL DEFAULT 23,"
                             "end_minute INT NOT NULL DEFAULT 59,"
+                            "semester_id INT NOT NULL DEFAULT 1,"
+                            "FOREIGN KEY (semester_id) REFERENCES semesters(semester_id),"
                             "FOREIGN KEY (short_subject_name) REFERENCES subjects(subject_short_name),"
                             "FOREIGN KEY (classroom_id) REFERENCES classrooms(classroom_id), "
                             "FOREIGN KEY (teacher_initials) REFERENCES teachers(teacher_initials)"
                             ");")
-        # TODO Add foreign keys
 
     def add_lesson(self, short_subject_name: str, classroom_id: int, teacher_initials: str, weekday: int,  start_hour: int,
                    start_minute: int, end_hour: int, end_minute: int) -> int:
@@ -88,8 +89,8 @@ class LessonsTable(BaseTable):
             lessons.append(lesson)
         return lessons
 
-    def find_lessons_by_classroom_id(self, classroom_id: int) -> list[dict]:
-        self.cursor.execute("SELECT * FROM lessons WHERE classroom_id=%s;", (classroom_id,))
+    def find_lessons_by_classroom_id(self, classroom_id: int, semester_id: int) -> list[dict]:
+        self.cursor.execute("SELECT * FROM lessons WHERE classroom_id=%s AND semester_id=%s;;", (classroom_id, semester_id))
         lessons = []
         for item in self.cursor.fetchall():
             lesson = {'lesson_id': item[0],
@@ -105,8 +106,8 @@ class LessonsTable(BaseTable):
             lessons.append(lesson)
         return lessons
 
-    def find_lessons_by_teacher_initials(self, teacher_initials: str) -> list[dict]:
-        self.cursor.execute("SELECT * FROM lessons WHERE teacher_initials=%s;", (teacher_initials,))
+    def find_lessons_by_teacher_initials(self, teacher_initials: str, semester_id: int) -> list[dict]:
+        self.cursor.execute("SELECT * FROM lessons WHERE teacher_initials=%s AND semester_id=%s;", (teacher_initials, semester_id))
         lessons = []
         for item in self.cursor.fetchall():
             lesson = {'lesson_id': item[0],

@@ -633,6 +633,37 @@ html{
     display: inline-block;
 }
 
+.schedule-semester-box{
+    margin: 0 0 25px 0;
+    font-family: Roboto, sans-serif;
+}
+.schedule-semester{
+    display: inline-block;
+    margin: 5px 2px;
+    font-family: Arial, Helvetica, sans-serif;
+    /*border: 1px solid black;*/
+
+    padding: 5px;
+    /*background-color: rgb(255, 255, 255);*/
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.15);
+    text-decoration: none;
+    border-width: 3px;
+    border-style: solid;
+    border-color: transparent;
+    background:
+            linear-gradient(white, white) padding-box,
+            linear-gradient(45deg, cornflowerblue, lightcoral 100%) border-box;
+            /*linear-gradient(to right, aquamarine, cornflowerblue) 1;*/
+    border-radius: 10px;
+}
+
+.schedule-semester[data-active="false"]{
+    border-color: dimgray;
+    border-width: 1px;
+    color: dimgray;
+    /*background-color: unset;*/
+}
+
 
 @media screen and (max-width: 800px) {
     .time-table {

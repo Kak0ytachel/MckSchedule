@@ -19,7 +19,7 @@
 <main style="background-color: white;">
 
 
-    <div style="height: 100vh; position:relative; overflow: hidden;">
+    <div style="height: 100vh; position:relative;">
 
         {% import "card_widget.html" as card_widget with context %}
         {% for i in elements %}
@@ -33,8 +33,8 @@
         <h1 class="home-title-second"><a class="invisible-link" href="#search">{{ translate(request, "home-page-title-accent")}}</a></h1>
     </div>
 
-<div style="height: 100vh; position: relative; overflow: hidden"  id="search">
-    <div class="time-table"  id="time-table">
+<div style="position: relative; overflow: hidden"  id="search">
+    <div class="time-table" style="height: 100vh" id="time-table">
         {% for i in elements %}
         {{ card_widget.schedule_card(i.lesson , i.lesson.chosen_group)}}
         {% endfor %}
@@ -70,4 +70,26 @@
     {% import "footer.html" as footer with context %}
     {{ footer.footer() }}
 </body>
+<script>
+    const fixTimetable = () => {
+    const parent = document.querySelector('.time-table');
+    const children = parent.children;
+    const viewportHeight = window.innerHeight;
+
+    for (let child of children) {
+        const childBottom = child.offsetTop + child.offsetHeight;
+
+    if (childBottom >= viewportHeight) {
+        parent.style.height = `${childBottom}px`;
+        break;
+    }
+  }
+};
+
+
+window.addEventListener('load', fixTimetable);
+window.addEventListener('resize', fixTimetable);
+
+
+</script>
 </html>

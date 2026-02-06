@@ -294,6 +294,7 @@ p.schedule-text {
 .time-table{
     display: grid;
     grid-template-columns: 1fr 1fr;
+    margin: 8px 0;
 }
 
 .nav-menu-button{
@@ -350,6 +351,7 @@ main {
     max-width: 1000px;
     width: 100%;
     flex: 1;
+    overflow: hidden;
 }
 
 .schedule-weekday-block {
@@ -667,7 +669,8 @@ html{
 
 @media screen and (max-width: 800px) {
     .time-table {
-        display: block;
+        /*display: block;*/
+        grid-template-columns: 1fr;
         /* The width is 100%, when the viewport is 800px or smaller */
     }
 }

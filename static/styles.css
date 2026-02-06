@@ -268,9 +268,22 @@ footer a {
     text-wrap: wrap;
     max-width: 40%;
     white-space: pre-line;
+    text-decoration: none;
 }
-p.schedule-text {
+
+.schedule-teacher:hover{
+    text-decoration: underline;
+}
+
+.schedule-classroom {
     margin: 8px 0;
+    display: block;
+    color: unset;
+    text-decoration: none;
+    width: fit-content;
+}
+.schedule-classroom:hover {
+    text-decoration: underline;
 }
 
 

@@ -2,8 +2,8 @@
 <div class="schedule-card" data-subject={{ lesson.short_subject_name }} style="{{ style }}">
     <strong>{{ lesson.subject_name }}</strong>
     <span style="color: dimgray; float: right"><time>{{ lesson.start_hour }}:{{ '{:02d}'.format(lesson.start_minute) }}</time> - <time>{{ lesson.end_hour }}:{{ '{:02d}'.format(lesson.end_minute) }}</time></span>
-    <p class="schedule-text">{{ lesson.classroom_name }} </p>
-    <span class="schedule-teacher">{{ lesson.teacher_name }}</span>
+    <a class="schedule-classroom" href="/classroom/{{ lesson.classroom_short_name }}">{{ lesson.classroom_name }} </a>
+    <a class="schedule-teacher" href="/teacher/{{ lesson.teacher_init }}">{{ lesson.teacher_name }}</a>
     {% if lesson.short_subject_name == "dkf" %}
     <a href="/groups" class="schedule-group" data-subgroup="all" data-is-chosen="true">
      wszystkie grupy

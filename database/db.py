@@ -122,12 +122,14 @@ class Database:
             subgroup_names_by_ids[subgroup_id]["parent_group_name"] = group_names_by_ids[int(subgroup_names_by_ids[subgroup_id]["parent_group_id"])]
 
         teachers_names = self.teachers_table.find_teacher_names(list(teachers_initials))
-        classrooms_names = self.classrooms_table.find_classroom_display_names(list(classrooms_ids))
+        classrooms_data = self.classrooms_table.get_classroom_data() #TODO: fix - requests all classrooms data
+        # classrooms_names = self.classrooms_table.find_classroom_display_names(list(classrooms_ids))
         subjects_names = self.subjects_table.find_subject_names(list(subjects_short_names))
 
         for lesson in lessons:
             lesson['teacher_name'] = teachers_names[lesson['teacher_init']]
-            lesson['classroom_name'] = classrooms_names[lesson['classroom_id']]
+            lesson['classroom_name'] = classrooms_data[lesson['classroom_id']]['display_name']
+            lesson['classroom_short_name'] = classrooms_data[lesson['classroom_id']]['short_name']
             lesson['subject_name'] = subjects_names[lesson['short_subject_name']]
             lesson_group_ids = groups_ids_by_lesson_ids[lesson['lesson_id']] if lesson['lesson_id'] in groups_ids_by_lesson_ids.keys() else []
             lesson['groups'] = [group_names_by_ids[group_id] for group_id in lesson_group_ids]

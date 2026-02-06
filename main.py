@@ -110,7 +110,7 @@ async def get_subgroup_schedule(request: Request, group_name: str, subgroup_name
     schedule = db.extend_lessons_data(db.get_subgroup_schedule(subgroup_name, group_name))
     schedule.sort(key=lambda x: x["weekday"] * 7 * 24 + x["start_hour"] * 60 + x["start_minute"])
     chosen_groups = [subgroup_data["subgroup_display_name"], group_name] # mixed
-    weekday_names = ["None", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
+
     message_not_uploaded = (group_name not in ["6N", "5N", "4N", "3N", "2N"])
     header_links = []
     header_links.extend(
@@ -120,10 +120,10 @@ async def get_subgroup_schedule(request: Request, group_name: str, subgroup_name
 
     subgroup_id = subgroup_data["subgroup_id"]
     db.statistics_table.insert("subgroup", item_id=subgroup_id)
-
+    print(schedule)
     return templates.TemplateResponse(name="schedule_group.html", request=request, context={
         "schedule": schedule, "group": group_name, "category_title": subgroup_data["subgroup_display_name"],
-        "subgroups_data": subgroups_data, "chosen_groups": chosen_groups, "weekday_names": weekday_names,
+        "subgroups_data": subgroups_data, "chosen_groups": chosen_groups,
         "message_not_uploaded": message_not_uploaded, "header_links": header_links})
 
 @app.get("/classroom/{classroom_short_name}")
@@ -137,10 +137,10 @@ async def get_classroom_schedule(request: Request, classroom_short_name: str):
 
     db.statistics_table.insert("classroom", item_id=classroom_id)
 
-    weekday_names = ["None", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
+
     return templates.TemplateResponse(name="schedule_group.html", request=request, context={
         "schedule": schedule, "group": [], "category_title": classroom_display_name,
-        "subgroups_data": [], "chosen_groups": chosen_groups, "weekday_names": weekday_names,
+        "subgroups_data": [], "chosen_groups": chosen_groups,
         "message_not_uploaded": False, "header_links": []})
 
 @app.get("/hello/{name}", response_class=HTMLResponse)
@@ -266,9 +266,9 @@ def get_teacher_schedule(request: Request, teacher_init: str):
     db.statistics_table.insert("teacher", item_name=teacher_init)
     lessons.sort(key=lambda x: x["weekday"] * 7 * 24 + x["start_hour"] * 60 + x["start_minute"])
     chosen_groups = 'all'
-    weekday_names = ["None", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
+
     return templates.TemplateResponse(name="schedule_group.html", context={
-        "request": request, "schedule": lessons, "chosen_groups": chosen_groups, "weekday_names": weekday_names, "category_title": name})
+        "request": request, "schedule": lessons, "chosen_groups": chosen_groups, "category_title": name})
     # return templates.TemplateResponse(name="search.html", context={"request": request})
 
 def make_search_options() -> list[dict]:

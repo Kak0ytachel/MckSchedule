@@ -1,6 +1,12 @@
+### v0.1.8-beta - released 07/02/2026
+- Added multiple semesters support
+- Fixed background cards clipping on the main page
+- Fixed dropdown behavior on mobile devices
+
+
 ### v0.1.7-beta - released 08/01/2026
 - Added language change
-- Added russian and polish translations
+- Added Russian and Polish translations
 - Fixed statistics page buttons and mobile device counting
 
 ### v0.1.6-beta - released 02/01/2026
@@ -23,8 +29,8 @@
 - Added home / index ("/") page
 
 ### v0.1.1-beta - released 11/12/2025 
-- Added simple search page + placeholder for most commonly used groups
-- Added simple roadmap to changelog page
+- Added a simple search page and placeholder for the most commonly used groups
+- Added a simple roadmap to the changelog page
 
 ### v0.1.0 beta - released 09/12/2025
 first release into production, yay!

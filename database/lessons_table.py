@@ -55,8 +55,10 @@ class LessonsTable(BaseTable):
             return []
         if len(lesson_ids) == 1:
             return [self.find_lesson_by_id(lesson_ids[0])]
-        self.cursor.execute("SELECT * FROM lessons WHERE lesson_id IN (%s);" % ", ".join(["%s"] * len(lesson_ids)),
-                            lesson_ids)
+        self.cursor.execute(
+            "SELECT lesson_id, short_subject_name, classroom_id, teacher_initials, weekday, start_hour, "
+            "start_minute, end_hour, end_minute, semester_id FROM lessons WHERE lesson_id IN (%s);"
+            % ", ".join(["%s"] * len(lesson_ids)), lesson_ids)
         lessons = []
         for item in self.cursor.fetchall():
             lesson = {'lesson_id': item[0],
@@ -67,7 +69,8 @@ class LessonsTable(BaseTable):
                       'start_hour': item[5],
                       'start_minute': item[6],
                       'end_hour': item[7],
-                      'end_minute': item[8]
+                      'end_minute': item[8],
+                      'semester_id': item[9],
             }
             lessons.append(lesson)
         return lessons

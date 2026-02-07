@@ -71,10 +71,8 @@ async def get_group_schedule(request: Request, group_name: str, semester_id: int
     if group_name not in db.groups_table.get_all_group_names():
         return RedirectResponse(url="/not-found")
 
-    default_semester_id = db.semesters_table.get_current_semester_id()
     if semester_id is None:
-        semester_id = default_semester_id
-    print("semester_id: ", semester_id)
+        semester_id = db.semesters_table.get_current_semester_id()
 
     schedule = db.get_schedule_from_group(group_name, semester_id)
 
@@ -94,11 +92,7 @@ async def get_group_schedule(request: Request, group_name: str, semester_id: int
     db.statistics_table.insert("group", item_id=group_id)
 
     base_link = "/group/" + group_name
-    semesters = db.semesters_table.get_semesters()
-    for i in semesters:
-        i['is_default'] = i['semester_id'] == default_semester_id
-        i['is_chosen'] = i['semester_id'] == semester_id
-        i['link'] = base_link + "/semester/" + str(i["semester_id"]) if not i['is_default'] else base_link
+    semesters = make_semesters(base_link, semester_id)
 
     header_links = []
     header_links.extend([{"link": f"/group/{i["parent_group_name"]}/{i["subgroup_name"]}",
@@ -115,16 +109,26 @@ async def get_group_schedule(request: Request, group_name: str, semester_id: int
 
 
 @app.get("/group/{group_name}/{subgroup_name}")
-async def get_subgroup_schedule(request: Request, group_name: str, subgroup_name: str):
+@app.get("/group/{group_name}/{subgroup_name}/semester/{semester_id}")
+async def get_subgroup_schedule(request: Request, group_name: str, subgroup_name: str, semester_id: int = None):
+
+    if semester_id is None:
+        semester_id = db.semesters_table.get_current_semester_id()
+
     group_id = db.groups_table.find_group_id(group_name)
     subgroup_data = db.subgroups_table.find_subgroup_info_by_name_and_parent(subgroup_name, group_id)
     subgroup_data["parent_group_name"] = group_name
     subgroups_data = [subgroup_data]
     schedule = db.extend_lessons_data(db.get_subgroup_schedule(subgroup_name, group_name))
+    schedule = list(filter(lambda x: (x['semester_id'] == semester_id), schedule)) #TODO: replace with mega query
     schedule.sort(key=lambda x: x["weekday"] * 7 * 24 + x["start_hour"] * 60 + x["start_minute"])
     chosen_groups = [subgroup_data["subgroup_display_name"], group_name] # mixed
 
     message_not_uploaded = (group_name not in ["6N", "5N", "4N", "3N", "2N"])
+
+    base_link = "/group/" + group_name + "/" + subgroup_name
+    semesters = make_semesters(base_link, semester_id)
+
     header_links = []
     header_links.extend(
         [{"link": f"/group/{i["parent_group_name"]}/{i["subgroup_name"]}", "name": i["subgroup_display_name"], "data_subgroup": i["subgroup_name"]} for i in
@@ -137,16 +141,23 @@ async def get_subgroup_schedule(request: Request, group_name: str, subgroup_name
     return templates.TemplateResponse(name="schedule_group.html", request=request, context={
         "schedule": schedule, "group": group_name, "category_title": subgroup_data["subgroup_display_name"],
         "subgroups_data": subgroups_data, "chosen_groups": chosen_groups,
-        "message_not_uploaded": message_not_uploaded, "header_links": header_links})
+        "message_not_uploaded": message_not_uploaded, "header_links": header_links, "semesters": semesters, })
 
 @app.get("/classroom/{classroom_short_name}")
-async def get_classroom_schedule(request: Request, classroom_short_name: str):
+@app.get("/classroom/{classroom_short_name}/semester/{semester_id}")
+async def get_classroom_schedule(request: Request, classroom_short_name: str, semester_id: int = None):
+    if semester_id is None:
+        semester_id = db.semesters_table.get_current_semester_id()
+
     classroom_short_name = classroom_short_name.lower()
     classroom_id = db.classrooms_table.find_classroom_id_by_short_name(classroom_short_name)
     classroom_display_name = db.classrooms_table.find_classroom_display_name(classroom_id)
-    schedule = db.extend_lessons_data(db.lessons_table.find_lessons_by_classroom_id(classroom_id, 1)) #TODO fix
+    schedule = db.extend_lessons_data(db.lessons_table.find_lessons_by_classroom_id(classroom_id, semester_id))
     schedule.sort(key=lambda x: x["weekday"] * 7 * 24 + x["start_hour"] * 60 + x["start_minute"])
     chosen_groups = 'all'
+
+    base_link = "/classroom/" + classroom_short_name
+    semesters = make_semesters(base_link, semester_id)
 
     db.statistics_table.insert("classroom", item_id=classroom_id)
 
@@ -154,7 +165,7 @@ async def get_classroom_schedule(request: Request, classroom_short_name: str):
     return templates.TemplateResponse(name="schedule_group.html", request=request, context={
         "schedule": schedule, "group": [], "category_title": classroom_display_name,
         "subgroups_data": [], "chosen_groups": chosen_groups,
-        "message_not_uploaded": False, "header_links": []})
+        "message_not_uploaded": False, "header_links": [], "semesters": semesters})
 
 @app.get("/hello/{name}", response_class=HTMLResponse)
 async def say_hello(request: Request, name: str):
@@ -267,21 +278,29 @@ async def main_test(request: Request):
     return templates.TemplateResponse(name="home.html", context={"request": request, "elements": elements, "groups": group_items})
 
 @app.get("/teacher/{teacher_init}", response_class=HTMLResponse)
-def get_teacher_schedule(request: Request, teacher_init: str):
+@app.get("/teacher/{teacher_init}/semester/{semester_id}", response_class=HTMLResponse)
+def get_teacher_schedule(request: Request, teacher_init: str, semester_id: int = None):
+    if semester_id is None:
+        semester_id = db.semesters_table.get_current_semester_id()
+
     name = db.teachers_table.find_teacher_name(teacher_init)
-    print(
-        f"Teacher {teacher_init} is {name}"
-    )
-    lessons = db.lessons_table.find_lessons_by_teacher_initials(teacher_init, 1) #TODO Fix
-    print(lessons)
+    # print(
+    #     f"Teacher {teacher_init} is {name}"
+    # )
+    lessons = db.lessons_table.find_lessons_by_teacher_initials(teacher_init, semester_id)
+    # print(lessons)
     lessons = db.extend_lessons_data(lessons)
 
     db.statistics_table.insert("teacher", item_name=teacher_init)
     lessons.sort(key=lambda x: x["weekday"] * 7 * 24 + x["start_hour"] * 60 + x["start_minute"])
     chosen_groups = 'all'
 
+    base_link = "/teacher/" + teacher_init
+    semesters = make_semesters(base_link, semester_id)
+
     return templates.TemplateResponse(name="schedule_group.html", context={
-        "request": request, "schedule": lessons, "chosen_groups": chosen_groups, "category_title": name})
+        "request": request, "schedule": lessons, "chosen_groups": chosen_groups, "category_title": name,
+        "semesters": semesters})
     # return templates.TemplateResponse(name="search.html", context={"request": request})
 
 def make_search_options() -> list[dict]:
@@ -374,6 +393,14 @@ def get_lang(request: Request):
         # lang = "abd"
     return lang
 
+
+def make_semesters(base_link, semester_id) -> dict:
+    semesters = db.semesters_table.get_semesters()
+    for i in semesters:
+        i['is_default'] = i['semester_id'] == db.semesters_table.get_current_semester_id()
+        i['is_chosen'] = i['semester_id'] == semester_id
+        i['link'] = base_link + "/semester/" + str(i["semester_id"]) if not i['is_default'] else base_link
+    return semesters
 
 # @app.get("/test/setlang")
 # def set_lang_test(request: Request):

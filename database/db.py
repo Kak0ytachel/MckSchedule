@@ -29,8 +29,8 @@ class Database:
             user=os.getenv("DB_USER"),
             password=os.getenv("DB_PASSWORD"),
             autocommit=True,
-            port=os.getenv("DB_PORT")
-            # database="schedule"
+            port=os.getenv("DB_PORT"),
+            database="schedule"
         )
 
         def ping_then_execute(operation: str, *args, **kwargs):
@@ -72,7 +72,7 @@ class Database:
 
     def _drop_database(self):
         # self.cursor.execute("DROP DATABASE IF EXISTS schedule;")
-        self.cursor.execute("DROP TABLE IF EXISTS lessons, student_groups, subgroups, subjects, teachers, classrooms, group_lessons, subgroup_lessons;")
+        self.cursor.execute("DROP TABLE IF EXISTS lessons, student_groups, subgroups, subjects, teachers, classrooms, group_lessons, subgroup_lessons, semesters;")
 
     def get_group_schedule(self, group_name):
         group_id = self.groups_table.find_group_id(group_name)
@@ -145,10 +145,10 @@ class Database:
             child_subgroup_info[i]['parent_group_name'] = group_name
         return child_subgroup_info
 
-    def get_schedule_from_group(self, group_name) -> dict:
+    def get_schedule_from_group(self, group_name: str, semester_id: int) -> dict:
         with open("database/get_all_from_group.sql", "r") as file:
             query = file.read()
-            self.dict_cursor.execute(query, (group_name, group_name))
+            self.dict_cursor.execute(query, (group_name, group_name, semester_id))
             # print([i[0] for i in self.cursor.description])
             # result_data = []
             data = []

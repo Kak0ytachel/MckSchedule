@@ -11,5 +11,6 @@
     "statistics-title", "statistics-text",
     "search-title", "search-text", "search-text-2",
     "not-found-title", "not-found-text",
-    "schedule-monday", "schedule-tuesday", "schedule-wednesday", "schedule-thursday", "schedule-friday"
+    "schedule-monday", "schedule-tuesday", "schedule-wednesday", "schedule-thursday", "schedule-friday",
+    "schedule-semesters", "schedule-semester-winter", "schedule-semester-summer"
 ]

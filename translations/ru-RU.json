@@ -6,7 +6,7 @@
     "navbar-button-about": "О сайте",
     "navbar-button-changelog": "Обновления",
     "navbar-search-placeholder": "Поиск",
-    "home-page-title-main": "Узнавайте свое \nрасписание",
+    "home-page-title-main": "Находите свое \nрасписание",
     "home-page-title-accent": "легко",
     "home-page-search-subtitle": "просто ввведите название группы",
     "home-page-choose-subtitle": "или выберите из предложенных ниже",
@@ -32,5 +32,8 @@
     "schedule-tuesday": "Вторник",
     "schedule-wednesday": "Среда",
     "schedule-thursday": "Четверг",
-    "schedule-friday": "Пятница"
+    "schedule-friday": "Пятница",
+    "schedule-semesters": "Семестр: ",
+    "schedule-semester-winter": "Зимний",
+    "schedule-semester-summer": "Летний"
 }

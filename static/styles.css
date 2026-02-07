@@ -652,6 +652,8 @@ html{
     margin: 0 0 25px 0;
     font-family: Roboto, sans-serif;
 }
+
+
 .schedule-semester{
     display: inline-block;
     margin: 5px 2px;
@@ -765,5 +767,9 @@ html{
 
     .header-group-container{
         margin-left: unset;
+    }
+
+    .schedule-semester-box{
+        margin-top: 25px;
     }
 }

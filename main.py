@@ -30,7 +30,7 @@ async def not_found(request: Request, *args):
     return templates.TemplateResponse(name="not_found.html", context={"request": request})
 
 db = Database()
-print(db.get_schedule_from_group("6N"))
+print(db.get_schedule_from_group("6N", 1))
 app = FastAPI(exception_handlers={404: not_found})
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
@@ -65,12 +65,18 @@ async def get_lesson(request: Request, id: str):
     chosen_groups.extend(lesson_data["groups"]) # mixed
     return templates.TemplateResponse(name="card_page.html", request=request, context={"lesson": lesson_data, "chosen_groups": chosen_groups})
 
+@app.get("/group/{group_name}/semester/{semester_id}")
 @app.get("/group/{group_name}")
-async def get_group_schedule(request: Request, group_name: str):
+async def get_group_schedule(request: Request, group_name: str, semester_id: int = None):
     if group_name not in db.groups_table.get_all_group_names():
         return RedirectResponse(url="/not-found")
 
-    schedule = db.get_schedule_from_group(group_name)
+    default_semester_id = db.semesters_table.get_current_semester_id()
+    if semester_id is None:
+        semester_id = default_semester_id
+    print("semester_id: ", semester_id)
+
+    schedule = db.get_schedule_from_group(group_name, semester_id)
 
 
     subgroups_data = db.get_child_subgroups(group_name)
@@ -82,10 +88,17 @@ async def get_group_schedule(request: Request, group_name: str):
     chosen_groups = [i["subgroup_display_name"] for i in subgroups_data]
     chosen_groups.append(group_name) # mixed
 
-    message_not_uploaded = (group_name not in ["6N", "5N", "4N", "3N", "2N"]) #TODO: add "finished" field to db
+    message_not_uploaded = (group_name not in ["6N", "5N", "4N", "3N", "2N"] or semester_id == 2) #TODO: add "finished" field to db
 
     group_id = db.groups_table.find_group_id(group_name)
     db.statistics_table.insert("group", item_id=group_id)
+
+    base_link = "/group/" + group_name
+    semesters = db.semesters_table.get_semesters()
+    for i in semesters:
+        i['is_default'] = i['semester_id'] == default_semester_id
+        i['is_chosen'] = i['semester_id'] == semester_id
+        i['link'] = base_link + "/semester/" + str(i["semester_id"]) if not i['is_default'] else base_link
 
     header_links = []
     header_links.extend([{"link": f"/group/{i["parent_group_name"]}/{i["subgroup_name"]}",
@@ -98,7 +111,7 @@ async def get_group_schedule(request: Request, group_name: str):
     return templates.TemplateResponse(name="schedule_group.html", request=request, context={
         "schedule": schedule, "group": group_name, "category_title": group_name, "subgroups_data": subgroups_data,
         "chosen_groups": chosen_groups, "message_not_uploaded": message_not_uploaded,
-        "header_links": header_links})
+        "header_links": header_links, "semesters": semesters})
 
 
 @app.get("/group/{group_name}/{subgroup_name}")

@@ -29,11 +29,16 @@
 {#                </a>#}
             </div>
         </div>
+        {% if semesters is defined %}
+{#            TODO: fix ^  #}
         <div class="schedule-semester-box">
-            Semester:
-            <a class="schedule-semester"> Winter</a>
-            <a class="schedule-semester" data-active="false"> Summer</a>
+            {{ translate(request, "schedule-semesters")}}
+            {% for i in semesters %}
+                <a class="schedule-semester" data-active={{ i.is_chosen|string|lower }} href={{ i.link}} > {{ translate(request, i.translation_name) }}</a>
+            {% endfor %}
+{#            <a class="schedule-semester" data-active="false"> Summer</a>#}
         </div>
+        {% endif %}
         {% if message_not_uploaded == True %}
         <div class="notification-message" id="notification-message">
             <div class="notification-message-line"></div>

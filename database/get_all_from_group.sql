@@ -33,7 +33,7 @@ SELECT
           subgroups.subgroup_display_name,
           'group_id',
           subgroups.group_id,
-          'group_name',
+          'parent_group_name',
           student_groups.group_name
         )
       ) AS subgroups
@@ -66,7 +66,7 @@ WHERE
       WHERE
         subgroup_lessons.subgroup_id IN (SELECT subgroup_id FROM subgroups WHERE group_id = (SELECT group_id FROM student_groups WHERE group_name = %s))
     ) AND
-    semester_id = 1
+    semester_id = %s
   )
 ORDER BY
   weekday,

@@ -32,5 +32,8 @@
     "schedule-tuesday": "Wtorek",
     "schedule-wednesday": "Środa",
     "schedule-thursday": "Czwartek",
-    "schedule-friday": "Piątek"
+    "schedule-friday": "Piątek",
+    "schedule-semesters": "Semestr: ",
+    "schedule-semester-winter": "Zimowy",
+    "schedule-semester-summer": "Letni"
 }

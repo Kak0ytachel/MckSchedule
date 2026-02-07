@@ -16,7 +16,7 @@
     "changelog-text": "Here you can find project development logs. For more info, check out ",
     "changelog-link": "about page",
     "schedule-title": "Schedule ",
-    "schedule-not-uploaded-message": "This group's schedule is {}not fully uploaded yet{}. Please by now refer to the classic timetable. If you are interested in it being uploaded, please {}contact us{}.",
+    "schedule-not-uploaded-message": "This schedule is {}not fully uploaded yet{}. Please by now refer to the classic timetable. If you are interested in it being uploaded, please {}contact us{}.",
     "footer-line-1": "Made by chel0 with ❤",
     "footer-line-2": "Open-source on GitHub ({}link{})",
     "footer-line-3": "Support / feature request ({}telegram{})",

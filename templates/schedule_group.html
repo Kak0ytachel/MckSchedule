@@ -6,6 +6,7 @@
     <title>Schedule - {{ category_title }}</title>
 
     <script type="text/javascript" src="{{ url_for('static', path='index.js') }}" > </script>
+    <script type="text/javascript" src="{{ url_for('static', path='bookmark.js') }}"> </script>
     <link rel="stylesheet" href="{{ url_for('static', path='/styles.css') }}">
 </head>
 <body>
@@ -16,11 +17,14 @@
 <main style="background-color: white;">
     <header style="margin: 10px">
         <div class="header-container">
-            <h1>{{ translate(request, "schedule-title")}} - {{ category_title }}</h1>
+            <div class="schedule-title-block">
+                <h1 data-title="{{ category_title }}" id="schedule-title" class="schedule-title">{{ translate(request, "schedule-title")}} - {{ category_title }}</h1>
+                <img class="schedule-bookmark-button" id="bookmark" onClick="bookmarkClick(event)" data-is-saved="false" data-src-empty="{{ url_for('static', path='bookmark-regular-full.svg') }}" data-src-filled="{{ url_for('static', path='bookmark-solid-full.svg') }}" src="{{ url_for('static', path='bookmark-regular-full.svg') }}" alt="bookmark">
+            </div>
 
             <div class="header-group-container">
                 {% for link_data in header_links %}
-                <a href={{ link_data.link }} class="schedule-group" data-subgroup={{ link_data.data_subgroup }} data-is-chosen="true">
+                <a href='{{ link_data.link }}' class="schedule-group" data-subgroup="{{ link_data.data_subgroup }}" data-is-chosen="true">
                  {{ link_data.name }}
                 </a>
                 {% endfor %}

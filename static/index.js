@@ -33,5 +33,21 @@ function hideMessage() {
 }
 
 
+function getCookieByName(name) {
+    // console.log("getCookieByName:")
+    // console.log(document.cookie)
+     const cookies = document.cookie.split(';');
+     for (let cookie of cookies) {
+          cookie = cookie.trim();
+          if (cookie.startsWith(name + '=')) {
+              let result = cookie.substring(name.length + 1);
+              // console.log(`result: ${result}`);
+              return result;
+          }
+     }
+     // console.log("Cookie not found, returning null")
+    return null;
+}
+
 // console.log(navigator.language);
 addEventListener('resize', resizeCheckDropDownMenu);

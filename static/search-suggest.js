@@ -46,11 +46,11 @@ function makeSuggestions(searchField, suggestionsContainer) {
         keys: ['name']
     });
     const result = fuse.search(searchField.value);
-    console.log(result);
+    // console.log(result);
     showSuggestions(result, suggestionsContainer);
 }
 function hideSuggestions(event, suggestionsContainer) {
-    console.log(event)
+    // console.log(event)
     if (suggestionsContainer.contains(event.relatedTarget)){
         return;
     }

@@ -681,6 +681,22 @@ html{
     /*background-color: unset;*/
 }
 
+.schedule-title{
+    display: inline;
+    margin-right: 10px;
+}
+.schedule-title-block{
+    display: inline-block;
+    margin: 1.4rem 0;
+    text-align: center;
+}
+.schedule-bookmark-button{
+    width: 2rem;
+    height: 2rem;
+    display: inline;
+    translate: 0 6px;
+}
+
 
 @media screen and (max-width: 800px) {
     .time-table {

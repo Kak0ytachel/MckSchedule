@@ -57,6 +57,170 @@
                 });
             </script>
             <a class="nav-link" href="/">{{ translate(request, "navbar-button-schedule")}}</a>
+{#            <a class="nav-link" href="/">Saved</a>#}
+{#            TODO: add translation#}
+            <div class="saved-menu-container">
+                <button class="nav-link saved-menu-open-button" onclick="    ">Saved</button>
+                <div class="saved-menu-helper">
+                <div class="saved-menu" style="display: none;" >
+                        <div class="saved-menu-box">
+{#                            <a class="saved-menu-button">6N / inz</a>#}
+{#                            <a class="saved-menu-button">Kinga Gorecka-Rokita</a>#}
+{#                            <a class="saved-menu-button">Warszawa (09)</a>#}
+                            <div class="saved-menu-empty" style="">No saved schedules yet. Click
+                                <img src="{{ url_for('static', path='bookmark-regular-full.svg') }}" alt="bookmark" class="saved-menu-empy-bookmark">
+ to save one</div>
+                        </div>
+                </div>
+                </div>
+            </div>
+<script>
+    let bookmarkMenuButton = document.querySelector('.saved-menu-open-button');
+    let bookmarkMenu = document.querySelector('.saved-menu-box');
+    let bookmarkMenuEmpty = document.querySelector('.saved-menu-empty');
+    function showSavedMenu() {
+        let items = JSON.parse(getCookieByName('bookmarks')) ?? [];
+        let names = items.map(item => item['name']);
+        let names_there = []
+        {#console.log(items);#}
+        {#console.log(bookmarkMenuEmpty);#}
+        for (let i = 0; i < bookmarkMenu.children.length; i++) {
+            let child = bookmarkMenu.children[i]
+            if (child.classList.contains('saved-menu-empty')) {
+                {#console.log("its there!")#}
+                continue;
+            }
+            if (names.includes(child.innerText)) {
+                names_there.push(child.innerText);
+                continue;
+            }
+            child.remove();
+            i--;
+        }
+        for (let item of items) {
+            if (names_there.includes(item.name)) continue;
+            let a = document.createElement('a');
+            a.classList.add('saved-menu-button');
+            a.href = item.link;
+            a.innerText = item.name;
+            bookmarkMenu.appendChild(a)
+        }
+
+        if (bookmarkMenu.children.length === 1) {
+            bookmarkMenuEmpty.style.display = 'block';
+        } else {
+            bookmarkMenuEmpty.style.display = 'none';
+        }
+
+    }
+
+
+
+    bookmarkMenuButton.addEventListener('click', showSavedMenu);
+
+</script>
+            <style>
+
+.saved-menu-helper{
+    height: 1px;
+    width: 100%;
+    translate: 50% 0;
+    position: relative;
+    z-index: 12;
+}
+
+.saved-menu-empty{
+    padding: 8px;
+    font-family: Arial, Helvetica, sans-serif;
+    {#width: 120px;#}
+    width: max-content;
+    max-width: 150px;
+    font-size: 1rem;
+}
+
+.saved-menu-empy-bookmark{
+    width: 1rem;
+    height: 1rem;
+    display: inline;
+    translate: 0 2px;
+}
+.saved-menu{
+    translate: -50% 0;
+    /*background: tomato;*/
+    /*background-color: white;*/
+    position: absolute;
+    /*padding: 10px;*/
+    border-radius: 8px;
+    margin-top: 10px;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.2);
+    /*border-radius: 16px;*/
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    display: none;
+    z-index: 12;
+}
+
+.saved-menu-button {
+    white-space: nowrap;
+    background: unset;
+    border: 0;
+    cursor: pointer;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 1em;
+    padding: 8px;
+    width: 100%;
+    text-align: left;
+    display: inline-block;
+    text-decoration: none;
+    box-sizing: border-box;
+    vertical-align: middle;
+    user-select: none;
+    color: unset;
+}
+.saved-menu-button:visited{
+    color: unset;
+}
+
+.saved-menu-button:hover {
+    background-color: rgba(66, 66, 66, 0.16);
+}
+
+.saved-menu-open-button{
+    background: unset;
+    border: 0;
+}
+
+.saved-menu-container{
+    position: relative;
+    display: inline-block;
+}
+            </style>
+
+            <script>
+                const savedChangeDialog = document.querySelector('.saved-menu');
+                const savedDialogButton = document.querySelector('.saved-menu-open-button');
+
+                window.addEventListener('click', (event) => {
+
+                    // console.log(dialog.style.display, event.target);
+                    if (!savedChangeDialog.contains(event.target) && savedChangeDialog.style.display !== 'none') {
+                        savedChangeDialog.style.display = 'none';
+                    } else if (savedChangeDialog.style.display === 'none' && savedDialogButton === event.target)
+                    {
+                        // console.log('show');
+                        savedChangeDialog.style.display = 'block';
+                    }
+                    else if (savedChangeDialog.style.display === 'block' && event.target === savedDialogButton)
+                    {
+                        // console.log('hide');
+                        savedChangeDialog.style.display = 'none';
+                    }
+
+
+                });
+            </script>
             <a class="nav-link" href="/about">{{ translate(request, "navbar-button-about")}}</a>
             <a class="nav-link" href="/changelog">{{ translate(request, "navbar-button-changelog")}}</a>
         </div>

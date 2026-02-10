@@ -28,6 +28,7 @@ function bookmarkClick(event) {
                 break;
             }
         }
+        showSnackbar("Unsaved schedule")
     } else {
         // save
         bookmark.setAttribute("data-is-saved", "true");
@@ -45,6 +46,7 @@ function bookmarkClick(event) {
         } else {
             items.push(item);
         }
+        showSnackbar("Saved schedule")
     }
     console.log(items);
     let now = Date.now();
@@ -72,6 +74,28 @@ function bookmarkInit() {
         bookmark.setAttribute("data-is-saved", "true")
         bookmark.src = bookmark.getAttribute("data-src-filled")
     }
+}
+
+let snackbarTimer;
+
+function showSnackbar(message) {
+    console.log(`Showing snackbar: ${message}`)
+    const x = document.getElementById("snackbar");
+    clearTimeout(snackbarTimer);
+    x.innerText = message;
+
+    x.classList.remove("show-snackbar");
+
+    // Trigger reflow:
+    // Accessing offsetWidth forces the browser to re-render the
+    // element without the 'show' class immediately.
+    void x.offsetWidth;
+
+    x.classList.add("show-snackbar");
+
+    snackbarTimer = setTimeout(function() {
+        x.classList.remove("show-snackbar");
+    }, 3000);
 }
 
 window.addEventListener('load', bookmarkInit);

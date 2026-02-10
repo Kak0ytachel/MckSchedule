@@ -35,5 +35,10 @@
     "schedule-friday": "Piątek",
     "schedule-semesters": "Semestr: ",
     "schedule-semester-winter": "Zimowy",
-    "schedule-semester-summer": "Letni"
+    "schedule-semester-summer": "Letni",
+    "navbar-button-saved": "Wybrane",
+    "navbar-dropdown-saved-none-1": "Nie ma jeszcze zapisanych rozkładów zajęć. Kliknij",
+    "navbar-dropdown-saved-none-2": "aby zapisać",
+    "snackbar-bookmark-saved": "Rozkład zajęć zapisany do wybranych.",
+    "snackbar-bookmark-removed": "Rozkład zajęć usunięty z wybranych."
 }

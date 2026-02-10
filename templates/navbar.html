@@ -37,16 +37,16 @@
 {#            <a class="nav-link" href="/">Saved</a>#}
 {#            TODO: add translation#}
             <div class="saved-menu-container">
-                <button class="nav-link saved-menu-open-button" onclick="    ">Saved</button>
+                <button class="nav-link saved-menu-open-button" onclick="    ">{{ translate(request, 'navbar-button-saved') }}</button>
                 <div class="saved-menu-helper">
                 <div class="saved-menu" style="display: none;" >
                         <div class="saved-menu-box">
 {#                            <a class="saved-menu-button">6N / inz</a>#}
 {#                            <a class="saved-menu-button">Kinga Gorecka-Rokita</a>#}
 {#                            <a class="saved-menu-button">Warszawa (09)</a>#}
-                            <div class="saved-menu-empty" style="">No saved schedules yet. Click
+                            <div class="saved-menu-empty" style="">{{ translate(request, "navbar-dropdown-saved-none-1") }}
                                 <img src="{{ url_for('static', path='bookmark-regular-full.svg') }}" alt="bookmark" class="saved-menu-empy-bookmark">
- to save one</div>
+                                {{translate(request, "navbar-dropdown-saved-none-2")}}</div>
                         </div>
                 </div>
                 </div>

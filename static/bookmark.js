@@ -28,7 +28,8 @@ function bookmarkClick(event) {
                 break;
             }
         }
-        showSnackbar("Unsaved schedule")
+        let message = bookmark.getAttribute("data-unsaved-message");
+        showSnackbar(message)
     } else {
         // save
         bookmark.setAttribute("data-is-saved", "true");
@@ -46,7 +47,8 @@ function bookmarkClick(event) {
         } else {
             items.push(item);
         }
-        showSnackbar("Saved schedule")
+        let message = bookmark.getAttribute("data-saved-message");
+        showSnackbar(message)
     }
     console.log(items);
     let now = Date.now();

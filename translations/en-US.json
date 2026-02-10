@@ -35,5 +35,10 @@
     "schedule-friday": "Friday",
     "schedule-semesters": "Semester: ",
     "schedule-semester-winter": "Winter",
-    "schedule-semester-summer": "Summer"
+    "schedule-semester-summer": "Summer",
+    "navbar-button-saved": "Saved",
+    "navbar-dropdown-saved-none-1": "No saved schedules yet. Click ",
+    "navbar-dropdown-saved-none-2": "to save one",
+    "snackbar-bookmark-saved": "Schedule saved to your list.",
+    "snackbar-bookmark-removed": "Schedule removed."
 }

@@ -639,11 +639,14 @@ html{
 }
 
 .language-menu-open-button{
+    margin: 0;
     background: unset;
     border: 0;
+    padding: 0;
 }
 
 .language-menu-container{
+    margin: 8px;
     position: relative;
     display: inline-block;
 }
@@ -765,11 +768,14 @@ html{
 }
 
 .saved-menu-open-button{
+    margin: 0;
     background: unset;
     border: 0;
+    padding: 0;
 }
 
 .saved-menu-container{
+    margin: 8px;
     position: relative;
     display: inline-block;
 }

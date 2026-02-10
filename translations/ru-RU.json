@@ -35,5 +35,10 @@
     "schedule-friday": "Пятница",
     "schedule-semesters": "Семестр: ",
     "schedule-semester-winter": "Зимний",
-    "schedule-semester-summer": "Летний"
+    "schedule-semester-summer": "Летний",
+    "navbar-button-saved": "Избранные",
+    "navbar-dropdown-saved-none-1": "Вы пока не сохранили ни одного расписания. Нажмите ",
+    "navbar-dropdown-saved-none-2": "чтобы добавить его сюда",
+    "snackbar-bookmark-saved": "Расписание сохранено в избранные.",
+    "snackbar-bookmark-removed": "Расписание удалено из избранных."
 }

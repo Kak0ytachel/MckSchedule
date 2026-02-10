@@ -1,8 +1,10 @@
+### v0.2.0-beta - released 10/02/2026
+- Added saved / favourite schedules
+
 ### v0.1.8-beta - released 07/02/2026
 - Added multiple semesters support
 - Fixed background cards clipping on the main page
 - Fixed dropdown behavior on mobile devices
-
 
 ### v0.1.7-beta - released 08/01/2026
 - Added language change

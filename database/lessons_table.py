@@ -1,4 +1,23 @@
+from typing import TypedDict
+
 from database.base_table import BaseTable
+
+class Lesson:
+    lesson_id: int
+    short_subject_name: str
+    classroom_id: int
+    teacher_initials: str
+    weekday: int
+    start_hour: int
+    start_minute: int
+    end_hour: int
+    end_minute: int
+    semester_id: int
+
+    def __init__(self, subject ):
+        pass
+
+
 
 
 class LessonsTable(BaseTable):
@@ -26,6 +45,8 @@ class LessonsTable(BaseTable):
 
     def add_lesson(self, short_subject_name: str, classroom_id: int, teacher_initials: str, weekday: int,  start_hour: int,
                    start_minute: int, end_hour: int, end_minute: int, semester_id: int) -> int:
+        classroom_id = int(classroom_id) # dataclasses fix
+        semester_id = int(semester_id)
         self.cursor.execute("INSERT INTO lessons (short_subject_name, classroom_id, teacher_initials, weekday, start_hour, "
                             "start_minute, end_hour, end_minute, semester_id) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s);",
                             (short_subject_name, classroom_id, teacher_initials, weekday, start_hour, start_minute,

@@ -374,8 +374,8 @@ def get_statistics(request: Request, period: str = "all"):
             i['display_name'] = teachers[i['item_name']]
             i['link'] = '/teacher/' + i['item_name']
         if i['item_type'] == "classroom":
-            i['display_name'] = classrooms[i['item_id']]['display_name']
-            i['link'] = '/classroom/' + classrooms[i['item_id']]['short_name']
+            i['display_name'] = classrooms[i['item_id']]['classroom_display_name']
+            i['link'] = '/classroom/' + classrooms[i['item_id']]['classroom_short_name']
     # return JSONResponse(content=stats)
     return templates.TemplateResponse(name="statistics.html", context={"request": request, "stats": stats, "period": period,
                                                                        "options": ["1d", "3d", "7d", "30d", "all"]})

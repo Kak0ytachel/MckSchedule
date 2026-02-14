@@ -15,9 +15,12 @@ class TeachersTable(BaseTable):
         self.cursor.execute("INSERT INTO teachers (teacher_initials, teacher_name) VALUES (%s, %s);",
                             (teacher_initials, teacher_name))
 
-    def find_teacher_name(self, teacher_initials: str) -> str:
+    def find_teacher_name(self, teacher_initials: str) -> str | None:
         self.cursor.execute("SELECT teacher_name FROM teachers WHERE teacher_initials=%s;", (teacher_initials,))
-        return self.cursor.fetchone()[0]
+        result = self.cursor.fetchone()
+        if result is not None:
+            return result[0]
+        return None
 
     def find_teacher_names(self, teacher_initials: list[str]) -> dict[str, str]:
         if (teacher_initials is None) or (len(teacher_initials) == 0):

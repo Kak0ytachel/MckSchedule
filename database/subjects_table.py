@@ -15,9 +15,12 @@ class SubjectsTable(BaseTable):
         self.cursor.execute("INSERT INTO subjects (subject_short_name, subject_name) VALUES (%s, %s);",
                             (subject_short_name, subject_name))
 
-    def find_subject_name(self, subject_short_name: str) -> str:
+    def find_subject_name(self, subject_short_name: str) -> str | None:
         self.cursor.execute("SELECT subject_name FROM subjects WHERE subject_short_name=%s;", (subject_short_name,))
-        return self.cursor.fetchone()[0]
+        item = self.cursor.fetchone()
+        if item is not None:
+            return item[0]
+        return None
 
     def find_subject_names(self, subject_short_names: list[str]) -> dict[str, str]:
         if (subject_short_names is None) or (len(subject_short_names) == 0):

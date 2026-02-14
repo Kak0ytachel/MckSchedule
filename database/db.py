@@ -19,11 +19,21 @@ import json
 dotenv.load_dotenv()
 
 
-
-
 class Database:
+    _instance = None
+    _initialized = True
+
+    def __new__(cls, *args, **kwargs):
+        if cls._instance is None:
+            cls._instance = super().__new__(cls)
+            cls._instance._initialized = False
+        return cls._instance
+
     def __init__(self):
+        if self._initialized:
+            return
         print("INITING DATABASE")
+        self._initialized = True
         self.mydb = mysql.connector.connect(
             host=os.getenv("DB_HOST"),
             user=os.getenv("DB_USER"),
@@ -111,7 +121,7 @@ class Database:
         subgroup_ids = [subgroup_id for subgroup_id_list in subgroups_ids_by_lesson_ids.values() for subgroup_id in
                         subgroup_id_list] # makes a list of all subgroup ids needed
         subgroup_names_by_ids = self.subgroups_table.find_subgroup_names(subgroup_ids)
-        group_ids_for_subgroups = [i["parent_group_id"] for i in subgroup_names_by_ids.values()] # makes a list of all group ids needed for subgroups
+        group_ids_for_subgroups = [i["group_id"] for i in subgroup_names_by_ids.values()] # makes a list of all group ids needed for subgroups
 
         groups_ids_by_lesson_ids = self.group_lessons_table.find_groups_by_lessons_ids(list(lesson_ids))
         groups_ids: list = [group_id for group_id_list in groups_ids_by_lesson_ids.values() for group_id in group_id_list]
@@ -119,8 +129,8 @@ class Database:
         group_names_by_ids = self.groups_table.find_group_names(groups_ids)
 
         for subgroup_id in subgroup_names_by_ids.keys():
-            subgroup_names_by_ids[subgroup_id]["parent_group_name"] = group_names_by_ids[int(subgroup_names_by_ids[subgroup_id]["parent_group_id"])]
-
+            subgroup_names_by_ids[subgroup_id]["parent_group_name"] = group_names_by_ids[int(subgroup_names_by_ids[subgroup_id]["group_id"])]
+            #todo: unificate and change parent_group_name to group_name
         teachers_names = self.teachers_table.find_teacher_names(list(teachers_initials))
         classrooms_data = self.classrooms_table.get_classroom_data() #TODO: fix - requests all classrooms data
         # classrooms_names = self.classrooms_table.find_classroom_display_names(list(classrooms_ids))
@@ -128,8 +138,8 @@ class Database:
 
         for lesson in lessons:
             lesson['teacher_name'] = teachers_names[lesson['teacher_init']]
-            lesson['classroom_name'] = classrooms_data[lesson['classroom_id']]['display_name']
-            lesson['classroom_short_name'] = classrooms_data[lesson['classroom_id']]['short_name']
+            lesson['classroom_name'] = classrooms_data[lesson['classroom_id']]['classroom_display_name']
+            lesson['classroom_short_name'] = classrooms_data[lesson['classroom_id']]['classroom_short_name']
             lesson['subject_name'] = subjects_names[lesson['short_subject_name']]
             lesson_group_ids = groups_ids_by_lesson_ids[lesson['lesson_id']] if lesson['lesson_id'] in groups_ids_by_lesson_ids.keys() else []
             lesson['groups'] = [group_names_by_ids[group_id] for group_id in lesson_group_ids]

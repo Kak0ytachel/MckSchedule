@@ -23,11 +23,12 @@ class SubgroupsTable(BaseTable):
                             ");")
 
     def add_subgroup(self, group_id: int, subgroup_name: str, subgroup_display_name: str) -> int:
+        group_id = int(group_id) # dataclasses fix
         self.cursor.execute("INSERT INTO subgroups (group_id, subgroup_name, subgroup_display_name) VALUES (%s, %s, %s);",
                             (group_id, subgroup_name, subgroup_display_name))
         return self.cursor.lastrowid
 
-    def find_subgroup_names(self, subgroup_ids: list[int]) -> dict[int, dict[str, str]]:
+    def find_subgroup_names(self, subgroup_ids: list[int]) -> dict[int, SubgroupData]:
         if (subgroup_ids is None) or (len(subgroup_ids) == 0):
             return {}
         self.cursor.execute("SELECT subgroup_id, subgroup_name, subgroup_display_name, group_id FROM subgroups WHERE subgroup_id IN (%s);" % ", ".join(["%s"] * len(subgroup_ids)), subgroup_ids)
@@ -36,11 +37,11 @@ class SubgroupsTable(BaseTable):
             subgroup_id: int = item[0]
             subgroup_name: str = item[1]
             subgroup_display_name: str = item[2]
-            parent_group_id: int = item[3]
-            subgroups[subgroup_id] = {'subgroup_name': subgroup_name, 'subgroup_display_name': subgroup_display_name, 'parent_group_id': parent_group_id}
+            group_id: int = item[3]
+            subgroups[subgroup_id] = {'subgroup_name': subgroup_name, 'subgroup_display_name': subgroup_display_name, 'group_id': group_id, 'subgroup_id': subgroup_id}
         return subgroups
 
-    def find_subgroup_info(self, subgroup_id: int) -> dict[str, str]:
+    def find_subgroup_info(self, subgroup_id: int) -> SubgroupData:
         self.cursor.execute("SELECT group_id, subgroup_name, subgroup_display_name FROM subgroups WHERE subgroup_id=%s;", (subgroup_id,))
         subgroup_info = self.cursor.fetchone()
         if subgroup_info is None:
@@ -48,13 +49,13 @@ class SubgroupsTable(BaseTable):
         group_id: int = subgroup_info[0]
         subgroup_name: str = subgroup_info[1]
         subgroup_display_name: str = subgroup_info[2]
-        return {'group_id': group_id, 'subgroup_name': subgroup_name, 'subgroup_display_name': subgroup_display_name}
+        return {'group_id': group_id, 'subgroup_name': subgroup_name, 'subgroup_display_name': subgroup_display_name, 'subgroup_id': subgroup_id}
 
-    def find_subgroup_info_by_name_and_parent(self, subgroup_name: str, group_id: int) -> dict:
+    def find_subgroup_info_by_name_and_parent(self, subgroup_name: str, group_id: int) -> SubgroupData | None:
         self.cursor.execute("SELECT subgroup_id, group_id, subgroup_name, subgroup_display_name FROM subgroups WHERE subgroup_name=%s AND group_id=%s;", (subgroup_name, group_id))
         subgroup_info = self.cursor.fetchone()
         if subgroup_info is None:
-            return {}
+            return None
         subgroup_id: int = subgroup_info[0]
         group_id: int = subgroup_info[1]
         subgroup_name: str = subgroup_info[2]
@@ -62,7 +63,7 @@ class SubgroupsTable(BaseTable):
         return {'subgroup_id': subgroup_id, 'group_id': group_id, 'subgroup_name': subgroup_name,
                 'subgroup_display_name': subgroup_display_name}
 
-    def find_subgroup_info_by_parent(self, group_id: int) -> list[dict]:
+    def find_subgroup_info_by_parent(self, group_id: int) -> list[SubgroupData]:
         self.cursor.execute("SELECT subgroup_id, group_id, subgroup_name, subgroup_display_name FROM subgroups WHERE group_id=%s;", (group_id,))
         subgroup_infos = []
         for i in self.cursor:
@@ -80,7 +81,7 @@ class SubgroupsTable(BaseTable):
             child_subgroup_ids.append(i[0])
         return child_subgroup_ids
 
-    def get_all_subgroups(self):
+    def get_all_subgroups(self) -> list[SubgroupData]:
         self.cursor.execute("SELECT subgroup_id, group_id, subgroup_name, subgroup_display_name FROM subgroups;")
         subgroup_info = []
         for i in self.cursor:

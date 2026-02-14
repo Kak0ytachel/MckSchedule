@@ -16,6 +16,7 @@ class GroupLessonsTable(BaseTable):
                             ");")
 
     def add_group_lesson(self, group_id: int, lesson_id: int):
+        group_id = int(group_id) # dataclasses fix
         self.cursor.execute("INSERT INTO group_lessons (group_id, lesson_id) VALUES (%s, %s);", (group_id, lesson_id))
 
     def find_group_lessons_ids(self, group_id: int) -> list[int]:

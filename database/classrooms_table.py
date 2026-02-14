@@ -3,9 +3,9 @@ from typing import TypedDict
 from database.base_table import BaseTable
 
 class ClassroomData(TypedDict):
-    id: int
-    short_name: str
-    display_name: str
+    classroom_id: int
+    classroom_short_name: str
+    classroom_display_name: str
 
 class ClassroomsTable(BaseTable):
     def __init__(self, cursor):
@@ -66,6 +66,13 @@ class ClassroomsTable(BaseTable):
             classroom_id: int = item[0]
             classroom_short_name: str = item[1]
             classroom_display_name: str = item[2]
-            result[classroom_id] = {'id': classroom_id, 'short_name': classroom_short_name,
-                                    'display_name': classroom_display_name}
+            result[classroom_id] = {'classroom_id': classroom_id, 'classroom_short_name': classroom_short_name,
+                                    'classroom_display_name': classroom_display_name}
         return result
+
+    def get_classroom_data_by_short_name(self, classroom_short_name: str) -> ClassroomData | None:
+        self.cursor.execute("SELECT classroom_id, classroom_short_name, classroom_display_name FROM classrooms WHERE classroom_short_name=%s;", (classroom_short_name,))
+        item = self.cursor.fetchone()
+        if item is None:
+            return None
+        return {'classroom_id': item[0], 'classroom_short_name': item[1], 'classroom_display_name': item[2]}

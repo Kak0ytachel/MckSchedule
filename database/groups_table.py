@@ -16,9 +16,12 @@ class GroupsTable(BaseTable):
         self.cursor.execute("INSERT INTO student_groups (group_name) VALUES (%s);", (group_name,))
         return self.cursor.lastrowid
 
-    def find_group_id(self, group_name: str) -> int:
+    def find_group_id(self, group_name: str) -> int | None:
         self.cursor.execute("SELECT group_id FROM student_groups WHERE group_name=%s;", (group_name,))
-        return self.cursor.fetchone()[0]
+        result = self.cursor.fetchone()
+        if result is not None:
+            return result[0]
+        return None
 
     def find_group_names(self, group_ids: list[int]) -> dict[int, str]:
         if len(group_ids) == 0:

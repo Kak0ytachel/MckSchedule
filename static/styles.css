@@ -518,7 +518,8 @@ html{
     font-family: Monospace, monospace;
     margin: 10px;
     border-radius: 10px;
-    display: flex
+    display: flex;
+    /*position: relative;*/
 }
 
 .notification-message-line{
@@ -536,11 +537,13 @@ html{
 .notification-message-close{
     background: transparent;
     border: none;
-    margin: 4px;
     vertical-align: top;
     height: 24px;
     font-size: 16px;
     cursor: pointer;
+    /*position: absolute;*/
+    right: 2px;
+    margin: 4px 4px 4px auto;
 }
 
 .search-suggestions-wrap{

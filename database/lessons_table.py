@@ -2,7 +2,7 @@ from typing import TypedDict
 
 from database.base_table import BaseTable
 
-class Lesson:
+class LessonData(TypedDict):
     lesson_id: int
     short_subject_name: str
     classroom_id: int
@@ -13,11 +13,6 @@ class Lesson:
     end_hour: int
     end_minute: int
     semester_id: int
-
-    def __init__(self, subject ):
-        pass
-
-
 
 
 class LessonsTable(BaseTable):
@@ -62,7 +57,7 @@ class LessonsTable(BaseTable):
         lesson = {'lesson_id': item[0],
                   'short_subject_name': item[1],
                   'classroom_id': item[2],
-                  'teacher_init': item[3],
+                  'teacher_initials': item[3],
                   'weekday': item[4],
                   'start_hour': item[5],
                   'start_minute': item[6],
@@ -85,7 +80,7 @@ class LessonsTable(BaseTable):
             lesson = {'lesson_id': item[0],
                       'short_subject_name': item[1],
                       'classroom_id': item[2],
-                      'teacher_init': item[3],
+                      'teacher_initials': item[3],
                       'weekday': item[4],
                       'start_hour': item[5],
                       'start_minute': item[6],
@@ -103,7 +98,7 @@ class LessonsTable(BaseTable):
             lesson = {'lesson_id': item[0],
                       'short_subject_name': item[1],
                       'classroom_id': item[2],
-                      'teacher_init': item[3],
+                      'teacher_initials': item[3],
                       'weekday': item[4],
                       'start_hour': item[5],
                       'start_minute': item[6],
@@ -120,7 +115,7 @@ class LessonsTable(BaseTable):
             lesson = {'lesson_id': item[0],
                       'short_subject_name': item[1],
                       'classroom_id': item[2],
-                      'teacher_init': item[3],
+                      'teacher_initials': item[3],
                       'weekday': item[4],
                       'start_hour': item[5],
                       'start_minute': item[6],
@@ -137,7 +132,7 @@ class LessonsTable(BaseTable):
             lesson = {'lesson_id': item[0],
                       'short_subject_name': item[1],
                       'classroom_id': item[2],
-                      'teacher_init': item[3],
+                      'teacher_initials': item[3],
                       'weekday': item[4],
                       'start_hour': item[5],
                       'start_minute': item[6],

@@ -55,6 +55,24 @@ search_options = []
 # async def root():
 #     return {"message": "Hello World"}
 
+def get_notification_message(request: Request, schedule_type: str, **kwargs):
+    notification_message = None
+    if schedule_type == "group" or schedule_type == "subgroup":
+        group_name = kwargs["group_name"]
+        semester_id = kwargs["semester_id"]
+        is_not_uploaded = (group_name not in ["6N", "5N", "4N", "3N", "2N"] and semester_id == 1)
+        if is_not_uploaded:
+            notification_message = translate(request, "schedule-not-uploaded-message", '<u>', '</u>',
+                                             '<a class="underline-link" href="https://t.me/dokpdl">', '</a>')
+        is_not_checked = (semester_id == 2)
+        if is_not_checked:
+            notification_message = translate(request, "schedule-not-checked-message", '<u>', '</u>', '<u>', '</u>', '<u>', '</u>', '<a class="underline-link" href="https://t.me/dokpdl">', '</a>')
+    if schedule_type == "teacher":
+        teacher_name: str = kwargs["teacher_name"]
+        if teacher_name.count("?") > 0:
+            notification_message = translate(request, "schedule-unknown-teacher-message", '<a class="underline-link" href="https://t.me/dokpdl">', '</a>')
+    return notification_message
+
 @app.get("/lesson/{id}", response_class=HTMLResponse)
 async def get_lesson(request: Request, id: str):
     # lesson_dict = db.find_lesson_by_id(id)
@@ -86,8 +104,10 @@ async def get_group_schedule(request: Request, group_name: str, semester_id: int
     chosen_groups = [i["subgroup_display_name"] for i in subgroups_data]
     chosen_groups.append(group_name) # mixed
 
-    message_not_uploaded = (group_name not in ["6N", "5N", "4N", "3N", "2N"] or semester_id == 2) #TODO: add "finished" field to db
-
+    notification_message = get_notification_message(request, "group", group_name=group_name, semester_id=semester_id)
+    # message_not_uploaded = (group_name not in ["6N", "5N", "4N", "3N", "2N"] or semester_id == 2) #TODO: add "finished" field to db
+    # if message_not_uploaded:
+    #     notification_message = translate(request, "schedule-not-uploaded-message", '<u>', '</u>', '<a class="underline-link" href="https://t.me/dokpdl">', '</a>')
     group_id = db.groups_table.find_group_id(group_name)
     db.statistics_table.insert("group", item_id=group_id)
 
@@ -104,7 +124,7 @@ async def get_group_schedule(request: Request, group_name: str, semester_id: int
 
     return templates.TemplateResponse(name="schedule_group.html", request=request, context={
         "schedule": schedule, "group": group_name, "category_title": group_name, "subgroups_data": subgroups_data,
-        "chosen_groups": chosen_groups, "message_not_uploaded": message_not_uploaded,
+        "chosen_groups": chosen_groups, "notification_message": notification_message,
         "header_links": header_links, "semesters": semesters})
 
 
@@ -124,7 +144,7 @@ async def get_subgroup_schedule(request: Request, group_name: str, subgroup_name
     schedule.sort(key=lambda x: x["weekday"] * 7 * 24 + x["start_hour"] * 60 + x["start_minute"])
     chosen_groups = [subgroup_data["subgroup_display_name"], group_name] # mixed
 
-    message_not_uploaded = (group_name not in ["6N", "5N", "4N", "3N", "2N"] or semester_id == 2)
+    notification_message = get_notification_message(request, "subgroup", group_name=group_name, subgroup_name=subgroup_name, semester_id=semester_id)
 
     base_link = "/group/" + group_name + "/" + subgroup_name
     semesters = make_semesters(base_link, semester_id)
@@ -141,7 +161,7 @@ async def get_subgroup_schedule(request: Request, group_name: str, subgroup_name
     return templates.TemplateResponse(name="schedule_group.html", request=request, context={
         "schedule": schedule, "group": group_name, "category_title": subgroup_data["subgroup_display_name"],
         "subgroups_data": subgroups_data, "chosen_groups": chosen_groups,
-        "message_not_uploaded": message_not_uploaded, "header_links": header_links, "semesters": semesters, })
+        "notification_message": notification_message, "header_links": header_links, "semesters": semesters, })
 
 @app.get("/classroom/{classroom_short_name}")
 @app.get("/classroom/{classroom_short_name}/semester/{semester_id}")
@@ -156,7 +176,7 @@ async def get_classroom_schedule(request: Request, classroom_short_name: str, se
     schedule.sort(key=lambda x: x["weekday"] * 7 * 24 + x["start_hour"] * 60 + x["start_minute"])
     chosen_groups = 'all'
 
-    message_not_uploaded = semester_id == 2
+    notification_message = None #TODO
 
     base_link = "/classroom/" + classroom_short_name
     semesters = make_semesters(base_link, semester_id)
@@ -167,7 +187,7 @@ async def get_classroom_schedule(request: Request, classroom_short_name: str, se
     return templates.TemplateResponse(name="schedule_group.html", request=request, context={
         "schedule": schedule, "group": [], "category_title": classroom_display_name,
         "subgroups_data": [], "chosen_groups": chosen_groups,
-        "message_not_uploaded": message_not_uploaded, "header_links": [], "semesters": semesters})
+        "notification_message": notification_message, "header_links": [], "semesters": semesters})
 
 @app.get("/hello/{name}", response_class=HTMLResponse)
 async def say_hello(request: Request, name: str):
@@ -286,12 +306,10 @@ def get_teacher_schedule(request: Request, teacher_init: str, semester_id: int =
         semester_id = db.semesters_table.get_current_semester_id()
 
     name = db.teachers_table.find_teacher_name(teacher_init)
-    # print(
-    #     f"Teacher {teacher_init} is {name}"
-    # )
     lessons = db.lessons_table.find_lessons_by_teacher_initials(teacher_init, semester_id)
-    # print(lessons)
     lessons = db.extend_lessons_data(lessons)
+
+    notification_message = get_notification_message(request, "teacher", teacher_init=teacher_init, teacher_name=name, semester_id=semester_id)
 
     message_not_uploaded = semester_id == 2
 
@@ -304,7 +322,7 @@ def get_teacher_schedule(request: Request, teacher_init: str, semester_id: int =
 
     return templates.TemplateResponse(name="schedule_group.html", context={
         "request": request, "schedule": lessons, "chosen_groups": chosen_groups, "category_title": name,
-        "semesters": semesters, "message_not_uploaded": message_not_uploaded,})
+        "semesters": semesters, "notification_message": notification_message,})
     # return templates.TemplateResponse(name="search.html", context={"request": request})
 
 def make_search_options() -> list[dict]:

@@ -112,7 +112,7 @@ class Database:
 
         # add all elements to be fetched to the sets
         for lesson in lessons:
-            teachers_initials.add(lesson['teacher_init'])
+            teachers_initials.add(lesson['teacher_initials'])
             classrooms_ids.add(lesson['classroom_id'])
             subjects_short_names.add(lesson['short_subject_name'])
             lesson_ids.add(lesson['lesson_id'])
@@ -137,7 +137,7 @@ class Database:
         subjects_names = self.subjects_table.find_subject_names(list(subjects_short_names))
 
         for lesson in lessons:
-            lesson['teacher_name'] = teachers_names[lesson['teacher_init']]
+            lesson['teacher_name'] = teachers_names[lesson['teacher_initials']]
             lesson['classroom_name'] = classrooms_data[lesson['classroom_id']]['classroom_display_name']
             lesson['classroom_short_name'] = classrooms_data[lesson['classroom_id']]['classroom_short_name']
             lesson['subject_name'] = subjects_names[lesson['short_subject_name']]

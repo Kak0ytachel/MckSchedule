@@ -70,4 +70,5 @@ WHERE
   )
 ORDER BY
   weekday,
-  start_hour ASC;
+  start_hour,
+  start_minute ASC;

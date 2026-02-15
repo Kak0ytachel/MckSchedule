@@ -209,6 +209,46 @@ footer a {
     border-color: slateblue;
 }
 
+.schedule-card[data-subject="sa"] {
+    border-color: khaki;
+}
+
+.schedule-card[data-subject="rarch"] {
+    border-color: darkorchid;
+}
+
+.schedule-card[data-subject="gehg"] {
+    border-color: palegoldenrod;
+}
+
+.schedule-card[data-subject="pp"] {
+    border-color: palegreen;
+}
+
+.schedule-card[data-subject="pr"] {
+    border-color: gold;
+}
+
+.schedule-card[data-subject="ch"] {
+    border-color: darkturquoise;
+}
+
+.schedule-card[data-subject="zw"] {
+    border-color: magenta;
+}
+
+.schedule-card[data-subject="ksczwop"] {
+    border-color: crimson;
+}
+
+.schedule-card[data-subject="si"] {
+    border-color: olivedrab;
+}
+
+.schedule-card[data-subject="inf"] {
+    border-color: lightblue;
+}
+
 .schedule-group{
     /*background-color: aqua;*/
     width: fit-content;
@@ -532,6 +572,7 @@ html{
 
 .notification-message-text{
     margin: 16px 0 16px 0;
+    line-height: 1.4rem;
 }
 
 .notification-message-close{

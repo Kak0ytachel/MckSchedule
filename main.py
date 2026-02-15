@@ -276,7 +276,7 @@ async def main_test(request: Request):
     lessons_numer = random.randint(min(min_cards, len(lessons)), min(len(lessons), max_cards))
     for lesson in (random.sample(lessons, lessons_numer)):
         groups = lesson['groups'] + [i['subgroup_display_name'] for i in lesson['subgroups']]
-        lesson['chosen_group'] = random.choice(groups)
+        lesson['chosen_group'] = random.choice(groups) if len(groups) > 0 else None
         item = {'lesson': lesson,
                 'x': str(random.randint(-1 * radius, radius)),
                 'y': str(random.randint(-1 * radius, radius)),

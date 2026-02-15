@@ -1,3 +1,8 @@
+### v0.2.1-beta - released 15/02/2026
+- Uploaded semester 2 schedule
+- Updated notification messages
+- Fixed teacher schedule link bug
+
 ### v0.2.0-beta - released 10/02/2026
 - Added saved / favourite schedules
 

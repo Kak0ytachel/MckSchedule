@@ -206,7 +206,7 @@ footer a {
 }
 
 .schedule-card[data-subject="hk"] {
-    border-color: slateblue;
+    border-color: mediumpurple;
 }
 
 .schedule-card[data-subject="sa"] {
@@ -246,6 +246,22 @@ footer a {
 }
 
 .schedule-card[data-subject="inf"] {
+    border-color: lightblue;
+}
+
+.schedule-card[data-subject="bud"] {
+    border-color: peru;
+}
+
+.schedule-card[data-subject="gi"] {
+    border-color: mediumaquamarine;
+}
+
+.schedule-card[data-subject="saw"] {
+    border-color: cadetblue;
+}
+
+.schedule-card[data-subject="inf-ech"] {
     border-color: lightblue;
 }
 

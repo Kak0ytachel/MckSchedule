@@ -14,7 +14,7 @@ from datetime import datetime, timedelta
 from markupsafe import Markup
 
 from database.subgroups_table import SubgroupData
-from language_manager import LanguageManager
+from language_manager import LanguageManager, DEFAULT_LANGUAGE
 
 
 def fuzzy_search_items(query: str, item_list: list[str], threshold: int = 0) -> list[tuple[str, int]]:
@@ -411,9 +411,11 @@ def set_lang(request: Request, lang: str = Form(...)):
 def get_lang(request: Request):
     lang = request.cookies.get("lang")
     if lang is None:
-        lang = request.headers.get("accept-language").split(",")[0]
-        # lang = "abd"
-    return lang
+        languages = request.headers.get("accept-language").split(",")
+        for lang in languages:
+            if lm.check_lang(lang):
+                return lang
+    return DEFAULT_LANGUAGE
 
 
 def make_semesters(base_link, semester_id) -> dict:

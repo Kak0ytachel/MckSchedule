@@ -411,6 +411,8 @@ def set_lang(request: Request, lang: str = Form(...)):
 @app.get("/test/lang")
 def get_lang(request: Request):
     lang = request.cookies.get("lang")
+    lang = lang[:2] if lang is not None else None
+    print("cookie_lang: ", lang)
     if lang is None:
         # print(request.headers.get("accept-language"))
         pattern = r'([a-z]{2})(?:-[A-Z]{2,4})?(?=[,;]|$)'

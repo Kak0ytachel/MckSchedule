@@ -528,7 +528,7 @@ article.changelog-article li{
 .home-title-container{
     display: inline-block;
     /*background: tomato;*/
-    padding: 20px 40px;
+    padding: 30px;
     /*color: white;*/
     border-radius: 10px;
     position: absolute;
@@ -882,7 +882,19 @@ html{
     }
 }
 
+.home-title-second a{
+        white-space: nowrap;
+    }
+
 @media screen and (max-width: 800px) and (min-width: 500px) {
+
+    .home-title{
+        font-size: 3em;
+    }
+    .home-title-second{
+        font-size: 4em;
+        white-space: nowrap;
+    }
 
     nav{
         height: auto;
@@ -908,6 +920,14 @@ html{
 }
 
 @media screen and (max-width: 500px) {
+    .home-title{
+        font-size: 2.6em;
+    }
+    .home-title-second{
+        font-size: 3.2em;
+        white-space: nowrap;
+    }
+
     nav {
         height: auto;
         max-width: unset;

@@ -3,6 +3,7 @@ from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from starlette.responses import JSONResponse
+import re
 
 # from db import Database
 from database.db import Database
@@ -14,7 +15,7 @@ from datetime import datetime, timedelta
 from markupsafe import Markup
 
 from database.subgroups_table import SubgroupData
-from language_manager import LanguageManager
+from language_manager import LanguageManager, DEFAULT_LANGUAGE
 
 
 def fuzzy_search_items(query: str, item_list: list[str], threshold: int = 0) -> list[tuple[str, int]]:
@@ -411,10 +412,15 @@ def set_lang(request: Request, lang: str = Form(...)):
 def get_lang(request: Request):
     lang = request.cookies.get("lang")
     if lang is None:
-        lang = request.headers.get("accept-language").split(",")[0]
-        lang = lm.check_lang(lang)
-        # lang = "abd"
-    return lang
+        # print(request.headers.get("accept-language"))
+        pattern = r'([a-z]{2})(?:-[A-Z]{2,4})?(?=[,;]|$)'
+        languages = list(re.findall(pattern, request.headers.get("accept-language")))
+        # print(languages)
+        for i in languages:
+            if lm.check_lang(i):
+                return i
+        return DEFAULT_LANGUAGE
+    return lm.check_get_lang(lang)
 
 
 def make_semesters(base_link, semester_id) -> dict:

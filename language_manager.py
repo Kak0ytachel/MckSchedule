@@ -44,6 +44,9 @@ class LanguageManager:
                     json.dump(translation, f, indent=4, ensure_ascii=False)
             self.translations[lang] = translation
 
+    def check_lang(self, lang: str) -> bool:
+        return lang in self.languages
+
     # def get(self, lang: str, key: str) -> str:
     #     if lang.find("-") != -1:
     #         lang = lang.split("-")[0]
@@ -68,7 +71,7 @@ class LanguageManager:
             return result
         return self.translations[lang][key]
 
-    def check_lang(self, lang: str) -> str:
+    def check_get_lang(self, lang: str) -> str:
         if lang not in self.languages:
             return DEFAULT_LANGUAGE
         else:

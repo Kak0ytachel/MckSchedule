@@ -513,9 +513,7 @@ def load_sample_data(db: Database):
     db.group_lessons_table.add_group_lesson(group_6n, i)
     db.group_lessons_table.add_group_lesson(group_5n, i)
 
-    i = db.lessons_table.add_lesson("fiz", classroom_lodz, "MD", 3, 17, 00, 18, 30, sem2)
-    db.subgroup_lessons_table.add_subgroup_lesson(subgroup_6n_inz, i)
-    db.subgroup_lessons_table.add_subgroup_lesson(subgroup_2n_inz, i)
+    Lesson(subject_fiz, classroom_lodz, teacher_md, 4, 15, 15, 16, 45, sem2).add_subgroups(subgroup_2n_inz, subgroup_6n_inz)
 
     i = db.lessons_table.add_lesson("kscz", classroom_krakow, "KGR", 4, 8, 00, 9, 30, sem2)
     db.group_lessons_table.add_group_lesson(group_6n, i)
@@ -524,9 +522,7 @@ def load_sample_data(db: Database):
     db.subgroup_lessons_table.add_subgroup_lesson(subgroup_6n_inz, i)
     db.subgroup_lessons_table.add_subgroup_lesson(subgroup_2n_inz, i)
 
-    i = db.lessons_table.add_lesson("fiz", classroom_lodz, "MD", 4, 15, 15, 16, 45, sem2)
-    db.subgroup_lessons_table.add_subgroup_lesson(subgroup_6n_inz, i)
-    db.subgroup_lessons_table.add_subgroup_lesson(subgroup_2n_inz, i)
+    Lesson(subject_fiz, classroom_lodz, teacher_md, 2, 15, 15, 16, 45, sem2).add_subgroups(subgroup_2n_inz, subgroup_6n_inz)
 
     i = db.lessons_table.add_lesson("gp", classroom_proj, "JK", 5, 8, 00, 9, 30, sem2)
     db.group_lessons_table.add_group_lesson(group_6n, i)
@@ -534,16 +530,14 @@ def load_sample_data(db: Database):
     i = db.lessons_table.add_lesson("konw", classroom_warszawa, "JPM", 5, 9, 50, 11, 20, sem2)
     db.group_lessons_table.add_group_lesson(group_6n, i)
 
-    i = db.lessons_table.add_lesson("kscz", classroom_warszawa, "KGR", 5, 11, 40, 13, 10, sem2)
-    db.group_lessons_table.add_group_lesson(group_6n, i)
-
-    i = db.lessons_table.add_lesson("gp", classroom_proj, "JK", 5, 13, 30, 15, 00, sem2)
-    db.group_lessons_table.add_group_lesson(group_6n, i)
+    Lesson(subject_kscz, classroom_lodz, teacher_kgr, 5, 11, 40, 13, 10, sem2).add_group(group_6n)
 
     Lesson(subject_gp, classroom_warszawa, teacher_jpm, 1, 9, 50, 11, 20, sem2).add_group(group_2n)
-    Lesson(subject_kscz, classroom_warszawa, teacher_jk, 1, 11, 40, 13, 10, sem2).add_group(group_3n)
+    Lesson(subject_kscz, classroom_warszawa, teacher_jk, 5, 9, 50, 11, 20, sem2).add_group(group_3n)
     Lesson(subject_ksczwop, classroom_wroclaw, teacher_kst, 1, 9, 50, 11, 20, sem2).add_group(group_1s)
-    Lesson(subject_gp, classroom_wroclaw, teacher_kst, 1, 11, 40, 13, 10, sem2).add_group(group_3s)
+    # Lesson(subject_gp, classroom_wroclaw, teacher_kst, 1, 11, 40, 13, 10, sem2).add_group(group_3s)
+    Lesson(subject_konw, classroom_wroclaw, teacher_kst, 1, 11, 40, 13, 10, sem2).add_group(group_3n)
+
     Lesson(subject_gp, classroom_krakow, teacher_kst, 1, 8, 00, 9, 30, sem2).add_group(group_5s)
     Lesson(subject_gp, classroom_krakow, teacher_mr, 1, 9, 50, 11, 20, sem2).add_group(group_3n)
     Lesson(subject_gp, classroom_krakow, teacher_msz, 1, 11, 40, 13, 10, sem2).add_group(group_2s)
@@ -557,9 +551,10 @@ def load_sample_data(db: Database):
     Lesson(subject_kscz, classroom_gdansk, teacher_sr, 1, 13, 30, 15, 00, sem2).add_group(group_4s)
     Lesson(subject_ksczwop, classroom_proj, teacher_ak, 1, 9, 50, 11, 20, sem2).add_group(group_1n)
     Lesson(subject_ksczwop, classroom_proj, teacher_ak, 1, 11, 40, 13, 10, sem2).add_group(group_1n)
-    Lesson(subject_kscz, classroom_proj, teacher_jk, 1, 13, 30, 15, 00, sem2).add_group(group_4n)
+    Lesson(subject_kscz, classroom_warszawa, teacher_jk, 1, 13, 30, 15, 00, sem2).add_group(group_4n)
+    Lesson(subject_kscz, classroom_warszawa, teacher_jk, 1, 11, 40, 13 , 10, sem2).add_group(group_4n)
 
-    Lesson(subject_gp, classroom_warszawa, teacher_kst, 2, 9, 50, 11, 20, sem2).add_group(group_5s)
+    Lesson(subject_gp, classroom_gdansk, teacher_kst, 5, 13, 30, 15, 00,  sem2).add_group(group_5s)
     Lesson(subject_gp, classroom_warszawa, teacher_kst, 2, 11, 40, 13, 10, sem2).add_group(group_3s)
     Lesson(subject_ksczwop, classroom_warszawa, teacher_kst, 2, 13, 30, 15, 00, sem2).add_group(group_1s)
     Lesson(subject_ksczwop, classroom_warszawa, teacher_kst, 2, 15, 15, 16, 45, sem2).add_group(group_1s)
@@ -567,8 +562,8 @@ def load_sample_data(db: Database):
     Lesson(subject_kscz, classroom_krakow, teacher_jk, 2, 11, 40, 13, 10, sem2).add_group(group_4n)
 
 
-    Lesson(subject_gp, classroom_warszawa, teacher_mr, 3, 11, 40, 13, 10, sem2).add_group(group_3n)
-    Lesson(subject_konw, classroom_warszawa, teacher_mr, 3, 13, 30, 15, 00, sem2).add_group(group_5n)
+    Lesson(subject_gp, classroom_wroclaw, teacher_mr, 3, 8, 00, 9, 30, sem2).add_group(group_3n)
+    Lesson(subject_konw, classroom_komp, teacher_mr, 1, 11, 40, 13, 10, sem2).add_group(group_5n)
 
     Lesson(subject_kscz, classroom_wroclaw, teacher_sr, 3, 9, 50, 11, 20, sem2).add_group(group_5s)
     Lesson(subject_gp, classroom_wroclaw, teacher_jpm, 3, 11, 40, 13, 10, sem2).add_group(group_2n)
@@ -577,7 +572,7 @@ def load_sample_data(db: Database):
     Lesson(subject_ksczwop, classroom_krakow, teacher_ak, 3, 11, 40, 13, 10, sem2).add_group(group_1n)
     Lesson(subject_konw, classroom_lodz, teacher_eg, 3, 9, 50, 11, 20, sem2).add_group(group_4s)
     Lesson(subject_ksczwop, classroom_lodz, teacher_msz, 3, 11, 40, 13, 10, sem2).add_group(group_3s)
-    Lesson(subject_gp, classroom_lodz, teacher_msz, 3, 13, 30, 15, 00, sem2).add_group(group_2s)
+    # Lesson(subject_gp, classroom_lodz, teacher_msz, 3, 13, 30, 15, 00, sem2).add_group(group_2s)
     Lesson(subject_ksczwop, classroom_gdansk, teacher_msz, 3, 9, 50, 11, 20, sem2).add_group(group_3s)
     Lesson(subject_gp, classroom_poznan, teacher_jpm, 3, 9, 50, 11, 20, sem2).add_group(group_1s)
     Lesson(subject_ksczwop, classroom_konfer, teacher_sr, 3, 11, 40, 13, 10, sem2).add_group(group_2s)
@@ -601,11 +596,11 @@ def load_sample_data(db: Database):
     Lesson(subject_gp, classroom_lodz, teacher_kgr, 4, 13, 30, 15, 00, sem2).add_group(group_5n)
 
     Lesson(subject_kscz, classroom_gdansk, teacher_ika, 4, 11, 40, 13, 10, sem2).add_group(group_5n)
-    Lesson(subject_kscz, classroom_gdansk, teacher_jk, 4, 13, 30, 15, 00, sem2).add_group(group_4n)
+    Lesson(subject_gp, classroom_gdansk, teacher_jk, 4, 13, 30, 15, 00, sem2).add_group(group_6n)
+    # Lesson(subject_kscz, classroom_gdansk, teacher_jk, 4, 13, 30, 15, 00, sem2).add_group(group_4n)
     Lesson(subject_gp, classroom_poznan, teacher_jpm, 4, 9, 50, 11, 20, sem2).add_group(group_1s)
     Lesson(subject_gp, classroom_poznan, teacher_jk, 4, 11, 40, 13, 10, sem2).add_group(group_4s)
 
-    Lesson(subject_kscz, classroom_komp, teacher_sr, 4, 8, 00, 9, 30, sem2).add_group(group_5s)
     Lesson(subject_ksczwop, classroom_komp, teacher_msz, 4, 9, 50, 11, 20, sem2).add_group(group_3s)
     Lesson(subject_ksczwop, classroom_komp, teacher_kst, 4, 11, 40, 13, 10, sem2).add_group(group_1s)
 
@@ -614,9 +609,9 @@ def load_sample_data(db: Database):
     Lesson(subject_ksczwop, classroom_proj, teacher_ak, 4, 11, 40, 13, 10, sem2).add_group(group_1n)
     Lesson(subject_gp, classroom_proj, teacher_jpm, 4, 13, 30, 15, 00, sem2).add_group(group_1n)
 
-    Lesson(subject_kscz, classroom_warszawa, teacher_ika, 5, 8, 00, 9, 30, sem2).add_group(group_5n)
+    Lesson(subject_kscz, classroom_lodz, teacher_ika, 5, 8, 00, 9, 30, sem2).add_group(group_5n)
     Lesson(subject_ksczwop, classroom_wroclaw, teacher_sr, 5, 8, 00, 9, 50, sem2).add_group(group_2s)
-    Lesson(subject_konw, classroom_wroclaw, teacher_kst, 5, 9, 50, 11, 20, sem2).add_group(group_3n)
+    # Lesson(subject_konw, classroom_wroclaw, teacher_kst, 5, 9, 50, 11, 20, sem2).add_group(group_3n)
     Lesson(subject_konw, classroom_wroclaw, teacher_jpm, 5, 11, 40, 13, 10, sem2).add_group(group_4n)
     Lesson(subject_gp, classroom_wroclaw, teacher_jpm, 5, 13, 30, 15, 00, sem2).add_group(group_1n)
 
@@ -630,10 +625,10 @@ def load_sample_data(db: Database):
     Lesson(subject_kscz, classroom_gdansk, teacher_sr, 5, 11, 40, 13, 10, sem2).add_group(group_2n)
 
     Lesson(subject_gp, classroom_konfer, teacher_sr, 5, 11, 40, 13, 10, sem2).add_group(group_3s)
-    Lesson(subject_gp, classroom_proj, teacher_jk, 5, 9, 50, 11, 20, sem2).add_group(group_4s)
+    Lesson(subject_kscz, classroom_proj, teacher_jk, 5, 9, 50, 11, 20, sem2).add_group(group_3n)
     Lesson(subject_kscz, classroom_proj, teacher_jk, 5, 11, 40, 13, 10, sem2).add_group(group_3n)
 
-    Lesson(subject_mat_i, classroom_konfer, teacher_ab, 1, 13, 30, 15, 00, sem2).add_subgroup(subgroup_3s_inz).add_subgroup(subgroup_5s_inz)
+    Lesson(subject_mat_i, classroom_konfer, teacher_ab, 1, 13, 15, 14, 45, sem2).add_subgroup(subgroup_3s_inz).add_subgroup(subgroup_5s_inz)
     Lesson(subject_mat_i, classroom_konfer, teacher_wo, 4, 8, 00, 9, 30, sem2).add_subgroup(subgroup_1n_inz).add_subgroup(subgroup_4n_inz)
     Lesson(subject_mat_i, classroom_konfer, teacher_ab, 4, 17, 00, 18, 30, sem2).add_subgroup(subgroup_1s_inz).add_subgroup(subgroup_2s_inz)
     Lesson(subject_mat_i, classroom_konfer, teacher_wo, 5, 9, 50, 11, 20, sem2).add_subgroup(subgroup_1n_inz).add_subgroup(subgroup_4n_inz)
@@ -641,11 +636,13 @@ def load_sample_data(db: Database):
     Lesson(subject_mat_i, classroom_konfer, teacher_ab, 5, 17, 00, 18, 30, sem2).add_subgroup(subgroup_1s_inz).add_subgroup(subgroup_2s_inz)
 
     Lesson(subject_fiz, classroom_lodz, teacher_md, 2, 13, 30, 15, 00, sem2).add_subgroup(subgroup_1n_inz).add_subgroup(subgroup_4n_inz)
+    Lesson(subject_fiz, classroom_lodz, teacher_md, 1, 13, 30, 15, 00, sem2).add_subgroup(subgroup_1s_inz).add_subgroup(subgroup_2s_inz)
+    Lesson(subject_fiz, classroom_lodz, teacher_md, 1, 15, 15, 16,45, sem2).add_subgroup(subgroup_3s_inz).add_subgroup(subgroup_5s_inz)
     Lesson(subject_fiz, classroom_lodz, teacher_md, 3, 15, 15, 16, 45, sem2).add_subgroup(subgroup_1s_inz).add_subgroup(subgroup_2s_inz)
     Lesson(subject_fiz, classroom_konfer, teacher_md, 3, 13, 30, 15,00, sem2).add_subgroup(subgroup_3s_inz).add_subgroup(subgroup_5s_inz)
     Lesson(subject_fiz, classroom_lodz, teacher_md, 4, 8, 00, 9, 30, sem2).add_subgroup(subgroup_1s_inz).add_subgroup(subgroup_2s_inz)
     Lesson(subject_fiz, classroom_lodz, teacher_md, 4, 17, 00, 18, 30, sem2).add_subgroup(subgroup_1n_inz).add_subgroup(subgroup_4n_inz)
-    Lesson(subject_fiz, classroom_lodz, teacher_md, 5, 8, 00, 9, 30, sem2).add_subgroup(subgroup_3s_inz).add_subgroup(subgroup_5s_inz)
+    # Lesson(subject_fiz, classroom_lodz, teacher_md, 5, 8, 00, 9, 30, sem2).add_subgroup(subgroup_3s_inz).add_subgroup(subgroup_5s_inz)
 
     Lesson(subject_inf_i, classroom_komp, teacher_an, 1, 9, 50, 11, 20, sem2).add_subgroup(subgroup_4n_inz).add_subgroup(subgroup_5s_inz)
     Lesson(subject_inf_i, classroom_komp, teacher_an, 2, 8, 15, 9, 45, sem2).add_subgroup(subgroup_4n_inz).add_subgroup(subgroup_5s_inz)
@@ -668,25 +665,25 @@ def load_sample_data(db: Database):
     Lesson(subject_rart, classroom_konfer, teacher_mb, 2, 17, 00, 20, 00, sem2).add_subgroups(subgroup_1n_art, subgroup_3n_art, subgroup_4s_art, subgroup_5s_art)
     Lesson(subject_rarch, classroom_konfer, teacher_wg, 3, 15, 15, 18, 15, sem2).add_subgroups(subgroup_1n_arch, subgroup_3n_arch, subgroup_6n_arch, subgroup_4s_arch)
 
-    Lesson(subject_hs, classroom_wroclaw, teacher_mr, 2, 8, 00, 9, 30, sem2).add_subgroups(subgroup_1n_art)
-    Lesson(subject_hs, classroom_wroclaw, teacher_mr, 2, 9, 50, 11, 20, sem2).add_subgroups(subgroup_2n_art, subgroup_3n_art)
+    Lesson(subject_hs, classroom_komp, teacher_mr, 1, 13, 30, 15, 00, sem2).add_subgroups(subgroup_1n_art, subgroup_5n_art)
+    Lesson(subject_hs, classroom_wroclaw, teacher_mr, 2, 9, 50, 11, 20, sem2).add_subgroups(subgroup_1n_art, subgroup_5n_art)
     Lesson(subject_hs, classroom_proj, teacher_mr, 2, 11, 40, 13, 10, sem2).add_subgroups(subgroup_5n_art, subgroup_4s_art, subgroup_5s_art)
-    Lesson(subject_hk, classroom_wroclaw, teacher_mr, 3, 8, 00, 9, 30, sem2).add_subgroups(subgroup_1n_art)
+    Lesson(subject_hk, classroom_wroclaw, teacher_mr, 2, 8, 00, 9, 30, sem2).add_subgroups(subgroup_1n_art, subgroup_5n_art)
     Lesson(subject_hk, classroom_konfer, teacher_mr, 3, 9, 50, 11, 20, sem2).add_subgroups(subgroup_2n_art, subgroup_3n_art)
     Lesson(subject_hk, classroom_konfer, teacher_mr, 4, 9, 50, 11, 20, sem2).add_subgroups(subgroup_5n_art, subgroup_4s_art, subgroup_5s_art)
-    Lesson(subject_pp, classroom_komp, teacher_abar, 4, 17, 00, 18, 30, sem2).add_subgroups(subgroup_1n_art, subgroup_3n_art, subgroup_4s_art, subgroup_5s_art)
-    Lesson(subject_pp, classroom_proj, teacher_abar, 4, 18, 45, 20, 15, sem2).add_subgroups(subgroup_2n_art, subgroup_5n_art)
-    Lesson(subject_wok, classroom_lodz, teacher_kgr, 2, 8, 00, 9, 30, sem2).add_subgroups(subgroup_5n_art, subgroup_4s_art, subgroup_5s_art) #
-    Lesson(subject_wok, classroom_poznan, teacher_kgr, 2, 9, 50, 11, 20, sem2).add_subgroups(subgroup_1n_art)
-    Lesson(subject_wok, classroom_poznan, teacher_kgr, 2, 11, 40, 13, 10, sem2).add_subgroups(subgroup_1n_art)
-    Lesson(subject_wok, classroom_lodz, teacher_kgr, 3, 8, 00, 9, 30, sem2).add_subgroups(subgroup_2n_art, subgroup_3n_art)
+    Lesson(subject_pp, classroom_komp, teacher_abar, 4, 15, 15, 16, 45, sem2).add_subgroups(subgroup_1n_art, subgroup_3n_art, subgroup_4s_art, subgroup_5s_art)
+    Lesson(subject_pp, classroom_komp, teacher_abar, 4, 17, 00, 18, 30, sem2).add_subgroups(subgroup_2n_art, subgroup_5n_art)
+    Lesson(subject_wok, classroom_proj, teacher_kgr, 2, 9, 50, 11, 20, sem2).add_subgroups(subgroup_5n_art, subgroup_4s_art, subgroup_5s_art) #
+    Lesson(subject_wok, classroom_lodz, teacher_kgr, 3, 8, 00, 9, 30, sem2).add_subgroups(subgroup_1n_art, subgroup_5n_art)
+    Lesson(subject_wok, classroom_wroclaw, teacher_kgr, 2, 11, 40, 13, 10, sem2).add_subgroups(subgroup_1n_art, subgroup_5n_art)
+    Lesson(subject_wok, classroom_lodz, teacher_kgr, 2, 8, 00, 9, 30, sem2).add_subgroups(subgroup_2n_art, subgroup_3n_art)
 
     Lesson(subject_wop, classroom_gdansk, teacher_eg, 2, 13, 30, 15, 00, sem2).add_group(group_4s).add_group(group_5s)
 
     Lesson(subject_gehg, classroom_gdansk, teacher_ika, 2, 9, 50, 11, 20, sem2).add_subgroups(subgroup_2n_ekon, subgroup_3n_ekon, subgroup_4n_ekon)
     Lesson(subject_gehg, classroom_gdansk, teacher_ika, 2, 11, 40, 13, 10, sem2).add_subgroups(subgroup_5n_ekon, subgroup_4s_ekon, subgroup_5s_ekon)
     Lesson(subject_gehg, classroom_gdansk, teacher_ika, 3, 8, 00, 9, 30, sem2).add_subgroups(subgroup_1n_ekon, subgroup_1s_ekon, subgroup_2s_ekon)
-    Lesson(subject_gehg, classroom_lodz, teacher_ika, 5, 11, 40, 12, 25, sem2).add_subgroups(subgroup_1n_ekon, subgroup_1s_ekon, subgroup_2s_ekon)
+    Lesson(subject_gehg, classroom_warszawa, teacher_ika, 5, 11, 40, 12, 25, sem2).add_subgroups(subgroup_1n_ekon, subgroup_1s_ekon, subgroup_2s_ekon)
 
     Lesson(subject_se, classroom_warszawa, teacher_im, 3, 8, 00, 9, 30, sem2).add_subgroups(subgroup_5n_ekon, subgroup_4s_ekon, subgroup_5s_ekon)
     Lesson(subject_se, classroom_warszawa, teacher_im, 3, 9, 50, 11, 20, sem2).add_subgroups(subgroup_2n_ekon, subgroup_3n_ekon, subgroup_4n_ekon)
@@ -703,7 +700,7 @@ def load_sample_data(db: Database):
     Lesson(subject_pr, classroom_krakow, teacher_jd, 5, 13, 30, 15, 00, sem2).add_subgroups(subgroup_2n_ekon, subgroup_3n_ekon, subgroup_4n_ekon)
     Lesson(subject_pr, classroom_krakow, teacher_jd, 5, 15, 15, 16, 45, sem2).add_subgroups(subgroup_1n_ekon, subgroup_1s_ekon, subgroup_2s_ekon)
 
-    Lesson(subject_hs, classroom_proj, teacher_mr, 4, 8, 00, 9, 30, sem2).add_subgroups(subgroup_1n_art)
+    Lesson(subject_hs, classroom_proj, teacher_mr, 4, 8, 00, 9, 30, sem2).add_subgroups(subgroup_2n_art, subgroup_3n_art)
     Lesson(subject_hk, classroom_lodz, teacher_mr, 1, 8, 50, 9, 35, sem2).add_subgroups(subgroup_1n_art, subgroup_2n_art, subgroup_3n_art)
 
     Lesson(subject_fp, classroom_gdansk, teacher_tj, 2, 15, 15, 17, 30, sem2).add_subgroups(subgroup_2n_ekon, subgroup_3n_ekon, subgroup_4n_ekon)
@@ -713,8 +710,9 @@ def load_sample_data(db: Database):
 
     Lesson(subject_zw, classroom_poznan, teacher_wzt, 1, 8, 00, 9, 30, sem2).add_subgroups(subgroup_3n_art, subgroup_4s_art)
     Lesson(subject_zw, classroom_poznan, teacher_wzt, 1, 8, 00, 9, 30, sem2).add_subgroups(subgroup_4s_art, subgroup_3n_art)
+    Lesson(subject_zw, classroom_poznan, teacher_wzt, 5, 8, 00, 9, 30, sem2).add_subgroups(subgroup_4s_art, subgroup_3n_art)
 
-    Lesson(subject_mat_ea, classroom_konfer, teacher_ab, 1, 15, 15, 16, 45, sem2).add_subgroups(subgroup_1s_ekon, subgroup_2s_ekon, subgroup_4s_ekon, subgroup_4s_arch, subgroup_5s_ekon)
+    Lesson(subject_mat_ea, classroom_konfer, teacher_ab, 1, 14, 55, 16, 25, sem2).add_subgroups(subgroup_1s_ekon, subgroup_2s_ekon, subgroup_4s_ekon, subgroup_4s_arch, subgroup_5s_ekon)
     Lesson(subject_mat_ea, classroom_konfer, teacher_ab, 4, 15, 15, 16, 45, sem2).add_subgroups(subgroup_1s_ekon, subgroup_2s_ekon, subgroup_4s_ekon, subgroup_4s_arch, subgroup_5s_ekon)
 
     Lesson(subject_si, classroom_krakow, teacher_ak, 2, 8, 00, 9, 30, sem2).add_subgroups(subgroup_1s_inz, subgroup_3s_inz)
@@ -722,22 +720,26 @@ def load_sample_data(db: Database):
     Lesson(subject_si, classroom_krakow, teacher_ak, 3, 8, 00, 9, 30, sem2).add_subgroups(subgroup_1s_inz, subgroup_3s_inz)
     Lesson(subject_si, classroom_krakow, teacher_ak, 3, 9, 50, 11, 20, sem2).add_subgroups(subgroup_1n_inz, subgroup_2s_inz)
 
-    Lesson(subject_ch, classroom_krakow, teacher_abuk, 2, 17, 45, 19, 15, sem2).add_subgroups(subgroup_1s_inz, subgroup_2s_inz, subgroup_3s_inz, subgroup_5s_inz, subgroup_4n_inz) #TODO check if correct
+    Lesson(subject_ch, classroom_krakow, teacher_abuk, 2, 17, 00, 18, 30, sem2).add_subgroups(subgroup_1s_inz, subgroup_2s_inz, subgroup_3s_inz, subgroup_5s_inz, subgroup_4n_inz) #TODO check if correct
     Lesson(subject_ch, classroom_gdansk, teacher_abuk, 4, 15, 15, 16, 45, sem2).add_subgroups(subgroup_1s_inz, subgroup_2s_inz, subgroup_3s_inz, subgroup_5s_inz, subgroup_4n_inz)
 
     Lesson(subject_inf, classroom_komp, teacher_ap, 2, 9, 50, 11, 20, sem2).add_subgroups(subgroup_1s_inz, subgroup_3s_inz)
     Lesson(subject_inf, classroom_komp, teacher_ap, 2, 11, 40, 13, 10, sem2).add_subgroups(subgroup_1s_inz, subgroup_2s_inz, subgroup_1n_inz)
-    Lesson(subject_inf_ech, classroom_komp, teacher_ap, 4, 9, 50, 11, 20, sem2).add_group(group_1s).add_group(group_2s).add_subgroups(subgroup_1n_ekon)
-    Lesson(subject_inf, classroom_komp, teacher_ap, 4, 11, 40, 13, 10, sem2).add_subgroups(subgroup_1s_inz, subgroup_2s_inz, subgroup_1n_inz)
-    Lesson(subject_inf, classroom_komp, teacher_ap, 4, 13, 30, 15, 00, sem2).add_subgroups(subgroup_1s_inz, subgroup_3s_inz)
+    Lesson(subject_inf_ech, classroom_komp, teacher_ap, 5, 9, 50, 11, 20, sem2).add_group(group_1s).add_group(group_2s).add_subgroups(subgroup_1n_ekon)
+    Lesson(subject_inf, classroom_komp, teacher_ap, 5, 11, 40, 13, 10, sem2).add_subgroups(subgroup_1s_inz, subgroup_2s_inz, subgroup_1n_inz)
+    Lesson(subject_inf, classroom_komp, teacher_ap, 5, 13, 30, 15, 00, sem2).add_subgroups(subgroup_1s_inz, subgroup_3s_inz)
 
     Lesson(subject_bud, classroom_krakow, teacher_rb, 1, 16, 30, 18, 00, sem2).add_subgroups(subgroup_2s_inz, subgroup_3s_inz, subgroup_4s_arch, subgroup_1n_arch, subgroup_3n_arch, subgroup_6n_arch)
-    Lesson(subject_gi, classroom_komp, teacher_tk, 2, 16, 00, 17, 30, sem2).add_subgroups(subgroup_2s_inz, subgroup_3s_inz, subgroup_4s_arch, subgroup_1n_arch, subgroup_3n_arch, subgroup_6n_arch)
-    Lesson(subject_wil, classroom_lodz, teacher_eg, 3, 15, 15, 16, 45, sem2)
+    Lesson(subject_gi, classroom_komp, teacher_tk, 4, 18, 45, 20, 15, sem2).add_subgroups(subgroup_2s_inz, subgroup_3s_inz, subgroup_4s_arch, subgroup_1n_arch, subgroup_3n_arch, subgroup_6n_arch)
+    Lesson(subject_wil, classroom_proj, teacher_eg, 2, 15, 15, 16, 45, sem2)
     Lesson(subject_wil, classroom_proj, teacher_eg, 3, 8, 00, 9, 30, sem2)
     Lesson(subject_saw, classroom_lodz, teacher_mr, 1, 8, 00, 8, 45, sem2).add_subgroups(subgroup_1n_art, subgroup_2n_art, subgroup_3n_art, subgroup_4s_art)
-    #TODO
 
+    Lesson(subject_tn, classroom_wroclaw, teacher_ak, 2, 16, 00, 17, 30, sem2)
+    Lesson(subject_gp, classroom_wroclaw, teacher_kst, 5, 9, 50, 11, 20, sem2).add_group(group_3s)
+    Lesson(subject_gp, classroom_krakow, teacher_msz, 3, 13, 30, 15, 00, sem2).add_group(group_2s)
+    Lesson(subject_kscz, classroom_lodz, teacher_sr, 4, 8, 00, 9, 30, sem2).add_group(group_5s)
+    Lesson(subject_gp, classroom_proj, teacher_jk, 5, 13, 30, 15, 00, sem2).add_group(group_4s)
     # Lesson(subject)
     # print("got to subject creation")
     # lesson = Subject("test", "abc")

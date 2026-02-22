@@ -1,3 +1,7 @@
+### v0.2.2-beta - released 22/02/2026
+- Updated schedule for semester 2
+- Fixed the language issue
+
 ### v0.2.1-beta - released 15/02/2026
 - Uploaded semester 2 schedule
 - Updated notification messages

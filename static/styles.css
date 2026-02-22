@@ -579,7 +579,8 @@ html{
 }
 
 .notification-message-line{
-    width:8px;
+    flex-shrink: 0;
+    width: 6px;
     display: inline-block;
     background: dimgray;
     margin: 8px 10px;

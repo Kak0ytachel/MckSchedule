@@ -42,5 +42,6 @@
     "snackbar-bookmark-saved": "Schedule saved to your list.",
     "snackbar-bookmark-removed": "Schedule removed.",
     "schedule-not-checked-message": "This schedule is uploaded, but {}has not yet been verified{}. It may {}contain mistakes{}. Before using it, please {}check its accuracy{} against the classic timetable and {}contact us{} to fix it or mark as correct.",
-    "schedule-unknown-teacher-message": "If you know the full name of this teacher, please {}contact us{}."
+    "schedule-unknown-teacher-message": "If you know the full name of this teacher, please {}contact us{}.",
+    "schedule-updated-message": "The schedule has been {}updated{} to the new version dated 02.18."
 }

@@ -42,5 +42,6 @@
     "snackbar-bookmark-saved": "Rozkład zajęć zapisany do wybranych.",
     "snackbar-bookmark-removed": "Rozkład zajęć usunięty z wybranych.",
     "schedule-not-checked-message": "Ten plan zajęć jest załadowany, ale {}nie sprawdzony{}. Może {}zawierać błędy{}. Przed użyciem prosimy {}sprawdzić jego poprawność{}, porównując z klasycznym planem, i {}skontaktować się z nami{} w celu poprawienia lub potwierdzenia poprawności.",
-    "schedule-unknown-teacher-message": "Jeśli znasz pełne imię i nazwisko tego nauczyciela, prosimy o {}kontakt{}."
+    "schedule-unknown-teacher-message": "Jeśli znasz pełne imię i nazwisko tego nauczyciela, prosimy o {}kontakt{}.",
+    "schedule-updated-message": "Rozkład został zaktualizowany do nowej wersji z dnia 18.02."
 }

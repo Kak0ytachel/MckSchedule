@@ -14,5 +14,5 @@
     "schedule-monday", "schedule-tuesday", "schedule-wednesday", "schedule-thursday", "schedule-friday",
     "schedule-semesters", "schedule-semester-winter", "schedule-semester-summer",
     "navbar-button-saved", "navbar-dropdown-saved-none-1", "navbar-dropdown-saved-none-2", "snackbar-bookmark-saved", "snackbar-bookmark-removed",
-    "schedule-not-checked-message", "schedule-unknown-teacher-message"
+    "schedule-not-checked-message", "schedule-unknown-teacher-message", "schedule-updated-message"
 ]

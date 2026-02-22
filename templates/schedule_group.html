@@ -43,15 +43,19 @@
 {#            <a class="schedule-semester" data-active="false"> Summer</a>#}
         </div>
         {% endif %}
-        {% if notification_message is not none %}
-        <div class="notification-message" id="notification-message">
+        {% if notification_messages is not none %}
+        {% for notification_message in notification_messages %}
+        	<div class="notification-message" id="notification-message">
             <div class="notification-message-line"></div>
                 <p class="notification-message-text"> {{ notification_message }}</p>
                 <button class="notification-message-close" onclick="hideMessage()">
                     ✖
                 </button>
             </div>
+        {% endfor %}
         {% endif %}
+
+
 
 <!--        <p> Here you can find project development logs. For more info, check out <a href="index.html"> about page </a></p>-->
     </header>

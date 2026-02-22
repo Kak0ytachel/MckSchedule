@@ -11,7 +11,7 @@ from fuzzywuzzy import fuzz
 from fuzzywuzzy import process
 import unidecode
 import random
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 from markupsafe import Markup
 
 from database.subgroups_table import SubgroupData
@@ -56,8 +56,8 @@ search_options = []
 # async def root():
 #     return {"message": "Hello World"}
 
-def get_notification_message(request: Request, schedule_type: str, **kwargs):
-    notification_message = None
+def get_notification_messages(request: Request, schedule_type: str, **kwargs):
+    notification_messages = []
     if schedule_type == "group" or schedule_type == "subgroup":
         group_name = kwargs["group_name"]
         semester_id = kwargs["semester_id"]
@@ -65,14 +65,20 @@ def get_notification_message(request: Request, schedule_type: str, **kwargs):
         if is_not_uploaded:
             notification_message = translate(request, "schedule-not-uploaded-message", '<u>', '</u>',
                                              '<a class="underline-link" href="https://t.me/dokpdl">', '</a>')
+            notification_messages.append(notification_message)
         is_not_checked = (semester_id == 2)
         if is_not_checked:
             notification_message = translate(request, "schedule-not-checked-message", '<u>', '</u>', '<u>', '</u>', '<u>', '</u>', '<a class="underline-link" href="https://t.me/dokpdl">', '</a>')
+            notification_messages.append(notification_message)
     if schedule_type == "teacher":
         teacher_name: str = kwargs["teacher_name"]
         if teacher_name.count("?") > 0:
             notification_message = translate(request, "schedule-unknown-teacher-message", '<a class="underline-link" href="https://t.me/dokpdl">', '</a>')
-    return notification_message
+            notification_messages.append(notification_message)
+    if date(2026, 2, 21) < date.today() < date(2026, 3, 1):
+        notification_message = translate(request, "schedule-updated-message", "<u>", "</u>")
+        notification_messages.append(notification_message)
+    return notification_messages
 
 @app.get("/lesson/{id}", response_class=HTMLResponse)
 async def get_lesson(request: Request, id: str):
@@ -105,7 +111,7 @@ async def get_group_schedule(request: Request, group_name: str, semester_id: int
     chosen_groups = [i["subgroup_display_name"] for i in subgroups_data]
     chosen_groups.append(group_name) # mixed
 
-    notification_message = get_notification_message(request, "group", group_name=group_name, semester_id=semester_id)
+    notification_messages = get_notification_messages(request, "group", group_name=group_name, semester_id=semester_id)
     # message_not_uploaded = (group_name not in ["6N", "5N", "4N", "3N", "2N"] or semester_id == 2) #TODO: add "finished" field to db
     # if message_not_uploaded:
     #     notification_message = translate(request, "schedule-not-uploaded-message", '<u>', '</u>', '<a class="underline-link" href="https://t.me/dokpdl">', '</a>')
@@ -125,7 +131,7 @@ async def get_group_schedule(request: Request, group_name: str, semester_id: int
 
     return templates.TemplateResponse(name="schedule_group.html", request=request, context={
         "schedule": schedule, "group": group_name, "category_title": group_name, "subgroups_data": subgroups_data,
-        "chosen_groups": chosen_groups, "notification_message": notification_message,
+        "chosen_groups": chosen_groups, "notification_messages": notification_messages,
         "header_links": header_links, "semesters": semesters})
 
 
@@ -145,7 +151,7 @@ async def get_subgroup_schedule(request: Request, group_name: str, subgroup_name
     schedule.sort(key=lambda x: x["weekday"] * 7 * 24 + x["start_hour"] * 60 + x["start_minute"])
     chosen_groups = [subgroup_data["subgroup_display_name"], group_name] # mixed
 
-    notification_message = get_notification_message(request, "subgroup", group_name=group_name, subgroup_name=subgroup_name, semester_id=semester_id)
+    notification_messages = get_notification_messages(request, "subgroup", group_name=group_name, subgroup_name=subgroup_name, semester_id=semester_id)
 
     base_link = "/group/" + group_name + "/" + subgroup_name
     semesters = make_semesters(base_link, semester_id)
@@ -162,7 +168,7 @@ async def get_subgroup_schedule(request: Request, group_name: str, subgroup_name
     return templates.TemplateResponse(name="schedule_group.html", request=request, context={
         "schedule": schedule, "group": group_name, "category_title": subgroup_data["subgroup_display_name"],
         "subgroups_data": subgroups_data, "chosen_groups": chosen_groups,
-        "notification_message": notification_message, "header_links": header_links, "semesters": semesters, })
+        "notification_messages": notification_messages, "header_links": header_links, "semesters": semesters, })
 
 @app.get("/classroom/{classroom_short_name}")
 @app.get("/classroom/{classroom_short_name}/semester/{semester_id}")
@@ -177,7 +183,7 @@ async def get_classroom_schedule(request: Request, classroom_short_name: str, se
     schedule.sort(key=lambda x: x["weekday"] * 7 * 24 + x["start_hour"] * 60 + x["start_minute"])
     chosen_groups = 'all'
 
-    notification_message = None #TODO
+    notification_messages = [] #TODO
 
     base_link = "/classroom/" + classroom_short_name
     semesters = make_semesters(base_link, semester_id)
@@ -188,7 +194,7 @@ async def get_classroom_schedule(request: Request, classroom_short_name: str, se
     return templates.TemplateResponse(name="schedule_group.html", request=request, context={
         "schedule": schedule, "group": [], "category_title": classroom_display_name,
         "subgroups_data": [], "chosen_groups": chosen_groups,
-        "notification_message": notification_message, "header_links": [], "semesters": semesters})
+        "notification_messages": notification_messages, "header_links": [], "semesters": semesters})
 
 @app.get("/hello/{name}", response_class=HTMLResponse)
 async def say_hello(request: Request, name: str):
@@ -310,9 +316,8 @@ def get_teacher_schedule(request: Request, teacher_init: str, semester_id: int =
     lessons = db.lessons_table.find_lessons_by_teacher_initials(teacher_init, semester_id)
     lessons = db.extend_lessons_data(lessons)
 
-    notification_message = get_notification_message(request, "teacher", teacher_init=teacher_init, teacher_name=name, semester_id=semester_id)
+    notification_messages = get_notification_messages(request, "teacher", teacher_init=teacher_init, teacher_name=name, semester_id=semester_id)
 
-    message_not_uploaded = semester_id == 2
 
     db.statistics_table.insert("teacher", item_name=teacher_init)
     lessons.sort(key=lambda x: x["weekday"] * 7 * 24 + x["start_hour"] * 60 + x["start_minute"])
@@ -323,7 +328,7 @@ def get_teacher_schedule(request: Request, teacher_init: str, semester_id: int =
 
     return templates.TemplateResponse(name="schedule_group.html", context={
         "request": request, "schedule": lessons, "chosen_groups": chosen_groups, "category_title": name,
-        "semesters": semesters, "notification_message": notification_message,})
+        "semesters": semesters, "notification_messages": notification_messages,})
     # return templates.TemplateResponse(name="search.html", context={"request": request})
 
 def make_search_options() -> list[dict]:
@@ -412,7 +417,7 @@ def set_lang(request: Request, lang: str = Form(...)):
 def get_lang(request: Request):
     lang = request.cookies.get("lang")
     lang = lang[:2] if lang is not None and len(lang) > 0 else None
-    print("cookie_lang: ", lang)
+    # print("cookie_lang: ", lang)
     if lang is None:
         # print(request.headers.get("accept-language"))
         pattern = r'([a-z]{2})(?:-[A-Z]{2,4})?(?=[,;]|$)'

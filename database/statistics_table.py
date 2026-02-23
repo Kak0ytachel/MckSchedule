@@ -1,8 +1,15 @@
+from typing import TypedDict, Literal
+
 from mysql.connector.cursor import MySQLCursor
 from datetime import datetime, timedelta
 
 from database.base_table import BaseTable
 
+class StatsData(TypedDict):
+    item_type: Literal['classroom', 'teacher', 'group', 'subgroup']
+    item_id: int
+    item_name: str
+    count: int
 
 class StatisticsTable(BaseTable):
     bufer = []
@@ -69,7 +76,7 @@ class StatisticsTable(BaseTable):
         if item_type in ['group', 'subgroup', 'classroom']:
             self.cursor.execute("INSERT INTO statistics (item_type, item_id, datetime) VALUES (%s, %s, NOW());", (item_type, item_id))
 
-    def count_all_elements(self, before: datetime, after: datetime) -> list[dict]:
+    def count_all_elements(self, before: datetime, after: datetime) -> list[StatsData]:
         self.cursor.execute("SELECT item_type, item_name, item_id, COUNT(*) as count FROM statistics WHERE datetime BETWEEN %s AND %s GROUP BY item_type, item_name, item_id ORDER BY count DESC;", (before, after))
         items = []
         for i in self.cursor.fetchall():

@@ -14,6 +14,7 @@ import random
 from datetime import datetime, timedelta, date
 from markupsafe import Markup
 
+from database.statistics_table import StatsData
 from database.subgroups_table import SubgroupData
 from language_manager import LanguageManager, DEFAULT_LANGUAGE
 
@@ -247,21 +248,46 @@ async def search(request: Request):
             data_subgroup = subgroup_data["subgroup_name"]
         search_items.append({"link": link, "data_subgroup": data_subgroup, "name": name})
     #TODO: add freq check
+
+    before = datetime.now() - timedelta(days=7)
+    stats = db.statistics_table.count_all_elements(before, datetime.now())
+
     common_items = []
-    common_names = ['6N', '6N / inz', '6N / arch'] #TODO fix
-    for name in common_names:
-        if name in group_names:
-            link = f"/group/{name}"
-            data_subgroup = "group"
-        else:
-            subgroup_data = list(filter(lambda x: (x["subgroup_display_name"] == name), subgroups_data))[0]
-            group_id = subgroup_data["group_id"]
-            group_name = db.groups_table.find_group_names([group_id])[group_id]
-            link = f"/group/{group_name}/{subgroup_data['subgroup_name']}"
-            name = subgroup_data["subgroup_display_name"]
-            data_subgroup = subgroup_data["subgroup_name"]
-        common_items.append({"link": link, "data_subgroup": data_subgroup, "name": name})
-    return templates.TemplateResponse(name="search.html", context={"request": request, "matches": matches, "query": search_request, "search_groups": search_items, "common_items": common_items})
+    print(stats)
+    stats = make_stats(stats)
+    print(stats)
+    max_len = 20
+    if len(stats) > max_len:
+        stats = stats[:max_len]
+    # for item in stats:
+    #     name = item["item_name"]
+    #     if item["item_type"] == "teacher":
+    #         link = f"/teacher/{name}"
+    #     elif item["item_type"] == "classroom":
+    #         link = f"/classroom/{name}"
+    #     elif item["item_type"] == "group":
+    #         link = f"/group/{name}"
+    #     elif item["item_type"] == "subgroup":
+    #         link = f"/group/{item['item_name']}/{item['item_id']}"
+    #     else:
+    #         print("ERROR: unknown item type")
+    #         link = ""
+
+        # common_items.append({"link": link, "data_subgroup": data_subgroup, "name": name})
+    # print(stats)
+    # common_names = ['6N', '6N / inz', '6N / arch'] #TODO fix
+    # for name in common_names:
+    #     if name in group_names:
+    #         link = f"/group/{name}"
+    #         data_subgroup = "group"
+    #     else:
+    #         subgroup_data = list(filter(lambda x: (x["subgroup_display_name"] == name), subgroups_data))[0]
+    #         group_id = subgroup_data["group_id"]
+    #         group_name = db.groups_table.find_group_names([group_id])[group_id]
+    #         link = f"/group/{group_name}/{subgroup_data['subgroup_name']}"
+    #         name = subgroup_data["subgroup_display_name"]
+    #         data_subgroup = subgroup_data["subgroup_name"]
+    return templates.TemplateResponse(name="search.html", context={"request": request, "matches": matches, "query": search_request, "search_groups": search_items, "common_items": stats})
 
 @app.get("/changelog", response_class=HTMLResponse)
 async def changelog(request: Request):
@@ -329,7 +355,6 @@ def get_teacher_schedule(request: Request, teacher_init: str, semester_id: int =
     return templates.TemplateResponse(name="schedule_group.html", context={
         "request": request, "schedule": lessons, "chosen_groups": chosen_groups, "category_title": name,
         "semesters": semesters, "notification_messages": notification_messages,})
-    # return templates.TemplateResponse(name="search.html", context={"request": request})
 
 def make_search_options() -> list[dict]:
     options = []
@@ -366,25 +391,13 @@ def api_get_statistics():
     content = db.statistics_table.count_all_elements(datetime(1970, 1, 1), datetime.now())
     return JSONResponse(content=content)
 
-@app.get("/statistics/{period}")
-@app.get("/statistics")
-def get_statistics(request: Request, period: str = "all"):
-    if period not in ['all', '1d', '3d', '7d', '30d']:
-        return RedirectResponse(url="/statistics")
-    if period == "all":
-        before = datetime(1970, 1, 1)
-    else:
-        before = datetime.now() - timedelta(days=int(period[:-1]))
-    stats = db.statistics_table.count_all_elements(before, datetime.now())
+def make_stats(stats: list[dict]):
     groups = db.groups_table.get_all_groups()
     subgroups = db.subgroups_table.get_all_subgroups_dict()
     teachers = db.teachers_table.get_all_teachers()
     classrooms = db.classrooms_table.get_classroom_data()
-    max_value = max([i['count'] for i in stats]) if len(stats) > 0 else 0
     # print(max_value)
-    max_width = 50
     for i in stats:
-        i['width'] = max_width / max_value * i['count']
         i['data_subgroup'] = i['item_type']
         if i['item_type'] == "group":
             i['display_name'] = groups[i['item_id']]
@@ -400,6 +413,23 @@ def get_statistics(request: Request, period: str = "all"):
         if i['item_type'] == "classroom":
             i['display_name'] = classrooms[i['item_id']]['classroom_display_name']
             i['link'] = '/classroom/' + classrooms[i['item_id']]['classroom_short_name']
+    return stats
+
+@app.get("/statistics/{period}")
+@app.get("/statistics")
+def get_statistics(request: Request, period: str = "all"):
+    if period not in ['all', '1d', '3d', '7d', '30d']:
+        return RedirectResponse(url="/statistics")
+    if period == "all":
+        before = datetime(1970, 1, 1)
+    else:
+        before = datetime.now() - timedelta(days=int(period[:-1]))
+    stats = db.statistics_table.count_all_elements(before, datetime.now())
+    stats = make_stats(stats)
+    max_value = max([i['count'] for i in stats]) if len(stats) > 0 else 0
+    max_width = 50
+    for i in stats:
+        i['width'] = max_width / max_value * i['count']
     # return JSONResponse(content=stats)
     return templates.TemplateResponse(name="statistics.html", context={"request": request, "stats": stats, "period": period,
                                                                        "options": ["1d", "3d", "7d", "30d", "all"]})
@@ -437,26 +467,6 @@ def make_semesters(base_link, semester_id) -> dict:
         i['is_chosen'] = i['semester_id'] == semester_id
         i['link'] = base_link + "/semester/" + str(i["semester_id"]) if not i['is_default'] else base_link
     return semesters
-
-# @app.get("/test/setlang")
-# def set_lang_test(request: Request):
-#     lang = get_lang(request)
-#     return templates.TemplateResponse(name="scratch-request.html", context={"request": request, "lang": lang})
-
-# @app.get("/group/{group_id}")
-# async def get_group(group_id: str):
-#     return db.find_all_lessons_by_group_id(group_id)
-#     return {"message": f"Hello {group_name}"}
-#
-# @app.get("/group/{group_id}/{subgroup_name}")
-# async def get_subgroup(group_id: str, subgroup_name: str):
-#     available_subgroups = db.find_subgroup_names(group_id)
-#     print(available_subgroups)
-#     if subgroup_name.lower() not in [i.lower() for i in available_subgroups]:
-#         return RedirectResponse(url=f"/group/{group_id}")
-#     return db.get_subgroup_schedule(subgroup_name, group_id)
-#     return {"message": f"Hello {group_name}/{subgroup_name}/{subgroup_name}"}
-
 
 
 if __name__ == "__main__":

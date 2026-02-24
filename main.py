@@ -19,20 +19,22 @@ from database.subgroups_table import SubgroupData
 from language_manager import LanguageManager, DEFAULT_LANGUAGE
 
 
-def fuzzy_search_items(query: str, item_list: list[str], threshold: int = 50) -> list[tuple[str, int]]:
+def fuzzy_search_items(query: str, item_list: list[str], threshold: int = 40) -> list[tuple[str, int]]:
     keys_list = []
     items_dict = {}
     for item in item_list:
         for key in item['names']:
-            keys_list.append(key)
-            items_dict[key] = item
-    matches = process.extract(query, keys_list, scorer=fuzz.partial_token_sort_ratio, limit=10)
+            keys_list.append(unidecode.unidecode(key))
+            items_dict[unidecode.unidecode(key)] = item
+    matches = process.extract(unidecode.unidecode(query), keys_list, scorer=fuzz.token_sort_ratio, limit=10)
+    print(matches)
     items_added = set()
     filtered_matches = []
     for key, score in matches:
         if score >= threshold and items_dict[key]['display_name'] not in items_added:
             filtered_matches.append((items_dict[key], score))
             items_added.add(items_dict[key]['display_name'])
+    print(filtered_matches)
     return filtered_matches
 
 async def not_found(request: Request, *args):
@@ -231,6 +233,7 @@ async def search(request: Request):
 
     before = datetime.now() - timedelta(days=7)
     stats = db.statistics_table.count_all_elements(before, datetime.now())
+
     stats = make_stats(stats)
 
     max_len = 20
@@ -325,7 +328,7 @@ def make_search_options() -> list[dict]:
 
     classrooms = db.classrooms_table.get_classroom_names()
     for classroom in classrooms.items():
-        options.append({"link": f"/classroom/{classroom[0]}", "names": [classroom[1]], "display_name": classroom[1], "data_subgroup": "classroom"})
+        options.append({"link": f"/classroom/{classroom[0]}", "names": [classroom[1], classroom[0]], "display_name": classroom[1], "data_subgroup": "classroom"})
 
     return options
 

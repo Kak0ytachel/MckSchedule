@@ -16,9 +16,9 @@
         <h1>{{ translate(request, "search-title")}} - "{{ query }}"</h1>
         <p> {{ translate(request, "search-text", '<a href="/groups">', '</a>')}}</p>
         <div class="">
-            {% for group in search_groups %}
-                <a href="{{ group.link }}" class="schedule-group" data-subgroup={{ group.data_subgroup }} data-is-chosen="true">
-                 {{  group.name }}
+            {% for item in search_items %}
+                <a href="{{ item.link }}" class="schedule-group" data-subgroup={{ item.data_subgroup }} data-is-chosen="true">
+                 {{  item.display_name }}
                 </a>
             {% endfor %}
         </div>

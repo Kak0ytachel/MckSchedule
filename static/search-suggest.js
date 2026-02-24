@@ -35,15 +35,16 @@ function showSuggestions(options, suggestionsContainer) {
         const option = suboption.item;
         const li = document.createElement('li');
         li.classList.add('search-suggestions-element');
-        li.innerHTML = `<a href="${option.link}">${option.name}</a>`;
+        li.innerHTML = `<a href="${option.link}">${option.display_name}</a>`;
         suggestionsContainer.appendChild(li);
         i++;
     })
 }
 
 function makeSuggestions(searchField, suggestionsContainer) {
+    console.log(options)
     const fuse = new Fuse(options, {
-        keys: ['name']
+        keys: ['names']
     });
     const result = fuse.search(searchField.value);
     // console.log(result);

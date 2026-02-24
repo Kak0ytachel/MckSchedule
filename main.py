@@ -19,13 +19,20 @@ from database.subgroups_table import SubgroupData
 from language_manager import LanguageManager, DEFAULT_LANGUAGE
 
 
-def fuzzy_search_items(query: str, item_list: list[str], threshold: int = 0) -> list[tuple[str, int]]:
-    matches = process.extract(query, item_list, scorer=fuzz.token_sort_ratio)
-    filtered_matches = [
-        (item, score)
-        for item, score in matches
-        if score >= threshold
-    ]
+def fuzzy_search_items(query: str, item_list: list[str], threshold: int = 50) -> list[tuple[str, int]]:
+    keys_list = []
+    items_dict = {}
+    for item in item_list:
+        for key in item['names']:
+            keys_list.append(key)
+            items_dict[key] = item
+    matches = process.extract(query, keys_list, scorer=fuzz.partial_token_sort_ratio, limit=10)
+    items_added = set()
+    filtered_matches = []
+    for key, score in matches:
+        if score >= threshold and items_dict[key]['display_name'] not in items_added:
+            filtered_matches.append((items_dict[key], score))
+            items_added.add(items_dict[key]['display_name'])
     return filtered_matches
 
 async def not_found(request: Request, *args):
@@ -202,92 +209,35 @@ async def say_hello(request: Request, name: str):
     return templates.TemplateResponse(name="hello_world.html", context={"request": request, "name": name})
     # return {"message": f"Hello {name}"}
 
+# TODO: add logger
+
 @app.get("/search")
 async def search(request: Request):
-    # print(request)
-    # TODO: add logger
     search_request = unidecode.unidecode(request.query_params.get("q"))
-    # print(search_request)
-    group_names = db.groups_table.get_all_group_names()
-    subgroups_data = db.subgroups_table.get_all_subgroups()
+
+    global search_options
+    if len(search_request) == 0:
+        search_options = make_search_options()
     #TODO: unidecode subgroup display names with making backwards transition dict
-    subgroup_names = [i["subgroup_display_name"] for i in subgroups_data]
-    if search_request in group_names:
-        return RedirectResponse(url=f"/group/{search_request}")
-    names = group_names.copy()
-    names.extend(subgroup_names)
-    matches = fuzzy_search_items(search_request, names)
+    matches = fuzzy_search_items(search_request, search_options)
+
     if len(matches) == 0:
         return RedirectResponse(url="/")
-        # never happens
         #TODO: show nothing found
-    elif matches[0][1] > 85:
-        name = matches[0][0]
-        if name in group_names:
-            return RedirectResponse(url=f"/group/{name}")
-        subgroup_data = list(filter(lambda x: (x["subgroup_display_name"] == name), subgroups_data))[0]
-        # print(subgroup_data)
-        group_id = subgroup_data["group_id"]
-        group_name = db.groups_table.find_group_names([group_id])[group_id]
-        # print(group_name)
-        return RedirectResponse(url=f"/group/{group_name}/{subgroup_data['subgroup_name']}")
 
-    #TODO: add search page
-    search_items = []
-    for i in matches:
-        name = i[0]
-        if name in group_names:
-            link = f"/group/{name}"
-            data_subgroup = "group"
-        else:
-            subgroup_data = list(filter(lambda x: (x["subgroup_display_name"] == name), subgroups_data))[0]
-            group_id = subgroup_data["group_id"]
-            group_name = db.groups_table.find_group_names([group_id])[group_id]
-            link = f"/group/{group_name}/{subgroup_data['subgroup_name']}"
-            name = subgroup_data["subgroup_display_name"]
-            data_subgroup = subgroup_data["subgroup_name"]
-        search_items.append({"link": link, "data_subgroup": data_subgroup, "name": name})
-    #TODO: add freq check
+    search_items = [i[0] for i in matches]
+    if matches[0][1] > 85:
+        return RedirectResponse(url=matches[0][0]['link'])
 
     before = datetime.now() - timedelta(days=7)
     stats = db.statistics_table.count_all_elements(before, datetime.now())
-
-    common_items = []
-    print(stats)
     stats = make_stats(stats)
-    print(stats)
+
     max_len = 20
     if len(stats) > max_len:
         stats = stats[:max_len]
-    # for item in stats:
-    #     name = item["item_name"]
-    #     if item["item_type"] == "teacher":
-    #         link = f"/teacher/{name}"
-    #     elif item["item_type"] == "classroom":
-    #         link = f"/classroom/{name}"
-    #     elif item["item_type"] == "group":
-    #         link = f"/group/{name}"
-    #     elif item["item_type"] == "subgroup":
-    #         link = f"/group/{item['item_name']}/{item['item_id']}"
-    #     else:
-    #         print("ERROR: unknown item type")
-    #         link = ""
 
-        # common_items.append({"link": link, "data_subgroup": data_subgroup, "name": name})
-    # print(stats)
-    # common_names = ['6N', '6N / inz', '6N / arch'] #TODO fix
-    # for name in common_names:
-    #     if name in group_names:
-    #         link = f"/group/{name}"
-    #         data_subgroup = "group"
-    #     else:
-    #         subgroup_data = list(filter(lambda x: (x["subgroup_display_name"] == name), subgroups_data))[0]
-    #         group_id = subgroup_data["group_id"]
-    #         group_name = db.groups_table.find_group_names([group_id])[group_id]
-    #         link = f"/group/{group_name}/{subgroup_data['subgroup_name']}"
-    #         name = subgroup_data["subgroup_display_name"]
-    #         data_subgroup = subgroup_data["subgroup_name"]
-    return templates.TemplateResponse(name="search.html", context={"request": request, "matches": matches, "query": search_request, "search_groups": search_items, "common_items": stats})
+    return templates.TemplateResponse(name="search.html", context={"request": request, "matches": matches, "query": search_request, "search_items": search_items, "common_items": stats})
 
 @app.get("/changelog", response_class=HTMLResponse)
 async def changelog(request: Request):
@@ -361,21 +311,21 @@ def make_search_options() -> list[dict]:
     groups_dict = db.groups_table.get_all_groups()
     group_names = list(groups_dict.values())
     for i in group_names:
-        options.append({"link": f"/group/{i}", "name": i})
+        options.append({"link": f"/group/{i}", "names": [i],  "display_name": i, "data_subgroup": "group"})
 
     subgroups_data = db.subgroups_table.get_all_subgroups()
     for i in subgroups_data:
         group_id = i["group_id"]
         group_name = groups_dict[group_id]
-        options.append({"link": f"/group/{group_name}/{i['subgroup_name']}", "name": i["subgroup_display_name"]})
+        options.append({"link": f"/group/{group_name}/{i['subgroup_name']}", "names": [i["subgroup_display_name"]], "display_name": i["subgroup_display_name"], "data_subgroup": i["subgroup_name"]})
 
     teachers = db.teachers_table.get_all_teachers()
     for teacher in teachers.items():
-        options.append({"link": f"/teacher/{teacher[0]}", "name": teacher[1]})
+        options.append({"link": f"/teacher/{teacher[0]}", "names": [teacher[0], teacher[1]], "display_name": teacher[1], "data_subgroup": "teacher"})
 
     classrooms = db.classrooms_table.get_classroom_names()
     for classroom in classrooms.items():
-        options.append({"link": f"/classroom/{classroom[0]}", "name": classroom[1]})
+        options.append({"link": f"/classroom/{classroom[0]}", "names": [classroom[1]], "display_name": classroom[1], "data_subgroup": "classroom"})
 
     return options
 

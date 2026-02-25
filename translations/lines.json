@@ -9,7 +9,7 @@
     "schedule-not-uploaded-message",
     "footer-line-1", "footer-line-2", "footer-line-3", "footer-line-4",
     "statistics-title", "statistics-text",
-    "search-title", "search-text", "search-text-2",
+    "search-title", "search-text", "search-text-2", "search-text-empty",
     "not-found-title", "not-found-text",
     "schedule-monday", "schedule-tuesday", "schedule-wednesday", "schedule-thursday", "schedule-friday",
     "schedule-semesters", "schedule-semester-winter", "schedule-semester-summer",

@@ -26,6 +26,7 @@
     "search-title": "Search",
     "search-text": "No exact matches were found. Please check out suggestions below or choose from the {}groups{} page",
     "search-text-2": "Most commonly used groups",
+    "search-text-empty": "No matches found. Please try another search query.",
     "not-found-title": "Not found",
     "not-found-text": "There's no page with that address, at least yet. If you think there should be, please contact us.",
     "schedule-monday": "Monday",

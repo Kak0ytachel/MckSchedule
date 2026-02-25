@@ -26,6 +26,7 @@
     "search-title": "Wyszukiwanie",
     "search-text": "Nie znaleziono żadnych pełnych dopasowań. Proszę sprawdzić poniższe propozycje lub wybrać z {}katalogu{}",
     "search-text-2": "Najczęściej używane",
+    "search-text-empty": "Nie znaleziono żadnych dopasowań. Proszę sprobować ponownie, wpisując inne zapytanie.",
     "not-found-title": "Strona nie znaleziona",
     "not-found-text": "Strona pod tym adresem nie istnieje. Jeśli uważasz, że jest to błąd, skontaktuj się z nami.",
     "schedule-monday": "Poniedziałek",

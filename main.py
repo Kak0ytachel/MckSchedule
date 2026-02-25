@@ -218,18 +218,14 @@ async def search(request: Request):
     search_request = unidecode.unidecode(request.query_params.get("q"))
 
     global search_options
-    if len(search_request) == 0:
+    if len(search_options) == 0:
         search_options = make_search_options()
-    #TODO: unidecode subgroup display names with making backwards transition dict
     matches = fuzzy_search_items(search_request, search_options)
 
-    if len(matches) == 0:
-        return RedirectResponse(url="/")
-        #TODO: show nothing found
-
     search_items = [i[0] for i in matches]
-    if matches[0][1] > 85:
-        return RedirectResponse(url=matches[0][0]['link'])
+    if len(matches) > 0:
+        if matches[0][1] > 85:
+            return RedirectResponse(url=matches[0][0]['link'])
 
     before = datetime.now() - timedelta(days=7)
     stats = db.statistics_table.count_all_elements(before, datetime.now())

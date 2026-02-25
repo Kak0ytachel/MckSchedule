@@ -14,14 +14,18 @@
 <main style="background-color: white;">
     <header style="margin: 10px">
         <h1>{{ translate(request, "search-title")}} - "{{ query }}"</h1>
-        <p> {{ translate(request, "search-text", '<a href="/groups">', '</a>')}}</p>
-        <div class="">
-            {% for item in search_items %}
-                <a href="{{ item.link }}" class="schedule-group" data-subgroup={{ item.data_subgroup }} data-is-chosen="true">
-                 {{  item.display_name }}
-                </a>
-            {% endfor %}
-        </div>
+        {% if search_items is not none and search_items|length > 0 %}
+            <p> {{ translate(request, "search-text", '<a href="/groups">', '</a>')}}</p>
+            <div class="">
+                {% for item in search_items %}
+                    <a href="{{ item.link }}" class="schedule-group" data-subgroup={{ item.data_subgroup }} data-is-chosen="true">
+                     {{  item.display_name }}
+                    </a>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p> {{ translate(request, "search-text-empty") }}</p>
+        {% endif %}
         <p class="header-text">{{ translate(request, "search-text-2")}}</p>
         <div>
             {% for group in common_items %}

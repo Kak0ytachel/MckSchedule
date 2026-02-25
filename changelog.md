@@ -1,3 +1,6 @@
+### v0.2.3-beta - released 25/02/2026
+- Updated search results page
+
 ### v0.2.2-beta - released 22/02/2026
 - Updated schedule for semester 2
 - Fixed the language issue

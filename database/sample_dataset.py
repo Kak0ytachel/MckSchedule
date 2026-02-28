@@ -4,6 +4,9 @@ from database.db_dataclasses import Group, init_db, Teacher, Classroom, Subject,
 
 
 def load_sample_data(db: Database):
+    db.mydb.autocommit = False
+    start = datetime.now()
+    # print("started")
     db._drop_database()
     db._init_database()
     init_db(db)
@@ -740,14 +743,8 @@ def load_sample_data(db: Database):
     Lesson(subject_gp, classroom_krakow, teacher_msz, 3, 13, 30, 15, 00, sem2).add_group(group_2s)
     Lesson(subject_kscz, classroom_lodz, teacher_sr, 4, 8, 00, 9, 30, sem2).add_group(group_5s)
     Lesson(subject_gp, classroom_proj, teacher_jk, 5, 13, 30, 15, 00, sem2).add_group(group_4s)
-    # Lesson(subject)
-    # print("got to subject creation")
-    # lesson = Subject("test", "abc")
-
-    # i = db.lessons_table.add_lesson()
-    # db.subgroup_lessons_table.add_subgroup_lesson()
-    # db.group_lessons_table.add_group_lesson()
-
-    # i = db.lessons_table.add_lesson()
-    # db.subgroup_lessons_table.add_subgroup_lesson()
-    # db.group_lessons_table.add_group_lesson()
+    finish = datetime.now()
+    db.mydb.commit()
+    # print('finished')
+    print(finish - start)
+    db.mydb.autocommit = True

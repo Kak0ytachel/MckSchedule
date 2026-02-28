@@ -41,7 +41,6 @@ async def not_found(request: Request, *args):
     return templates.TemplateResponse(name="not_found.html", context={"request": request})
 
 db = Database()
-print(db.get_schedule_from_group("6N", 1))
 app = FastAPI(exception_handlers={404: not_found})
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
@@ -62,9 +61,6 @@ templates.env.globals.update(translate=translate)
 search_options = []
 
 
-# @app.get("/")
-# async def root():
-#     return {"message": "Hello World"}
 
 def get_notification_messages(request: Request, schedule_type: str, **kwargs):
     notification_messages = []
@@ -114,17 +110,12 @@ async def get_group_schedule(request: Request, group_name: str, semester_id: int
 
     subgroups_data = db.get_child_subgroups(group_name)
 
-    # schedule2 = db.extend_lessons_data(db.get_group_schedule(group_name))
-    # schedule2.sort(key=lambda x: x["weekday"] * 7 * 24 + x["start_hour"] * 60 + x["start_minute"])
-    # print(schedule2)
 
     chosen_groups = [i["subgroup_display_name"] for i in subgroups_data]
     chosen_groups.append(group_name) # mixed
 
     notification_messages = get_notification_messages(request, "group", group_name=group_name, semester_id=semester_id)
-    # message_not_uploaded = (group_name not in ["6N", "5N", "4N", "3N", "2N"] or semester_id == 2) #TODO: add "finished" field to db
-    # if message_not_uploaded:
-    #     notification_message = translate(request, "schedule-not-uploaded-message", '<u>', '</u>', '<a class="underline-link" href="https://t.me/dokpdl">', '</a>')
+
     group_id = db.groups_table.find_group_id(group_name)
     db.statistics_table.insert("group", item_id=group_id)
 
@@ -205,11 +196,6 @@ async def get_classroom_schedule(request: Request, classroom_short_name: str, se
         "schedule": schedule, "group": [], "category_title": classroom_display_name,
         "subgroups_data": [], "chosen_groups": chosen_groups,
         "notification_messages": notification_messages, "header_links": [], "semesters": semesters})
-
-@app.get("/hello/{name}", response_class=HTMLResponse)
-async def say_hello(request: Request, name: str):
-    return templates.TemplateResponse(name="hello_world.html", context={"request": request, "name": name})
-    # return {"message": f"Hello {name}"}
 
 # TODO: add logger
 
@@ -417,6 +403,10 @@ def make_semesters(base_link, semester_id) -> dict:
         i['link'] = base_link + "/semester/" + str(i["semester_id"]) if not i['is_default'] else base_link
     return semesters
 
+
+@app.get("/login")
+async def login(request: Request):
+    return templates.TemplateResponse(name="login.html", context={"request": request})
 
 if __name__ == "__main__":
     print(db.subgroups_table.find_child_subgroups("6N"))

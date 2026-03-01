@@ -1,7 +1,11 @@
+from typing import Optional
+
+import jwt
 from fastapi import FastAPI, Request, Response, Form
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
+from pwdlib.hashers import bcrypt
 from starlette.responses import JSONResponse
 import re
 
@@ -11,13 +15,22 @@ from fuzzywuzzy import fuzz
 from fuzzywuzzy import process
 import unidecode
 import random
-from datetime import datetime, timedelta, date
+from datetime import datetime, timedelta, date, tzinfo, timezone
 from markupsafe import Markup
 
 from database.statistics_table import StatsData
 from database.subgroups_table import SubgroupData
 from language_manager import LanguageManager, DEFAULT_LANGUAGE
 
+
+import dotenv
+import os
+
+from security import check_password, encode_password
+
+dotenv.load_dotenv()
+jwt_secret = os.getenv("JWT_SECRET")
+jwt_token_duration = timedelta(days=30)
 
 def fuzzy_search_items(query: str, item_list: list[str], threshold: int = 40) -> list[tuple[str, int]]:
     keys_list = []
@@ -27,14 +40,14 @@ def fuzzy_search_items(query: str, item_list: list[str], threshold: int = 40) ->
             keys_list.append(unidecode.unidecode(key))
             items_dict[unidecode.unidecode(key)] = item
     matches = process.extract(unidecode.unidecode(query), keys_list, scorer=fuzz.token_sort_ratio, limit=10)
-    print(matches)
+    # print(matches)
     items_added = set()
     filtered_matches = []
     for key, score in matches:
         if score >= threshold and items_dict[key]['display_name'] not in items_added:
             filtered_matches.append((items_dict[key], score))
             items_added.add(items_dict[key]['display_name'])
-    print(filtered_matches)
+    # print(filtered_matches)
     return filtered_matches
 
 async def not_found(request: Request, *args):
@@ -45,7 +58,6 @@ app = FastAPI(exception_handlers={404: not_found})
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
 templates = Jinja2Templates(directory="templates")
-
 
 lm = LanguageManager()
 
@@ -86,12 +98,9 @@ def get_notification_messages(request: Request, schedule_type: str, **kwargs):
         notification_messages.append(notification_message)
     return notification_messages
 
-@app.get("/lesson/{id}", response_class=HTMLResponse)
-async def get_lesson(request: Request, id: str):
-    # lesson_dict = db.find_lesson_by_id(id)
-    lesson_data = db.extend_lessons_data([db.lessons_table.find_lesson_by_id(lesson_id=id)])[0]
-    print(lesson_data)
-
+@app.get("/lesson/{lesson_id}", response_class=HTMLResponse)
+async def get_lesson(request: Request, lesson_id: str):
+    lesson_data = db.extend_lessons_data([db.lessons_table.find_lesson_by_id(lesson_id=lesson_id)])[0]
     chosen_groups = [i["subgroup_display_name"] for i in lesson_data["subgroups"]]
     chosen_groups.extend(lesson_data["groups"]) # mixed
     return templates.TemplateResponse(name="card_page.html", request=request, context={"lesson": lesson_data, "chosen_groups": chosen_groups})
@@ -107,9 +116,7 @@ async def get_group_schedule(request: Request, group_name: str, semester_id: int
 
     schedule = db.get_schedule_from_group(group_name, semester_id)
 
-
     subgroups_data = db.get_child_subgroups(group_name)
-
 
     chosen_groups = [i["subgroup_display_name"] for i in subgroups_data]
     chosen_groups.append(group_name) # mixed
@@ -128,7 +135,6 @@ async def get_group_schedule(request: Request, group_name: str, semester_id: int
                           "data_subgroup": i["subgroup_name"]} for i in subgroups_data])
     header_links.append({"link": f"/group/{group_name}", "name": group_name, "data_subgroup": "group"})
 
-    print(db.statistics_table.count_all_time("group", group_id))
 
     return templates.TemplateResponse(name="schedule_group.html", request=request, context={
         "schedule": schedule, "group": group_name, "category_title": group_name, "subgroups_data": subgroups_data,
@@ -372,7 +378,7 @@ def get_statistics(request: Request, period: str = "all"):
 
 @app.post("/api/lang")
 def set_lang(request: Request, lang: str = Form(...)):
-    print(lang)
+    # print(lang)
     referer_url = request.headers.get("referer", '/')
     response = RedirectResponse(url=referer_url, status_code=303)
     response.set_cookie(key="lang", value=lang)
@@ -405,11 +411,124 @@ def make_semesters(base_link, semester_id) -> dict:
 
 
 @app.get("/login")
-async def login(request: Request):
-    return templates.TemplateResponse(name="login.html", context={"request": request})
+async def login_get(request: Request):
+    login_error = request.cookies.get("login_error") is not None
+    response = templates.TemplateResponse(name="login.html", context={"request": request, "error": login_error})
+    response.delete_cookie(key="login_error")
+    return response
+
+
+@app.post("/login")
+async def login_post(request: Request, login: str = Form(...), password: str = Form(...)):
+    jwt_token = check_password_make_token(login, password)
+    if jwt_token is not None:
+        response = RedirectResponse(url="/", status_code=303)
+        response.set_cookie(key="session", value=jwt_token, httponly=True, samesite="lax", secure=True,
+                            expires=(datetime.now(tz=timezone.utc) + jwt_token_duration), path='/')
+        return response
+    response = RedirectResponse(url="/login", status_code=303)
+    response.set_cookie(key="login_error", value="true")
+    return response
+
+
+def encode_jwt(data: dict) -> str:
+    return jwt.encode(data, jwt_secret, algorithm="HS256")
+
+def decode_jwt(token: str) -> dict:
+    return jwt.decode(token, jwt_secret, algorithms=["HS256"])
+
+def check_password_make_token(login: str, password: str) -> str | None:
+    accounts = db.accounts_table.find_account(login)
+    if len(accounts) == 0:
+        return None
+    if len(accounts) > 1:
+        print("[ERROR] More than one account with the same login")
+    account = accounts[0]
+    print(account)
+    hashed_password = account['hashed_password']
+    if not check_password(password, hashed_password):
+        return None
+
+    expiration_time = int((datetime.now() + jwt_token_duration).timestamp())
+    jwt_dict = {"user_id": account['user_id'], "expires_at": expiration_time}
+    return encode_jwt(jwt_dict)
+
+
+@app.get("/api/test-auth")
+def test_auth(request: Request):
+    jwt_token = request.cookies.get("session")
+    if jwt_token is None:
+        return JSONResponse(status_code=401, content={"error": "Unauthorized"})
+    try:
+        decoded_token = decode_jwt(jwt_token)
+        return JSONResponse(content=decoded_token)
+    except Exception as e:
+        return JSONResponse(status_code=401, content={"error": "Unauthorized"})
+
+
+@app.get("/register")
+async def register_get(request: Request):
+    register_error = request.cookies.get("register_error", None)
+    print('register_error', register_error, type(register_error))
+    response = templates.TemplateResponse(name="register.html", context={"request": request, "error": register_error})
+    if register_error is not None:
+        response.delete_cookie(key="register_error")
+    return response
+
+
+def validate_register_form(email: str, password: str, username: str = None, display_name: str = None) -> dict | None | str:
+    if email is None or len(email) == 0:
+        print('email empty')
+        return None
+    if re.match(r"[^@]+@[^@]+\.[^@]+", email) is None:
+        print(email)
+        print(re.match(email, r"[^@]+@[^@]+\.[^@]+"))
+        print('email not email')
+        return 'email_wrong'
+    if not db.accounts_table.check_email_available(email):
+        print('email already exists')
+        return 'email_exists'
+    if password is None or len(password) == 0:
+        print('password empty')
+        return None
+    if username is None or len(username) == 0:
+        print('username empty')
+        print(username)
+        print(len(username))
+        username = email.split("@")[0]
+    if not db.accounts_table.check_username_available(username):
+        print('username already exists')
+        return 'username_exists'
+    if display_name is None or len(display_name) == 0:
+        display_name = username
+    return {"email": email, "password": password, "username": username, "display_name": display_name}
+
+
+@app.post("/register")
+async def register_post(request: Request, email: str = Form(...), password: str = Form(...),
+                        username: Optional[str] = Form(None), display_name: Optional[str] = Form(None)):
+    print(email, password, username, display_name)
+    results = validate_register_form(email, password, username, display_name)
+    if results is None or isinstance(results, str):
+        print("wrong", results)
+        response = RedirectResponse(url="/register", status_code=303)
+        response.set_cookie(key="register_error", value=results if results is not None else True)
+        return response
+    db.accounts_table.add_account(email=results['email'], hashed_password=encode_password(results['password']),
+                                  username=results['username'], display_name=results['display_name'], is_admin=False)
+    token = check_password_make_token(results['email'], results['password'])
+    if token is None:
+        print("[ERROR] Failed to create token and/or user account")
+        return RedirectResponse(url="/", status_code=404)
+    response = RedirectResponse(url="/", status_code=303)
+    response.set_cookie(key="session", value=token, httponly=True, samesite="lax", secure=True,
+                        expires=(datetime.now(tz=timezone.utc) + jwt_token_duration), path='/')
+    return response
+    pass #TODO
+
 
 if __name__ == "__main__":
-    print(db.subgroups_table.find_child_subgroups("6N"))
+    # print(db.subgroups_table.find_child_subgroups("6N"))
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000, proxy_headers=True, forwarded_allow_ips="*")
 

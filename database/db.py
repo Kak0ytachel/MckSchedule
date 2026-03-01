@@ -3,6 +3,7 @@ import dotenv
 import mysql.connector
 from mysql.connector.aio.abstracts import MySQLCursorAbstract
 
+from database.accounts_table import AccountsTable
 from database.classrooms_table import ClassroomsTable
 from database.group_lessons_table import GroupLessonsTable
 from database.groups_table import GroupsTable
@@ -78,6 +79,7 @@ class Database:
         self.subgroups_table = SubgroupsTable(self.cursor)
         self.subgroup_lessons_table = SubgroupLessonsTable(self.cursor)
         self.statistics_table = StatisticsTable(self.cursor)
+        self.accounts_table = AccountsTable(self.cursor)
 
 
     def _drop_database(self):

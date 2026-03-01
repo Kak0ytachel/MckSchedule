@@ -18,12 +18,12 @@
 
 <main style="background-color: white;" class="login-main">
     <div class="login-root-container glass">
-        <h2 class="login-header">Authorize</h2>
-        <form action="/login" method="post">
+        <h2 class="login-header">Register</h2>
+        <form action="/register" method="post">
         <div class="login-input-group">
-            <label for="login" class="login-label">Login</label>
+            <label for="email" class="login-label">Email</label>
             <div class="login-input-parent">
-                <input type="text" id="login" name="login" placeholder="john.doe@example.com" class="login-input" required>
+                <input type="text" id="email" name="email" placeholder="john.doe@example.com" class="login-input" required>
             </div>
         </div>
         <div class="login-input-group">
@@ -32,14 +32,32 @@
                 <input type="password" id="password" name="password" placeholder="************" class="login-input" required>
                 <img src="{{ url_for('static', path='eye-regular-full.svg') }}" role="button" class="login-eye-icon" draggable="false" alt="show/hide" onClick="hidePassword()">
             </div>
-            <a href="" class="login-forgot-password"> Forgot password?</a>
+{#            <a href="" class="login-forgot-password"> Forgot password?</a>#}
         </div>
-        {% if error is true %}
-            <span class="login-error">Wrong login or/and password. Please check the spelling and try again. </span>
+        <div class="login-input-group">
+            <label for="username" class="login-label">Username</label>
+            <div class="login-input-parent">
+                <input type="text" id="username" name="username" placeholder="same as email by default" class="login-input">
+            </div>
+        </div>
+        <div class="login-input-group">
+            <label for="display_name" class="login-label">Display name</label>
+            <div class="login-input-parent">
+                <input type="text" id="display_name" name="display_name" placeholder="same as username by default" class="login-input">
+            </div>
+        </div>
+        {% if error == "True" %}
+            <span class="login-error">Error creating an account. Please try again. </span>
+        {% elif error == "email_wrong" %}
+            <span class="login-error">Please check if entered email is valid and try again. </span>
+        {% elif error == "email_exists" %}
+            <span class="login-error">Entered email is already registered. Please try again with another one. </span>
+        {% elif error == "username_exists" %}
+            <span class="login-error">Entered username is already registered. Please try again with another one. </span>
         {% endif %}
         <div class="login-button-container">
-            <button class="login-button-primary">Log in</button>
-            <a href="/register" class="login-button-secondary">Register</a>
+            <button class="login-button-primary">Register</button>
+            <a href="/login" class="login-button-secondary">Log in</a>
         </div>
         </form>
     </div>

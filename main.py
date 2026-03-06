@@ -526,6 +526,37 @@ async def register_post(request: Request, email: str = Form(...), password: str 
     return response
     pass #TODO
 
+@app.get("/admin/classrooms")
+async def admin_get_classrooms(request: Request):
+    classrooms = list(db.classrooms_table.get_classroom_data().values())
+    return classrooms
+    # return templates.TemplateResponse(name="admin.html", context={"content": classrooms})
+
+@app.get("/admin/teachers")
+async def admin_get_teachers(request: Request):
+    teachers = []
+    for init, name in db.teachers_table.get_all_teachers().items():
+        teachers.append({"teacher_init": init, "teacher_name": name})
+    return teachers
+
+@app.get("/admin/groups")
+async def admin_get_groups(request: Request):
+    groups = []
+    for group_id, group_name in db.groups_table.get_all_groups().items():
+        groups.append({"group_id": group_id, "group_name": group_name})
+    return groups
+
+@app.get("/admin/subgroups")
+async def admin_get_subgroups(request: Request):
+    subgroups = list(db.subgroups_table.get_all_subgroups_dict().values()) #TODO make up something about picking parent group
+    return subgroups
+
+
+@app.get("/admin/lessons")
+async def admin_get_lesson(request: Request):
+    return db.lessons_table.get_all_lessons() #TODO join groups and subgroups
+
+
 
 if __name__ == "__main__":
     # print(db.subgroups_table.find_child_subgroups("6N"))

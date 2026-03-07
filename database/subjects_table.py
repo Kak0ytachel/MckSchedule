@@ -33,3 +33,11 @@ class SubjectsTable(BaseTable):
             subjects[subject_short_name] = subject_name
         return subjects
 
+    def get_all_subjects(self) -> list[dict]:
+        self.cursor.execute("SELECT subject_short_name, subject_name FROM subjects;")
+        result = []
+        for item in self.cursor.fetchall():
+            subject_short_name: str = item[0]
+            subject_name: str = item[1]
+            result.append({'subject_short_name': subject_short_name, 'subject_name': subject_name})
+        return result

@@ -526,10 +526,24 @@ async def register_post(request: Request, email: str = Form(...), password: str 
     return response
     pass #TODO
 
+@app.get("/admin/")
+async def admin_get(request: Request):
+    return templates.TemplateResponse(name="admin.html", context={"request": request})
+
+
+@app.get("/admin/semesters")
+async def admin_get_semesters(request: Request):
+    semesters = db.semesters_table.get_semesters()
+    keys = list(semesters[0].keys())
+    keys_dict = {i: i for i in keys}
+    return HTMLResponse(content=templates.TemplateResponse(name="admin.html", context={"request": request, "content": semesters, "title": "Semesters", "keys": keys_dict}).body)
+
 @app.get("/admin/classrooms")
 async def admin_get_classrooms(request: Request):
     classrooms = list(db.classrooms_table.get_classroom_data().values())
-    return classrooms
+    keys = list(classrooms[0].keys())
+    keys_dict = {i: i for i in keys}
+    return HTMLResponse(content=templates.TemplateResponse(name="admin.html", context={"request": request, "content": classrooms, "title": "Classrooms", "keys": keys_dict}).body)
     # return templates.TemplateResponse(name="admin.html", context={"content": classrooms})
 
 @app.get("/admin/teachers")
@@ -537,24 +551,42 @@ async def admin_get_teachers(request: Request):
     teachers = []
     for init, name in db.teachers_table.get_all_teachers().items():
         teachers.append({"teacher_init": init, "teacher_name": name})
-    return teachers
+    keys = list(teachers[0].keys())
+    keys_dict = {i: i for i in keys}
+    return HTMLResponse(content=templates.TemplateResponse(name="admin.html", context={"request": request, "content": teachers, "title": "Teachers", "keys": keys_dict}).body)
+
+
+@app.get("/admin/subjects")
+async def admin_get_subjects(request: Request):
+    subjects = db.subjects_table.get_all_subjects()
+    keys = list(subjects[0].keys())
+    keys_dict = {i: i for i in keys}
+    return HTMLResponse(content=templates.TemplateResponse(name="admin.html", context={"request": request, "content": subjects, "title": "Subjects", "keys": keys_dict}).body)
 
 @app.get("/admin/groups")
 async def admin_get_groups(request: Request):
     groups = []
     for group_id, group_name in db.groups_table.get_all_groups().items():
         groups.append({"group_id": group_id, "group_name": group_name})
-    return groups
+    keys = list(groups[0].keys())
+    keys_dict = {i: i for i in keys}
+    return HTMLResponse(content=templates.TemplateResponse(name="admin.html", context={"request": request, "content": groups, "title": "Groups", "keys": keys_dict}).body)
 
 @app.get("/admin/subgroups")
 async def admin_get_subgroups(request: Request):
     subgroups = list(db.subgroups_table.get_all_subgroups_dict().values()) #TODO make up something about picking parent group
-    return subgroups
+    keys = list(subgroups[0].keys())
+    keys_dict = {i: i for i in keys}
+    return HTMLResponse(content=templates.TemplateResponse(name="admin.html", context={"request": request, "content": subgroups, "title": "Subgroups", "keys": keys_dict}).body)
 
 
 @app.get("/admin/lessons")
 async def admin_get_lesson(request: Request):
-    return db.lessons_table.get_all_lessons() #TODO join groups and subgroups
+    lessons = db.lessons_table.get_all_lessons() #TODO join groups and subgroups
+    keys = list(lessons[0].keys())
+    keys_dict = {i: i.replace("_", " ") for i in keys}
+    return HTMLResponse(content=templates.TemplateResponse(name="admin.html", context={"request": request, "content": lessons, "title": "Lessons", "keys": keys_dict}).body)
+
 
 
 

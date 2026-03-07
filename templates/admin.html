@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin panel</title>
+    <link rel="stylesheet" href="{{ url_for('static', path='/styles.css') }}">
+</head>
+<body>
+<div id="page">
+{% import "navbar.html" as navbar with context %}
+{{ navbar.navbar() }}
+
+<main style="background-color: white;">
+    <header style="margin: 10px">
+<!--        <h1>Changelog</h1>-->
+<!--        <p> Here you can find project development logs. For more info, check out <a href="index.html"> about page </a></p>-->
+        <style>
+            .admin-top-app-bar{
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                /*background-color: tomato;*/
+                /*min-height: 30px;*/
+                /*max-height: 8px;*/
+                margin: 10px 0;
+                /*font-family: */
+                flex-wrap: wrap;
+
+            }
+
+            /*@media (max-width: 600px) {*/
+            /*    .admin-top-app-bar{*/
+            /*        display: unset;*/
+            /*    }*/
+            /*}*/
+            .admin-top-app-bar-item{
+                display: inline-block;
+                font-family: Roboto, sans-serif;
+                padding: 4px;
+                border-radius: 10px;
+                text-decoration: none;
+                /*background-color: yellow;*/
+                background: rgba(255, 255, 255, 0.16);
+                /*border-radius: 16px;*/
+                box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+                backdrop-filter: blur(4px);
+                -webkit-backdrop-filter: blur(4px);
+                margin: 4px;
+            }
+
+            .admin-top-app-bar-item:hover{
+                /*background-color: rgba(255, 255, 255, 0.50);*/
+                box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.1);
+            }
+
+            .admin-top-app-bar-item[data-active]{
+                /*background-color: whitesmoke;*/
+                outline: 2px solid dodgerblue;
+                /*outline-offset: 2px;*/
+                /*color: white;*/
+                /*border: none;*/
+                /*box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.1);*/
+                /*background-color: red;*/
+            }
+        </style>
+        <div class="admin-top-app-bar">
+<!--            Admin panel-->
+            <a href="/admin/semesters" class="admin-top-app-bar-item"{{ 'data-active' if title == 'Semesters' }}>Semesters</a>
+            <a href="/admin/classrooms" class="admin-top-app-bar-item"{{ 'data-active' if title == 'Classrooms' }}>Classrooms</a>
+            <a href="/admin/subjects" class="admin-top-app-bar-item"{{ 'data-active' if title == 'Subjects' }}>Subjects</a>
+            <a href="/admin/teachers" class="admin-top-app-bar-item"{{ 'data-active' if title == 'Teachers' }}>Teachers</a>
+            <a href="/admin/groups" class="admin-top-app-bar-item"{{ 'data-active' if title == 'Groups' }}>Groups</a>
+            <a href="/admin/subgroups" class="admin-top-app-bar-item"{{ 'data-active' if title == 'Subgroups' }}>Subgroups</a>
+            <a href="/admin/lessons" class="admin-top-app-bar-item"{{ 'data-active' if title == 'Lessons' }}>Lessons</a>
+            <a href="/admin/backup" class="admin-top-app-bar-item"{{ 'data-active' if title == 'Backup' }}>Backup</a>
+        </div>
+    </header>
+    <article>
+        <h2 class="admin-title">
+            {{ title }}
+        </h2>
+    </article>
+    <style>
+        .admin-title{
+            font-family: Monospace, monospace;
+            margin-top: 8px;
+            margin-bottom: 8px
+        }
+        .admin-container{
+            background: aliceblue;
+            {#display: inline-flex;#}
+            padding: 8px;
+            border-radius: 10px;
+            margin: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            {#flex-wrap: wrap;#}
+            /*justify-content: space-evenly;*/
+            {#flex-direction: row;#}
+            {#align-content: flex-start;#}
+
+            overflow-x: auto;
+            display: block;
+            {#max-width: 500px;#}
+
+        }
+
+        .admin-table, .admin-table-th, .admin-table-td{
+            /*border: 1px solid black;*/
+            /*border: 10px solid transparent;*/
+            /*border-collapse: collapse;*/
+            border-spacing: 0 10px;
+        }
+
+        .admin-table-th, .admin-table-td{
+            padding: 10px 15px;
+        }
+
+        .admin-table-th:first-child, .admin-table-td:first-child{
+            border-radius: 10px 0 0 10px;
+        }
+        .admin-table-th:last-child, .admin-table-td:last-child{
+            border-radius: 0 10px 10px 0;
+            display: flex;
+        }
+
+        .admin-table-th {
+            font-family: Monospace, monospace;
+            color: gray;
+            font-weight: normal;
+        }
+
+        .admin-table-td {
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        .admin-table-tbody .admin-table-tr {
+            background-color: rgba(255, 255, 255, 0.6);
+            background-clip: content-box;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+
+        .admin-table-tbody .admin-table-tr:hover {
+            background-color: rgba(255, 255, 255, 1);
+        }
+
+        .icon {
+            width: 20px;
+            height: 20px;
+            filter: opacity(0.2);
+        }
+
+        .admin-table-tr:hover .icon {
+            filter: opacity(0.5);
+        }
+
+        .admin-table-tr:hover .icon:hover {
+            filter: opacity(1);
+            cursor: pointer;
+        }
+    </style>
+        <div class="admin-container" id="table-scroll">
+            <table class="admin-table" id="main-table">
+                <thead>
+                    <tr class="admin-table-tr" id="header-row">
+                        {% for key in keys.values() %}
+                        <th class="admin-table-th">{{ key }}</th>
+                        {% endfor %}
+{#                        <th class="admin-table-th">display_name</th>#}
+{#                        <th class="admin-table-th">short_name</th>#}
+                        <th class="admin-table-th">&nbsp;</th>
+                    </tr>
+                </thead>
+                <tbody class="admin-table-tbody">
+                    {% for line in content %}
+                    <tr class="admin-table-tr">
+                        {% for key in keys.keys() %}
+                            <td class="admin-table-td"> {{ line[key]}}</td>
+                        {% endfor %}
+{#                        <td class="admin-table-td">2awf</td>#}
+{#                        <td class="admin-table-td">awfawffwaafw</td>#}
+                        <td class="admin-table-td">
+                            <img src="{{ url_for('static', path='/pen-to-square-regular-full.svg') }}" role="button" class="icon" draggable="false" alt="show/hide" title="Edit" onClick="">
+                            <img src="{{ url_for('static', path='/copy-regular-full.svg') }}" role="button" class="icon" draggable="false" alt="show/hide" title="Duplicate" onClick="">
+                            <img src="{{ url_for('static', path='/trash-can-regular-full.svg') }}" role="button" class="icon" draggable="false" alt="show/hide" title="Delete" onClick="">
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+<div id="sticky-header">
+    <table><thead><tr id="sticky-row"></tr></thead></table>
+</div>
+<script>
+    const page        = document.getElementById('page');
+    const stickyEl    = document.getElementById('sticky-header');
+    const stickyRow   = document.getElementById('sticky-row');
+    const mainTable   = document.getElementById('main-table');
+    const headerRow   = document.getElementById('header-row');
+    const tableScroll = document.getElementById('table-scroll');
+
+    console.log(page, stickyEl, stickyRow, mainTable, headerRow, tableScroll);
+
+    // Clone header cells into the sticky element
+    Array.from(headerRow.cells).forEach(th => stickyRow.appendChild(th.cloneNode(true)));
+
+    function update() {
+        console.log('update');
+        const wRect = mainTable.getBoundingClientRect();
+        const hRect = headerRow.getBoundingClientRect();
+
+        // Show only when the real header is above the viewport and table is still visible
+        if (hRect.top >= 0 || wRect.bottom <= 0) {
+            stickyEl.style.display = 'none';
+            return;
+        }
+
+        stickyEl.style.display = 'block';
+        stickyEl.style.left  = wRect.left + 'px';
+        stickyEl.style.width = wRect.width + 'px';
+
+        // Sync each column width from real header
+        Array.from(headerRow.cells).forEach((th, i) => {
+            const w = th.getBoundingClientRect().width + 'px';
+            stickyRow.cells[i].style.width = stickyRow.cells[i].style.minWidth = w;
+        });
+        stickyEl.querySelector('table').style.width = wRect.width + 'px';
+
+        // Follow horizontal scroll of the table
+        stickyEl.scrollLeft = tableScroll.scrollLeft;
+    }
+
+    tableScroll.addEventListener('scroll', update);
+    window.addEventListener('resize', update);
+    requestAnimationFrame(update);
+    window.addEventListener('scroll', update);
+</script>
+<style>
+    #sticky-header {
+        display: none;
+        position: fixed;
+        top: 10px;
+        z-index: 10;
+        overflow: hidden;
+        pointer-events: none;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        background: aliceblue;
+        border-radius: 10px;
+    }
+</style>
+<!-- TODO move css and js -->
+<!-- TODO fix fake header cells width -->
+</main>
+{% import "footer.html" as footer with context %}
+{{ footer.footer() }}
+</div>
+</body>
+</html>

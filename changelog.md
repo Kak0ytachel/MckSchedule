@@ -1,3 +1,6 @@
+### v0.2.4-beta - released 23/03/2026
+- Added Ukrainian translation
+
 ### v0.2.3-beta - released 25/02/2026
 - Updated search results page
 

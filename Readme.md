@@ -14,8 +14,20 @@ I've joined a sertain univercity department (which abbreviation is MCK). I was l
 The department had about 10 groups, each having several subgroups, each having slightly different lecture schedule. The original printed timetable looked like a grid with classes as it's cells. The issue - it was sorted not for each group, but for classrooms. So to figure out whether you have a class now or not, you'd had to check the entire row.
 
 ## Features
-- Cool randomly generated home page
-- Language selection: supports english, russian, polish and ukranian 
+- <details> 
+    <summary>Cool randomly generated home page</summary> 
+    
+    <img  alt="home-page-random" src="https://github.com/user-attachments/assets/b204b5d2-7d01-431f-872f-e72e925b86fe" />
+    
+      Each time chooses some random real lectures for the scattered and the ordered layouts, as well as groups and subgroups for the suggestsions
+   </details>
+- <details> 
+    <summary>Language selection: supports english, russian, polish and ukranian</summary> 
+    
+    <img width="800" height="546" alt="home-page-languages" src="https://github.com/user-attachments/assets/b98a3d17-9493-4e8b-a13d-38a065af2932" />
+
+  Stores selected language in a cookie or if absent uses `Accept-Language` header; stores translation strings in json files and shows corresponding ones
+   </details>
 - Search bar with typehints, allowing to find any group / subgroup / teacher / classroom. If the search query matches some entry, redirects user to the entry's page, otherwise to search results page
 - Multiple semesters support
 - Page-specific notifications

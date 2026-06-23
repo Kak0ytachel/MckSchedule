@@ -6,12 +6,12 @@
 # MCK Schedule
 MCK Schedule is a web app for convenient browsing of univercity lecture schedule.
 
-Built as a server-side rendering web app with Python, FastAPI, MySQL, Jinja2 (template engine), HTML, CSS, JavaScript
+Built as a server-side rendering web app with Python, FastAPI, MySQL, Jinja2, HTML, CSS, JavaScript
 
 ## Idea
-I've joined a sertain univercity department (which abbreviation is MCK). I was looking for ideas for a pet project when I saw our schedule. It was awful and extremely inconvenient, so I spent a few weekends and created this website.
+I've joined a sertain univercity department (which abbreviation is MCK). I was looking for ideas for a pet project when I saw our schedule, available only in prtinted form. It was awful and extremely inconvenient, so I spent a few weekends and created this website.
 
-The department had about 10 groups, each having several subgroups, each having slightly different lecture schedule. The original printed timetable looked like a grid with classes as it's cells. The issue - it was sorted not for each group, but for classrooms. So to figure out whether you have a class now or not, you'd had to check the entire row.
+<!-- The department had about 10 groups, each having several subgroups, each having slightly different lecture schedule. The original printed timetable looked like a grid with classes as it's cells. The issue - it was sorted not for each group, but for classrooms. So to figure out whether you have a class now or not, you'd had to check the entire row. -->
 
 ## Features
 - <details> 
@@ -31,8 +31,24 @@ The department had about 10 groups, each having several subgroups, each having s
 - Search bar with typehints, allowing to find any group / subgroup / teacher / classroom. If the search query matches some entry, redirects user to the entry's page, otherwise to search results page
 - Multiple semesters support
 - Page-specific notifications
-- Favourite schedules (saved to cookies)
+- <details> 
+    <summary>Favourite schedules</summary> 
+    
+    
+
+  https://github.com/user-attachments/assets/2f825bb0-c13e-4150-8303-8c747e2563a0
+
+
+
+  Saves selected schedules a cookie, allowing to easily navigate to them. Shows snackbar on adding / deleting.
+   </details>
 - Statistics page, counting times anyone entered specific schedule page
+
+## Technical implementation
+
+Built as a server-side rendering application using Python, FastAPI as a fast backend framework and Jinja2 as template engine. The app serves HTML pages on most of it's endpoints, but still has some non-HTML ones used for language change (POST endpoint) or search bar options (GET endpoint, returns json array of suggestions for current entry). There are also some vailla JS scripts for dropdowns, snackbars, etc.
+
+The app usees MySQL for storing all the data. It was meant to provide accessible web interface for university workers creating schedule too, but due to low demand was never implemented, so it's not a CRUD app as of yet.
 
 ## Database structure
 <img width="800" alt="Diagram - local 4" src="https://github.com/user-attachments/assets/3f39db62-0055-4262-9be2-6e8669b0ce88" />
@@ -65,6 +81,30 @@ The app uses MySQL to store all the data. It has 11 tables. It has semesters, su
 ## Availabilty 
 
 Used to be available at https://mck.chel0.dev until May 2026, when the lectures ended. Was hosted on Zaebur free tier, which is unfortunately no longer provided. 
+
+## Running locally
+
+### Installation
+Requires modern Python ~= 3.11
+
+\* replace `.bat` (or leave if windows cmd) in line 3 with `.ps1` if running using windows powershell, or nothing (`\activate`) for Linux / macOS
+```
+git clone https://github.com/Kak0ytachel/MckSchedule .
+python -m venv .venv
+.venv\Scripts\activate.bat
+pip install -r requirements.txt
+```
+rename `.env.example` to `.env` and replace placeholders with real env variables
+
+### Running
+
+\* replace `.bat` the same way if needed
+```
+.venv\Scripts\activate.bat
+python main.py
+```
+
+open `localhost:8000` in your browser
 
 ## Contributors
 

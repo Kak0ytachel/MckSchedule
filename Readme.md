@@ -1,4 +1,4 @@
-<img width="2184" height="1396" alt="localhost_8000_ (3)" src="https://github.com/user-attachments/assets/ef5b229d-ba1b-40f6-884c-f11e18e21292" />
+<img alt="localhost_8000_ (3)" src="https://github.com/user-attachments/assets/ef5b229d-ba1b-40f6-884c-f11e18e21292" />
 
 <!-- <img width="2184" height="1396" alt="localhost_8000_ (2)" src="https://github.com/user-attachments/assets/5c2a5d87-b9a2-4a27-a33d-318433ad31b7" /> -->
 

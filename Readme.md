@@ -111,5 +111,5 @@ open `localhost:8000` in your browser
 Many thanks to:
 - [Ihor Lysiuk](https://github.com/igorlysiuk043-cyber) for the ukranian translation
 
-<!-- <details> <summary>123</summary>
+<!-- <details> <summary>1</summary>
 <img width="2160" height="3267" alt="localhost_8000_" src="https://github.com/user-attachments/assets/89b2234f-80fc-47ee-8a91-c5c7c809367f" /></details> -->
